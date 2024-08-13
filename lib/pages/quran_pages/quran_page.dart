@@ -15,7 +15,17 @@ class QuranPage extends StatelessWidget {
           "القرآن الكريم",
           style: TextStyle(color: Colors.white),
         ),
-      ),
+      ),body: Column(),
     );
   }
 }
+
+
+
+
+
+
+
+
+
+

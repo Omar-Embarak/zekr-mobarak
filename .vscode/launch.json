@@ -1,0 +1,45 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "azkar_app",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "azkar_app (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "azkar_app (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "the-holy-quran-app-master",
+            "cwd": "the-holy-quran-app-master",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "the-holy-quran-app-master (profile mode)",
+            "cwd": "the-holy-quran-app-master",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "the-holy-quran-app-master (release mode)",
+            "cwd": "the-holy-quran-app-master",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}

@@ -1,5 +1,6 @@
-import 'package:al_quran/animations/entrance_fader.dart';
 import 'package:flutter/material.dart';
+
+import '../animations/entrance_fader.dart';
 
 class Flare extends StatelessWidget {
   final Offset? offset;

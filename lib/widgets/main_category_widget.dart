@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:azkar_app/constants/colors.dart';
 import 'package:flutter/material.dart';
 
