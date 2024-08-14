@@ -18,6 +18,7 @@ dependencies:
   flutter_localization: ^0.2.0
   flutter_qiblah: ^3.0.3
   flutter_svg: ^2.0.10+1
+  flutter_tts: ^4.0.2
   fluttertoast: ^8.2.4
   geolocator: ^11.1.0
   hive: ^2.0.4
@@ -61,4 +62,4 @@ flutter:
     - family: Cairo
       fonts:
         - asset: assets/fonts/Cairo-SemiBold.ttf
-        - asset: assets/fonts/Cairo-SemiBold.ttf
+        - asset: assets/fonts/Othmani.ttf

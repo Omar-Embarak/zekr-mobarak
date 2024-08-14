@@ -2,9 +2,14 @@ import 'package:azkar_app/cubit/ruqiya_cubit/ruqiya_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 import 'cubit/azkar_cubit/azkar_cubit.dart';
 import 'cubit/praying_cubit/praying_cubit.dart';
-import 'pages/home_page/home_page.dart';void main() {
+import 'pages/home_page/home_page.dart';
+import 'pages/quran_pages/book_mark_provider.dart';
+import 'pages/quran_pages/quran_reading_main_page.dart';
+
+void main() {
   runApp(const MyApp());
 }
 
@@ -25,6 +30,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => PrayingCubit(),
         ),
+        ChangeNotifierProvider(create: (_) => BookmarkProvider()),
       ],
       child: MaterialApp(
         localizationsDelegates: const [

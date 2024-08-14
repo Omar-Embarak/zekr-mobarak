@@ -5,7 +5,7 @@ import '../../constants/colors.dart';
 import '../../widgets/main_category_widget.dart';
 import '../azkar_pages/azkar_main_page.dart';
 import '../pray_page/pray_page.dart';
-import '../quran_pages/quran_page.dart';
+import '../quran_pages/quran_reading_main_page.dart';
 import '../ruqiya_pages/ruqiya_page.dart';
 
 class HomePages extends StatelessWidget {
