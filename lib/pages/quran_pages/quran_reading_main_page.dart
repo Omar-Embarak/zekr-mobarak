@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../constants/colors.dart';
 import 'package:provider/provider.dart';
-import 'package:quran/quran.dart' as quran;
-
 import 'book_mark_page.dart';
 import 'book_mark_provider.dart';
 import 'juz_page.dart';
-import 'quran_text_page.dart';
 import 'surah_list_page.dart';
 
 class QuranApp extends StatelessWidget {
@@ -21,7 +18,7 @@ class QuranApp extends StatelessWidget {
       child: MaterialApp(
         theme: ThemeData(
           primaryColor: AppColors.kPrimaryColor,
-          fontFamily: 'Othmani', // خط الرسم العثماني
+          fontFamily: 'Rajdhani',
         ),
         home: const SurahListPage(),
       ),
@@ -36,7 +33,7 @@ class QuranPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3,
-      initialIndex: 0, // جعل صفحة قائمة السور هي الصفحة الرئيسية
+      initialIndex: 0, 
       child: Scaffold(
         backgroundColor: AppColors.kPrimaryColor,
         appBar: AppBar(
@@ -54,11 +51,11 @@ class QuranPage extends StatelessWidget {
               labelColor: AppColors.kSecondaryColor,
               unselectedLabelColor: Color.fromARGB(255, 129, 104, 95),
               labelStyle: TextStyle(
-                  fontFamily: 'Othmani',
-                  fontSize: 22.0,
+                  fontFamily: 'Rajdhani',
+                  fontSize: 20,
                   fontWeight: FontWeight.bold), // Adjust the size as needed
               unselectedLabelStyle:
-                  TextStyle(fontSize: 22.0), // Adjust the size as needed
+                  TextStyle(fontSize: 20), // Adjust the size as needed
               tabs: [
                 Tab(text: 'سورة'),
                 Tab(text: 'جزء'),

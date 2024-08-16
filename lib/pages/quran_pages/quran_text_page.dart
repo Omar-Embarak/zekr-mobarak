@@ -18,30 +18,53 @@ class SurahPage extends StatelessWidget {
         title: Text(quran.getSurahNameArabic(surahIndex)),
         backgroundColor: AppColors.kPrimaryColor,
       ),
-      body: PageView.builder(
-        itemCount: quran.getVerseCount(surahIndex),
-        controller: PageController(),
-        itemBuilder: (context, index) {
-          final verseText = quran.getVerse(surahIndex, index + 1);
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Center(
-              child: Text(
-                '$verseText [${index + 1}]',
-                textAlign: TextAlign.justify,
-                style: const TextStyle(
-                  fontSize: 24,
-                  height: 2.0, // جعل الآيات بجانب بعضها البعض
-                ),
-              ),
+      body: Stack(
+        children: [
+          Container(
+            margin: const EdgeInsets.all(8),
+            height: 91,
+            width: double.infinity,
+            decoration: BoxDecoration(
+                color: AppColors.kSecondaryColor,
+                borderRadius: BorderRadius.circular(7)),
+            child: const Row(
+              children: [
+                Column(
+                  children: [
+                    Text(
+                      '1/4 الجزب 5',
+                      style: TextStyle(color: Colors.white),
+                    )
+                  ],
+                )
+              ],
             ),
-          );
-        },
+          ),
+          PageView.builder(
+            itemCount: quran.getVerseCount(surahIndex),
+            controller: PageController(),
+            itemBuilder: (context, index) {
+              final verseText = quran.getVerse(surahIndex, index + 1);
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Center(
+                  child: Text(
+                    '$verseText [${index + 1}]',
+                    textAlign: TextAlign.justify,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      height: 2.0, // جعل الآيات بجانب بعضها البعض
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }
 }
-
 
 class QuranTextScreen extends StatefulWidget {
   final int surahIndex;
@@ -135,4 +158,3 @@ class QuranTextScreenState extends State<QuranTextScreen> {
     );
   }
 }
-
