@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:math' show pi;
-import 'package:azkar_app/constants/colors.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_qiblah/flutter_qiblah.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
@@ -10,7 +8,7 @@ import 'package:geolocator/geolocator.dart';
 import 'location_error_widget.dart';
 
 class QiblaCompass extends StatefulWidget {
-  const QiblaCompass({Key? key}) : super(key: key);
+  const QiblaCompass({super.key});
 
   @override
   State<QiblaCompass> createState() => _QiblaCompassState();
@@ -43,7 +41,7 @@ class _QiblaCompassState extends State<QiblaCompass> {
             switch (snapshot.data!.status) {
               case LocationPermission.always:
               case LocationPermission.whileInUse:
-                return QiblahCompassWidget();
+                return const QiblahCompassWidget();
 
               case LocationPermission.denied:
                 return LocationErrorWidget(
@@ -95,13 +93,11 @@ class _QiblaCompassState extends State<QiblaCompass> {
 }
 
 class QiblahCompassWidget extends StatelessWidget {
-  final _kaabaSvg = SvgPicture.asset('assets/4.svg');
 
-  QiblahCompassWidget({Key? key}) : super(key: key);
+  const QiblahCompassWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    var platformBrightness = Theme.of(context).brightness;
     return StreamBuilder(
       stream: FlutterQiblah.qiblahStream,
       builder: (_, AsyncSnapshot<QiblahDirection> snapshot) {

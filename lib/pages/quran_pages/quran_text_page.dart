@@ -22,9 +22,9 @@ class SurahPage extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Row(
+                const Row(
                   children: [
-                    const Text('الجزء 3'),
+                    Text('الجزء 3'),
                   ],
                 ),
                 Row(
@@ -36,7 +36,7 @@ class SurahPage extends StatelessWidget {
                 ),
               ],
             ),
-            Spacer(),
+            const Spacer(),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

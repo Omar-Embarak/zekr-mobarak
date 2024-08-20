@@ -7,7 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../../constants/colors.dart';
 
 class RuqiyaPage extends StatefulWidget {
-  RuqiyaPage({super.key});
+  const RuqiyaPage({super.key});
 
   @override
   State<RuqiyaPage> createState() => _RuqiyaPageState();
@@ -16,9 +16,7 @@ class RuqiyaPage extends StatefulWidget {
 class _RuqiyaPageState extends State<RuqiyaPage> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    final ruqyiaCubit = context.read<RuqiyaCubit>().loadRuqiya();
   }
 
   @override

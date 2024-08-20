@@ -1,13 +1,13 @@
 class Assets {
   Assets._();
   
-  /// Assets for imagesArrowRight
-  /// assets/images/arrow-right.svg
-  static const String imagesArrowRight = "assets/images/arrow-right.svg";
+  /// Assets for images3rob3
+  /// assets/images/3rob3.png
+  static const String images3rob3 = "assets/images/3rob3.png";
 
   /// Assets for imagesArrowRight
   /// assets/images/arrow-right.png
-  // static const String imagesArrowRight = "assets/images/arrow-right.png";
+  static const String imagesArrowRight = "assets/images/arrow-right.png";
 
   /// Assets for imagesAzkar
   /// assets/images/azkar.png
@@ -21,9 +21,17 @@ class Assets {
   /// assets/images/chio5.jpg
   static const String imagesChio5 = "assets/images/chio5.jpg";
 
+  /// Assets for imagesHalf
+  /// assets/images/half.png
+  static const String imagesHalf = "assets/images/half.png";
+
   /// Assets for imagesHand
   /// assets/images/hand.svg
   static const String imagesHand = "assets/images/hand.svg";
+
+  /// Assets for imagesHizp
+  /// assets/images/hizp.png
+  static const String imagesHizp = "assets/images/hizp.png";
 
   /// Assets for imagesIndex
   /// assets/images/index.svg
@@ -52,6 +60,10 @@ class Assets {
   /// Assets for imagesQuranRail
   /// assets/images/quranRail.png
   static const String imagesQuranRail = "assets/images/quranRail.png";
+
+  /// Assets for imagesRob3
+  /// assets/images/rob3.png
+  static const String imagesRob3 = "assets/images/rob3.png";
 
   /// Assets for imagesRoza
   /// assets/images/roza.png

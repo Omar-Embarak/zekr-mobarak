@@ -99,4 +99,4 @@ double getScaleFactor(context) {
   } else {
     return width / 1920;
   }
-}v
+}

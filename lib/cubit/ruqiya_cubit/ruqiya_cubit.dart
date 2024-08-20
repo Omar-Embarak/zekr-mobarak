@@ -1,13 +1,7 @@
 import 'dart:convert';
-
 import 'package:bloc/bloc.dart';
-
 import 'package:flutter/services.dart';
-
-import 'package:meta/meta.dart';
-
 import '../../model/ruqiya_model/ruqiya_model/ruqiya_model.dart';
-
 part 'ruqiya_state.dart';
 
 class RuqiyaCubit extends Cubit<RuqiyaState> {

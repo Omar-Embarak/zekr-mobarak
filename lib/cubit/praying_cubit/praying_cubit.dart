@@ -1,12 +1,7 @@
 import 'dart:convert';
-
 import 'package:bloc/bloc.dart';
-
 import 'package:http/http.dart' as http;
-
-import 'dart:convert';
 import 'package:intl/intl.dart';
-import 'package:meta/meta.dart';
 
 import '../../model/praying_model/praying_model/praying_model.dart';
 import '../../model/praying_model/praying_model/timings.dart';
@@ -108,7 +103,7 @@ class PrayingCubit extends Cubit<PrayingState> {
             format.parse(timeString.split(" ")[0]).minute);
 
         if (prayerTime.isBefore(now)) {
-          prayerTime = prayerTime.add(Duration(days: 1));
+          prayerTime = prayerTime.add(const Duration(days: 1));
         }
 
         Duration difference = prayerTime.difference(now);

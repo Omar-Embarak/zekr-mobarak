@@ -1,5 +1,4 @@
 import 'package:azkar_app/model/azkar_model/azkar_model/azkar_model.dart';
-import 'package:flutter/material.dart';
 
 abstract class AzkarState {}
 
