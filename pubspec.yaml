@@ -62,7 +62,15 @@ flutter:
   fonts:
     - family: Cairo
       fonts:
-        - asset: assets/fonts/Cairo-SemiBold.ttf
+        - asset: assets/fonts/Cairo-Regular.ttf
     - family: Rajdhani
       fonts:
         - asset: assets/fonts/Rajdhani-Regular.ttf
+    - family: DiodrumArabic
+      fonts:
+        - asset: assets/fonts/alfont_com_AlFont_com_DiodrumArabic-Regular-1.ttf
+flutter_assets:
+  assets_path: assets/images
+  output_path: lib/utils/
+  filename: app_images.dart
+  field_prefix:

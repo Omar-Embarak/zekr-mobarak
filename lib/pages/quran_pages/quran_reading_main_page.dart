@@ -1,3 +1,4 @@
+import 'package:azkar_app/utils/app_style.dart';
 import 'package:flutter/material.dart';
 import '../../constants/colors.dart';
 import 'package:provider/provider.dart';
@@ -47,15 +48,10 @@ class QuranPage extends StatelessWidget {
         body: const Column(
           children: [
             TabBar(
-              indicatorColor: Colors.white,
+              indicatorColor: AppColors.kSecondaryColor,
               labelColor: AppColors.kSecondaryColor,
               unselectedLabelColor: Color.fromARGB(255, 129, 104, 95),
-              labelStyle: TextStyle(
-                  fontFamily: 'Rajdhani',
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold), // Adjust the size as needed
-              unselectedLabelStyle:
-                  TextStyle(fontSize: 20), // Adjust the size as needed
+              labelStyle: AppStyles.styleRajdhaniBold20, 
               tabs: [
                 Tab(text: 'سورة'),
                 Tab(text: 'جزء'),
