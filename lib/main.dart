@@ -8,10 +8,16 @@ import 'cubit/azkar_cubit/azkar_cubit.dart';
 import 'cubit/praying_cubit/praying_cubit.dart';
 import 'pages/home_page/home_page.dart';
 import 'pages/quran_pages/book_mark_provider.dart';
+import 'pages/quran_pages/quran_text_page.dart';
 
 void main() {
-  runApp(DevicePreview(enabled:true,
-    builder:(context)=> const MyApp()));
+  runApp(
+    // const MyApp());
+    DevicePreview(
+      enabled: true,
+      builder: (context) => const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -33,15 +39,17 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => BookmarkProvider()),
       ],
       child: MaterialApp(
+        locale: DevicePreview.locale(context),
+        builder: DevicePreview.appBuilder,
         localizationsDelegates: const [
           GlobalCupertinoLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
         ],
         supportedLocales: const [
-          Locale("ar", "AE"), // OR Locale('ar', 'AE') OR Other RTL locales
+          Locale("ar", "AE"),
         ],
-        locale: const Locale("ar", "AE"),
+        // locale: const Locale("ar", "AE"),
         debugShowCheckedModeBanner: false,
         title: 'Azkar App',
         theme: ThemeData(
@@ -51,7 +59,9 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: HomePages(),
+        home: SurahPage(
+          surahIndex: 1,
+        ), // HomePages(),
       ),
     );
   }

@@ -59,12 +59,12 @@ class SurahListPage extends StatelessWidget {
                 children: [
                   const SizedBox(width: 10),
                   Text('الجزء ${arabicOrdinals[index]}',
-                      style: AppStyles.styleRajdhaniMedium18
+                      style: AppStyles.styleRajdhaniMedium18(context)
                           .copyWith(color: Colors.white)),
                   const Spacer(),
                   Text(
                     '1',
-                    style: AppStyles.styleRajdhaniMedium18
+                    style: AppStyles.styleRajdhaniMedium18(context)
                         .copyWith(color: Colors.white),
                   ),
                   const SizedBox(width: 10),
@@ -86,34 +86,28 @@ class SurahListPage extends StatelessWidget {
                       : "مدنية";
               return Row(
                 children: [
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  const Text('1', style: AppStyles.styleRajdhaniMedium18),
+                  const SizedBox(width: 10),
+                  Text('1', style: AppStyles.styleRajdhaniMedium18(context)),
                   Expanded(
                     child: ListTile(
-                      trailing: const Text(
-                        '1',
-                        style: AppStyles.styleRajdhaniBold13,
-                      ),
+                      trailing: Text('1',
+                          style: AppStyles.styleRajdhaniBold13(context)),
                       title: Text(
                           'سورة ${quran.getSurahNameArabic(entry.key)} ',
-                          style: AppStyles.styleRajdhaniMedium18),
+                          style: AppStyles.styleRajdhaniMedium18(context)),
                       subtitle: Row(
                         children: [
                           Text(' $surahType - ${entry.value} اية ',
-                              style: AppStyles.styleRajdhaniBold13
-                                  .copyWith(color: Colors.white)),
+                              style: AppStyles.styleRajdhaniBold13(context)
+                                  .copyWith(color: Colors.white))
                         ],
                       ),
                       onTap: () {
                         Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                SurahPage(surahIndex: entry.key),
-                          ),
-                        );
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    SurahPage(surahIndex: entry.key)));
                       },
                     ),
                   ),

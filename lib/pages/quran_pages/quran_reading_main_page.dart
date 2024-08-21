@@ -45,20 +45,20 @@ class QuranPage extends StatelessWidget {
             style: TextStyle(color: Colors.white),
           ),
         ),
-        body: const Column(
+        body:  Column(
           children: [
             TabBar(
               indicatorColor: AppColors.kSecondaryColor,
               labelColor: AppColors.kSecondaryColor,
-              unselectedLabelColor: Color.fromARGB(255, 129, 104, 95),
-              labelStyle: AppStyles.styleRajdhaniBold20, 
-              tabs: [
+              unselectedLabelColor: const Color.fromARGB(255, 129, 104, 95),
+              labelStyle: AppStyles.styleRajdhaniBold20(context), 
+              tabs: const [
                 Tab(text: 'سورة'),
                 Tab(text: 'جزء'),
                 Tab(text: 'المراجعيات'),
               ],
             ),
-            Expanded(
+            const Expanded(
               child: TabBarView(
                 children: [
                   SurahListPage(),

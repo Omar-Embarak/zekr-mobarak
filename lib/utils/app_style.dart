@@ -2,73 +2,105 @@ import 'package:flutter/material.dart';
 
 import 'size_config.dart';
 
-abstract class AppStyles {
-  static const TextStyle styleCairoMedium15 = TextStyle(
-    color: Color(0xff6A564F),
-    fontSize: 15,
+abstract class AppStyles {static TextStyle styleCairoMedium15(context) {
+  return TextStyle(
+    color: const Color(0xff6A564F),
+    fontSize: getResponsiveFontSize(context, fontSize: 15),
     fontFamily: 'Cairo',
     fontWeight: FontWeight.w500,
   );
-  static const TextStyle styleRajdhaniMedium20 = TextStyle(
-    color: Color(0xff6A564F),
-    fontSize: 20,
+}
+
+static TextStyle styleRajdhaniMedium20(context) {
+  return TextStyle(
+    color: const Color(0xff6A564F),
+    fontSize: getResponsiveFontSize(context, fontSize: 20),
     fontFamily: 'Rajdhani',
     fontWeight: FontWeight.w500,
   );
-  static const TextStyle styleRajdhaniMedium18 = TextStyle(
-    color: Color(0xff575757),
-    fontSize: 18,
+}
+
+static TextStyle styleRajdhaniMedium18(context) {
+  return TextStyle(
+    color: const Color(0xff575757),
+    fontSize: getResponsiveFontSize(context, fontSize: 18),
     fontFamily: 'Rajdhani',
     fontWeight: FontWeight.w500,
   );
-  static const TextStyle styleRajdhaniBold20 = TextStyle(
-    color: Color(0xff6A564F),
-    fontSize: 20,
+}
+
+static TextStyle styleRajdhaniBold20(context) {
+  return TextStyle(
+    color: const Color(0xff6A564F),
+    fontSize: getResponsiveFontSize(context, fontSize: 20),
     fontFamily: 'Rajdhani',
     fontWeight: FontWeight.w700,
   );
-  static const TextStyle styleRajdhaniBold13 = TextStyle(
-    color: Color(0xff575757),
-    fontSize: 13,
+}
+
+static TextStyle styleRajdhaniBold13(context) {
+  return TextStyle(
+    color: const Color(0xff575757),
+    fontSize: getResponsiveFontSize(context, fontSize: 13),
     fontFamily: 'Rajdhani',
     fontWeight: FontWeight.w700,
   );
-  static const TextStyle styleRajdhaniBold18 = TextStyle(
-    color: Color(0xff575757),
-    fontSize: 18,
+}
+
+static TextStyle styleRajdhaniBold18(context) {
+  return TextStyle(
+    color: const Color(0xff575757),
+    fontSize: getResponsiveFontSize(context, fontSize: 18),
     fontFamily: 'Rajdhani',
     fontWeight: FontWeight.w700,
   );
-  static const TextStyle styleRajdhaniMedium15 = TextStyle(
-    color: Color(0xff000000),
-    fontSize: 15,
+}
+
+static TextStyle styleRajdhaniMedium15(context) {
+  return TextStyle(
+    color: const Color(0xff000000),
+    fontSize: getResponsiveFontSize(context, fontSize: 15),
     fontFamily: 'Rajdhani',
     fontWeight: FontWeight.w500,
   );
-  static const TextStyle styleDiodrumArabicMedium15 = TextStyle(
-    color: Color(0xff000000),
-    fontSize: 15,
+}
+
+static TextStyle styleDiodrumArabicMedium15(context) {
+  return TextStyle(
+    color: const Color(0xff000000),
+    fontSize: getResponsiveFontSize(context, fontSize: 15),
     fontFamily: 'DiodrumArabic',
     fontWeight: FontWeight.w500,
   );
-  static const TextStyle styleRajdhaniMeduim13 = TextStyle(
-    color: Color(0xff575757),
-    fontSize: 13,
+}
+
+static TextStyle styleRajdhaniMedium13(context) {
+  return TextStyle(
+    color: const Color(0xff575757),
+    fontSize: getResponsiveFontSize(context, fontSize: 13),
     fontFamily: 'Rajdhani',
     fontWeight: FontWeight.w500,
   );
-   static const TextStyle styleCairoBold20 = TextStyle(
-    color: Color(0xffFFFFFF),
-    fontSize: 20,
+}
+
+static TextStyle styleCairoBold20(context) {
+  return TextStyle(
+    color: const Color(0xffFFFFFF),
+    fontSize: getResponsiveFontSize(context, fontSize: 20),
     fontFamily: 'Cairo',
     fontWeight: FontWeight.w700,
   );
-   static const TextStyle styleCairoMeduim10 = TextStyle(
-    color: Color(0xff6A564F),
-    fontSize: 10,
+}
+
+static TextStyle styleCairoMedium10(context) {
+  return TextStyle(
+    color: const Color(0xff6A564F),
+    fontSize: getResponsiveFontSize(context, fontSize: 10),
     fontFamily: 'Cairo',
     fontWeight: FontWeight.w500,
   );
+}
+
  
 }
 

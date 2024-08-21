@@ -41,6 +41,10 @@ class Assets {
   /// assets/images/juz.svg
   static const String imagesJuz = "assets/images/juz.svg";
 
+  /// Assets for imagesLeftPage
+  /// assets/images/left_page.svg
+  static const String imagesLeftPage = "assets/images/left_page.svg";
+
   /// Assets for imagesMuslimPrayer
   /// assets/images/muslim_prayer.png
   static const String imagesMuslimPrayer = "assets/images/muslim_prayer.png";
@@ -60,6 +64,10 @@ class Assets {
   /// Assets for imagesQuranRail
   /// assets/images/quranRail.png
   static const String imagesQuranRail = "assets/images/quranRail.png";
+
+  /// Assets for imagesRightPage
+  /// assets/images/right_page.svg
+  static const String imagesRightPage = "assets/images/right_page.svg";
 
   /// Assets for imagesRob3
   /// assets/images/rob3.png

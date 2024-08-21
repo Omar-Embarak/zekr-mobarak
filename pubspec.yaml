@@ -73,4 +73,4 @@ flutter_assets:
   assets_path: assets/images
   output_path: lib/utils/
   filename: app_images.dart
-  field_prefix:
+  field_prefix: null
