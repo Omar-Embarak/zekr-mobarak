@@ -58,6 +58,7 @@ flutter:
     - assets/
     - assets/db/adhkar.json
     - assets/db/ruqiya.json
+    - assets/quranjson/surah.json
 
   fonts:
     - family: Cairo

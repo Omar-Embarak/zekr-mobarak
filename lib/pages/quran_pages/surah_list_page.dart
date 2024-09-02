@@ -6,42 +6,20 @@ import 'quran_text_page.dart';
 
 class SurahListPage extends StatelessWidget {
   const SurahListPage({super.key});
+  
+  // Arabic ordinals for the Juz
   final List<String> arabicOrdinals = const [
-    'الاول',
-    'الثاني',
-    'الثالث',
-    'الرابع',
-    'الخامس',
-    'السادس',
-    'السابع',
-    'الثامن',
-    'التاسع',
-    'العاشر',
-    'الحادي عشر',
-    'الثاني عشر',
-    'الثالث عشر',
-    'الرابع عشر',
-    'الخامس عشر',
-    'السادس عشر',
-    'السابع عشر',
-    'الثامن عشر',
-    'التاسع عشر',
-    'العشرون',
-    'الحادي والعشرون',
-    'الثاني والعشرون',
-    'الثالث والعشرون',
-    'الرابع والعشرون',
-    'الخامس والعشرون',
-    'السادس والعشرون',
-    'السابع والعشرون',
-    'الثامن والعشرون',
-    'التاسع والعشرون',
-    'الثلاثون',
+    'الاول', 'الثاني', 'الثالث', 'الرابع', 'الخامس', 'السادس', 
+    'السابع', 'الثامن', 'التاسع', 'العاشر', 'الحادي عشر', 'الثاني عشر', 
+    'الثالث عشر', 'الرابع عشر', 'الخامس عشر', 'السادس عشر', 'السابع عشر', 
+    'الثامن عشر', 'التاسع عشر', 'العشرون', 'الحادي والعشرون', 'الثاني والعشرون', 
+    'الثالث والعشرون', 'الرابع والعشرون', 'الخامس والعشرون', 'السادس والعشرون', 
+    'السابع والعشرون', 'الثامن والعشرون', 'التاسع والعشرون', 'الثلاثون',
   ];
 
   @override
   Widget build(BuildContext context) {
-    final shownSurahs = <int>{}; // مجموعة لتتبع السور التي تم عرضها
+    final shownSurahs = <int>{}; // Track displayed Surahs
 
     return ListView.builder(
       itemCount: quran.totalJuzCount,
@@ -58,9 +36,11 @@ class SurahListPage extends StatelessWidget {
               child: Row(
                 children: [
                   const SizedBox(width: 10),
-                  Text('الجزء ${arabicOrdinals[index]}',
-                      style: AppStyles.styleRajdhaniMedium18(context)
-                          .copyWith(color: Colors.white)),
+                  Text(
+                    'الجزء ${arabicOrdinals[index]}',
+                    style: AppStyles.styleRajdhaniMedium18(context)
+                        .copyWith(color: Colors.white),
+                  ),
                   const Spacer(),
                   Text(
                     '1',
@@ -72,7 +52,6 @@ class SurahListPage extends StatelessWidget {
               ),
             ),
             ...surahsInJuz.entries.where((entry) {
-              // نعرض السورة فقط إذا لم تكن قد ظهرت من قبل
               if (shownSurahs.contains(entry.key)) {
                 return false;
               } else {
@@ -90,30 +69,36 @@ class SurahListPage extends StatelessWidget {
                   Text('1', style: AppStyles.styleRajdhaniMedium18(context)),
                   Expanded(
                     child: ListTile(
-                      trailing: Text('1',
-                          style: AppStyles.styleRajdhaniBold13(context)),
+                      trailing: Text(
+                        '${entry.value}', // Display the number of verses
+                        style: AppStyles.styleRajdhaniBold13(context),
+                      ),
                       title: Text(
-                          'سورة ${quran.getSurahNameArabic(entry.key)} ',
-                          style: AppStyles.styleRajdhaniMedium18(context)),
+                        'سورة ${quran.getSurahNameArabic(entry.key)}',
+                        style: AppStyles.styleRajdhaniMedium18(context),
+                      ),
                       subtitle: Row(
                         children: [
-                          Text(' $surahType - ${entry.value} اية ',
-                              style: AppStyles.styleRajdhaniBold13(context)
-                                  .copyWith(color: Colors.white))
+                          Text(
+                            '$surahType - ${entry.value} اية',
+                            style: AppStyles.styleRajdhaniBold13(context)
+                                .copyWith(color: Colors.white),
+                          )
                         ],
                       ),
                       onTap: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    SurahPage(surahIndex: entry.key)));
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SurahPage(surahIndex: entry.key),
+                          ),
+                        );
                       },
                     ),
                   ),
                 ],
               );
-            }),
+            }).toList(),
           ],
         );
       },

@@ -5,10 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'cubit/azkar_cubit/azkar_cubit.dart';
+import 'cubit/cubit/surah_cubit.dart';
 import 'cubit/praying_cubit/praying_cubit.dart';
 import 'pages/home_page/home_page.dart';
 import 'pages/quran_pages/book_mark_provider.dart';
 import 'pages/quran_pages/quran_text_page.dart';
+import 'pages/quran_pages/surah_list_page.dart';
 
 void main() {
   runApp(
@@ -27,6 +29,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider(
+          create: (context) => SurahCubit()..loadSurahs(),
+          child: const SurahListPage(),
+        ),
         BlocProvider(
           create: (context) => AzkarCubit(),
         ),
@@ -54,14 +60,12 @@ class MyApp extends StatelessWidget {
         title: 'Azkar App',
         theme: ThemeData(
           appBarTheme:
-              AppBarTheme(iconTheme: IconThemeData(color: Colors.white)),
+              const AppBarTheme(iconTheme: IconThemeData(color: Colors.white)),
           fontFamily: "Cairo",
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: SurahPage(
-          surahIndex: 1,
-        ), // HomePages(),
+        home: HomePages(),
       ),
     );
   }
