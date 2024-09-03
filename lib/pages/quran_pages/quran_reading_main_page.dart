@@ -3,34 +3,13 @@ import 'package:azkar_app/utils/app_style.dart';
 import 'package:azkar_app/widgets/surahs_list_widget.dart';
 import 'package:flutter/material.dart';
 import '../../constants/colors.dart';
-import 'package:provider/provider.dart';
 import 'book_mark_page.dart';
-import 'book_mark_provider.dart';
 import 'juz_page.dart';
 
 class QuranReadingMainPage extends StatelessWidget {
   const QuranReadingMainPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => BookmarkProvider()),
-      ],
-      child: MaterialApp(
-        theme: ThemeData(
-          primaryColor: AppColors.kPrimaryColor,
-          fontFamily: 'Rajdhani',
-        ),
-        home: const QuranPage(),
-      ),
-    );
-  }
-}
-
-class QuranPage extends StatelessWidget {
-  const QuranPage({super.key});
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(

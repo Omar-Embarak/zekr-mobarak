@@ -23,7 +23,6 @@ class MurattalPage extends StatelessWidget {
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.kPrimaryColor,
@@ -39,7 +38,7 @@ class MurattalPage extends StatelessWidget {
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
-              // Navigate to the SurahListPage and pass the selected reciter index
+              // Navigate to the SurahListPage directly without wrapping with MaterialApp
               Navigator.push(
                 context,
                 MaterialPageRoute(

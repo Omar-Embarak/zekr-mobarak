@@ -34,8 +34,7 @@ Future<dynamic> modalBottomSheet(BuildContext context) {
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => const ListeningPage(),
-                        ),
+                            builder: (context) => const ListeningPage()),
                       );
                     },
                     child: Container(
@@ -63,7 +62,7 @@ Future<dynamic> modalBottomSheet(BuildContext context) {
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => const QuranPage(),
+                          builder: (context) => const QuranReadingMainPage(),
                         ),
                       );
                     },

@@ -2,7 +2,6 @@ import 'package:azkar_app/constants/colors.dart';
 import 'package:azkar_app/pages/quran_pages/listening_page/hadr_page.dart';
 import 'package:azkar_app/pages/quran_pages/listening_page/mugawwad_page.dart';
 import 'package:flutter/material.dart';
-
 import '../../../widgets/listening_button.dart';
 import 'murattal_page.dart';
 
