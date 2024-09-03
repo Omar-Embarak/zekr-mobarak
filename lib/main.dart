@@ -9,7 +9,6 @@ import 'cubit/cubit/surah_cubit.dart';
 import 'cubit/praying_cubit/praying_cubit.dart';
 import 'pages/home_page/home_page.dart';
 import 'pages/quran_pages/book_mark_provider.dart';
-import 'pages/quran_pages/quran_text_page.dart';
 import 'pages/quran_pages/surah_list_page.dart';
 
 void main() {

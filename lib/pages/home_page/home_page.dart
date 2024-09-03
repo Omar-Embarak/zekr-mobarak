@@ -1,17 +1,12 @@
-import 'package:azkar_app/pages/quran_pages/quran_text_page.dart';
-import 'package:azkar_app/utils/app_images.dart';
-import 'package:azkar_app/utils/app_style.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:jhijri/jHijri.dart';
-
 import '../../constants/colors.dart';
+import '../../widgets/bottom_sheet.dart';
 import '../../widgets/main_category_widget.dart';
 import '../azkar_pages/azkar_main_page.dart';
 import '../pray_page/pray_page.dart';
-import '../quran_pages/listening_page/main_listening_page.dart';
-import '../quran_pages/quran_reading_main_page.dart';
 import '../ruqiya_pages/ruqiya_page.dart';
 
 class HomePages extends StatelessWidget {
@@ -111,104 +106,7 @@ class HomePages extends StatelessWidget {
                       Expanded(
                         child: InkWell(
                           onTap: () {
-                            showModalBottomSheet(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              context: context,
-                              builder: (context) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                      color: AppColors.kSecondaryColor),
-                                  height: 256, // Set the height to 256
-                                  padding: EdgeInsets.only(
-                                    left: 16,
-                                    right: 16,
-                                    bottom: MediaQuery.of(context)
-                                        .viewInsets
-                                        .bottom,
-                                  ),
-                                  child: SingleChildScrollView(
-                                    child: Center(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () {
-                                              Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const QuranPage(),
-                                                ),
-                                              );
-                                            },
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                              ),
-                                              child: Column(
-                                                children: [
-                                                  SizedBox(
-                                                    height: 99,
-                                                    child: Image.asset(Assets
-                                                        .imagesRectangle40),
-                                                  ),
-                                                  Text(
-                                                    'سماع',
-                                                    style: AppStyles
-                                                            .styleCairoMedium15(
-                                                                context)
-                                                        .copyWith(
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          GestureDetector(
-                                            onTap: () {
-                                              Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const ListeningPage(),
-                                                ),
-                                              );
-                                            },
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                              ),
-                                              child: Column(
-                                                children: [
-                                                  SizedBox(
-                                                    height: 99,
-                                                    child: Image.asset(Assets
-                                                        .imagesRectangle39),
-                                                  ),
-                                                  Text(
-                                                    'قراءة',
-                                                    style: AppStyles
-                                                            .styleCairoMedium15(
-                                                                context)
-                                                        .copyWith(
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
+                            modalBottomSheet(context);
                           },
                           child: MainCategoryWidget(
                             categoryImg: "assets/images/quran.png",
@@ -236,4 +134,5 @@ class HomePages extends StatelessWidget {
       ),
     );
   }
-}
+
+  }

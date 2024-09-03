@@ -1,14 +1,15 @@
+import 'package:azkar_app/pages/quran_pages/quran_text_page.dart';
 import 'package:azkar_app/utils/app_style.dart';
+import 'package:azkar_app/widgets/surahs_list_widget.dart';
 import 'package:flutter/material.dart';
 import '../../constants/colors.dart';
 import 'package:provider/provider.dart';
 import 'book_mark_page.dart';
 import 'book_mark_provider.dart';
 import 'juz_page.dart';
-import 'surah_list_page.dart';
 
-class QuranApp extends StatelessWidget {
-  const QuranApp({super.key});
+class QuranReadingMainPage extends StatelessWidget {
+  const QuranReadingMainPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class QuranApp extends StatelessWidget {
           primaryColor: AppColors.kPrimaryColor,
           fontFamily: 'Rajdhani',
         ),
-        home: const SurahListPage(),
+        home: const QuranPage(),
       ),
     );
   }
@@ -34,7 +35,7 @@ class QuranPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3,
-      initialIndex: 0, 
+      initialIndex: 0,
       child: Scaffold(
         backgroundColor: AppColors.kPrimaryColor,
         appBar: AppBar(
@@ -45,25 +46,32 @@ class QuranPage extends StatelessWidget {
             style: TextStyle(color: Colors.white),
           ),
         ),
-        body:  Column(
+        body: Column(
           children: [
             TabBar(
               indicatorColor: AppColors.kSecondaryColor,
               labelColor: AppColors.kSecondaryColor,
               unselectedLabelColor: const Color.fromARGB(255, 129, 104, 95),
-              labelStyle: AppStyles.styleRajdhaniBold20(context), 
+              labelStyle: AppStyles.styleRajdhaniBold20(context),
               tabs: const [
                 Tab(text: 'سورة'),
                 Tab(text: 'جزء'),
                 Tab(text: 'المراجعيات'),
               ],
             ),
-            const Expanded(
+            Expanded(
               child: TabBarView(
                 children: [
-                  SurahListPage(),
-                  JuzListPage(),
-                  BookmarksPage(),
+                  SurahListWidget(onSurahTap: (surahIndex) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SurahPage(surahIndex: surahIndex),
+                      ),
+                    );
+                  }),
+                  const JuzListPage(),
+                  const BookmarksPage(),
                 ],
               ),
             ),

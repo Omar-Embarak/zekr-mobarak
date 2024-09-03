@@ -17,7 +17,7 @@ class MainCategoryWidget extends StatelessWidget {
       width: width,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        color: AppColors.kSecondaryColor, // Move the color into the decoration
+        color: AppColors.kSecondaryColor, 
       ),
       padding: const EdgeInsets.all(8),
       child: Center(

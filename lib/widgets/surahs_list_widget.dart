@@ -2,18 +2,18 @@ import 'package:azkar_app/utils/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:quran/quran.dart' as quran;
 import '../../constants/colors.dart';
-import 'quran_text_page.dart';
 
-class SurahListPage extends StatelessWidget {
-  const SurahListPage({super.key});
-  
+class SurahListWidget extends StatelessWidget {
+  final Function(int surahIndex) onSurahTap;
+  const SurahListWidget({super.key, required this.onSurahTap});
+
   // Arabic ordinals for the Juz
   final List<String> arabicOrdinals = const [
-    'الاول', 'الثاني', 'الثالث', 'الرابع', 'الخامس', 'السادس', 
-    'السابع', 'الثامن', 'التاسع', 'العاشر', 'الحادي عشر', 'الثاني عشر', 
-    'الثالث عشر', 'الرابع عشر', 'الخامس عشر', 'السادس عشر', 'السابع عشر', 
-    'الثامن عشر', 'التاسع عشر', 'العشرون', 'الحادي والعشرون', 'الثاني والعشرون', 
-    'الثالث والعشرون', 'الرابع والعشرون', 'الخامس والعشرون', 'السادس والعشرون', 
+    'الاول', 'الثاني', 'الثالث', 'الرابع', 'الخامس', 'السادس',
+    'السابع', 'الثامن', 'التاسع', 'العاشر', 'الحادي عشر', 'الثاني عشر',
+    'الثالث عشر', 'الرابع عشر', 'الخامس عشر', 'السادس عشر', 'السابع عشر',
+    'الثامن عشر', 'التاسع عشر', 'العشرون', 'الحادي والعشرون', 'الثاني والعشرون',
+    'الثالث والعشرون', 'الرابع والعشرون', 'الخامس والعشرون', 'السادس والعشرون',
     'السابع والعشرون', 'الثامن والعشرون', 'التاسع والعشرون', 'الثلاثون',
   ];
 
@@ -86,14 +86,7 @@ class SurahListPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SurahPage(surahIndex: entry.key),
-                          ),
-                        );
-                      },
+                      onTap: () => onSurahTap(entry.key),
                     ),
                   ),
                 ],
