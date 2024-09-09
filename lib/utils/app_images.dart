@@ -14,6 +14,10 @@ class Assets {
   /// assets/images/azkar.png
   static const String imagesAzkar = "assets/images/azkar.png";
 
+  /// Assets for imagesBackward
+  /// assets/images/backward.svg
+  static const String imagesBackward = "assets/images/backward.svg";
+
   /// Assets for imagesBook
   /// assets/images/book.svg
   static const String imagesBook = "assets/images/book.svg";
@@ -22,6 +26,14 @@ class Assets {
   /// assets/images/chio5.jpg
   static const String imagesChio5 = "assets/images/chio5.jpg";
 
+  /// Assets for imagesDocumentDownload
+  /// assets/images/document-download.svg
+  static const String imagesDocumentDownload = "assets/images/document-download.svg";
+
+  /// Assets for imagesForward
+  /// assets/images/forward.svg
+  static const String imagesForward = "assets/images/forward.svg";
+
   /// Assets for imagesHalf
   /// assets/images/half.png
   static const String imagesHalf = "assets/images/half.png";
@@ -29,6 +41,10 @@ class Assets {
   /// Assets for imagesHand
   /// assets/images/hand.svg
   static const String imagesHand = "assets/images/hand.svg";
+
+  /// Assets for imagesHeart
+  /// assets/images/heart.svg
+  static const String imagesHeart = "assets/images/heart.svg";
 
   /// Assets for imagesHizp
   /// assets/images/hizp.png
@@ -50,6 +66,10 @@ class Assets {
   /// assets/images/muslim_prayer.png
   static const String imagesMuslimPrayer = "assets/images/muslim_prayer.png";
 
+  /// Assets for imagesNext
+  /// assets/images/next.svg
+  static const String imagesNext = "assets/images/next.svg";
+
   /// Assets for imagesNextPrayer
   /// assets/images/next_prayer.png
   static const String imagesNextPrayer = "assets/images/next_prayer.png";
@@ -57,6 +77,14 @@ class Assets {
   /// Assets for imagesPage
   /// assets/images/page.svg
   static const String imagesPage = "assets/images/page.svg";
+
+  /// Assets for imagesPause
+  /// assets/images/pause.svg
+  static const String imagesPause = "assets/images/pause.svg";
+
+  /// Assets for imagesPrevious
+  /// assets/images/previous.svg
+  static const String imagesPrevious = "assets/images/previous.svg";
 
   /// Assets for imagesQuran
   /// assets/images/quran.png
@@ -101,6 +129,14 @@ class Assets {
   /// Assets for imagesSearch
   /// assets/images/Search.svg
   static const String imagesSearch = "assets/images/Search.svg";
+
+  /// Assets for imagesSearchNormal
+  /// assets/images/search-normal.svg
+  static const String imagesSearchNormal = "assets/images/search-normal.svg";
+
+  /// Assets for imagesShare
+  /// assets/images/share.svg
+  static const String imagesShare = "assets/images/share.svg";
 
   /// Assets for imagesVector
   /// assets/images/Vector.svg

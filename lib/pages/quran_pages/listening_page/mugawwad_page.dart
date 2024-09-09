@@ -8,13 +8,15 @@ class MugawwadPage extends StatelessWidget {
 
   final List<String> recitersURL = [
     'abdul_baset',
+    'siddiq_al-minshawi',
   ];
 
   final List<String> reciters = [
     'عبد الباسط عبد الصمد',
+    'صديق المنشاوي',
   ];
   String getAudioUrl(int reciterIndex, String surahNumber) {
-    return 'https://download.quranicaudio.com/qdc/${recitersURL[reciterIndex]}/mugawwad/$surahNumber.mp3';
+    return 'https://download.quranicaudio.com/qdc/${recitersURL[reciterIndex]}/mujawwad/$surahNumber.mp3';
   }
 
   @override
