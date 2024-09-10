@@ -1,9 +1,11 @@
+import 'dart:developer';
 import 'package:azkar_app/constants/colors.dart';
 import 'package:azkar_app/pages/quran_pages/quran_text_page.dart';
 import 'package:azkar_app/utils/app_images.dart';
 import 'package:flutter/material.dart';
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:quran/quran.dart' as quran;
+import 'package:audioplayers/audioplayers.dart'; // Import audioplayers package
 
 class SurahListeningItem extends StatefulWidget {
   final int surahIndex;
@@ -26,12 +28,50 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
   bool isPlaying = false;
   Duration totalDuration = Duration.zero;
   Duration currentDuration = Duration.zero;
+  final AudioPlayer _audioPlayer = AudioPlayer(); // Instantiate AudioPlayer
 
-  void togglePlayPause() {
+  @override
+  void initState() {
+    super.initState();
+
+    // Set up listeners for audio player
+    _audioPlayer.onDurationChanged.listen((Duration duration) {
+      setState(() {
+        totalDuration = duration;
+      });
+    });
+
+    _audioPlayer.onPositionChanged.listen((Duration position) {
+      setState(() {
+        currentDuration = position;
+      });
+    });
+
+    _audioPlayer.onPlayerComplete.listen((event) {
+      setState(() {
+        isPlaying = false;
+        currentDuration = Duration.zero; // Reset when complete
+      });
+    });
+  }
+
+  void togglePlayPause() async {
+    if (isPlaying) {
+      await _audioPlayer.pause(); // Pause audio
+    } else {
+      await _audioPlayer
+          .play(UrlSource(widget.audioUrl)); // Play audio from URL
+    }
+
     setState(() {
       isPlaying = !isPlaying;
     });
-    // Add play/pause logic here
+  }
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose(); // Dispose of audio player when widget is disposed
+    super.dispose();
   }
 
   @override
@@ -46,6 +86,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
             if (widget.onSurahTap != null) {
               widget.onSurahTap!(widget.surahIndex);
             }
+            log(widget.audioUrl);
           },
           child: Container(
             height:
@@ -105,7 +146,8 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                               currentDuration =
                                   Duration(seconds: value.toInt());
                             });
-                            // Implement seek logic
+                            _audioPlayer
+                                .seek(currentDuration); // Implement seek logic
                           },
                         ),
                         Row(

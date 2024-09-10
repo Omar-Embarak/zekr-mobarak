@@ -1,40 +1,76 @@
-import 'package:azkar_app/pages/quran_pages/quran_text_page.dart';
-import 'package:azkar_app/utils/app_images.dart';
+import 'package:azkar_app/model/quran_models/reciters_model.dart';
 import 'package:flutter/material.dart';
 import 'package:azkar_app/constants/colors.dart';
 import 'package:azkar_app/utils/app_style.dart';
-import 'package:quran/quran.dart' as quran;
-
+import '../../../widgets/reciturs_item.dart';
 import 'list_surahs_listening_page.dart';
 
 class MurattalPage extends StatelessWidget {
   MurattalPage({super.key});
-
-  final List<String> recitersURL = [
-    'abdul_baset',
-    'abdurrahmaan_as_sudais',
-    'abu_bakr_shatri',
-    'hani_ar_rifai',
-    'khalil_al_husary',
-    'mishari_al_afasy',
-    'siddiq_minshawi',
-    'saud_ash-shuraym',
+  final List<RecitersModel> reciters = [
+    RecitersModel(
+      url: 'https://download.quranicaudio.com/qdc/abdul_baset/murattal/',
+      name: 'عبد الباسط عبد الصمد',
+      zeroPaddingSurahNumber: false,
+    ),
+    RecitersModel(
+      url:
+          'https://download.quranicaudio.com/qdc/abdurrahmaan_as_sudais/murattal/',
+      name: 'عبدالرحمن السديس',
+      zeroPaddingSurahNumber: false,
+    ),
+    RecitersModel(
+      url: 'https://download.quranicaudio.com/qdc/abu_bakr_shatri/murattal/',
+      name: 'ابو بكر الشاطري',
+      zeroPaddingSurahNumber: false,
+    ),
+    RecitersModel(
+      url: 'https://download.quranicaudio.com/qdc/hani_ar_rifai/murattal/',
+      name: 'هاني الرفاعي',
+      zeroPaddingSurahNumber: false,
+    ),
+    RecitersModel(
+      url: 'https://download.quranicaudio.com/qdc/khalil_al_husary/murattal/',
+      name: 'خليل الحصري',
+      zeroPaddingSurahNumber: false,
+    ),
+    RecitersModel(
+      url: 'https://download.quranicaudio.com/qdc/khalil_al_husary/muallim/',
+      name: 'خليل الحصري - المعلم',
+      zeroPaddingSurahNumber: false,
+    ),
+    RecitersModel(
+      url: 'https://download.quranicaudio.com/qdc/mishari_al_afasy/murattal/',
+      name: 'مشاري العفاسي',
+      zeroPaddingSurahNumber: false,
+    ),
+    RecitersModel(
+      url: 'https://download.quranicaudio.com/qdc/siddiq_minshawi/murattal/',
+      name: 'صديق المنشاوي',
+      zeroPaddingSurahNumber: false,
+    ),
+    RecitersModel(
+      url: 'https://download.quranicaudio.com/qdc/saud_ash-shuraym/murattal/',
+      name: 'سعود الشريم',
+      zeroPaddingSurahNumber: true,
+    ),
+    RecitersModel(
+      url: 'https://download.quranicaudio.com/quran/abdul_muhsin_alqasim/',
+      name: 'عبدالمحسن القاسم',
+      zeroPaddingSurahNumber: true,
+    ),
+    RecitersModel(
+      url:
+          'https://download.quranicaudio.com/quran/sa3d_al-ghaamidi/complete//',
+      name: 'سعد الغامدي',
+      zeroPaddingSurahNumber: true,
+    ),
+    RecitersModel(
+      url: 'https://download.quranicaudio.com/quran/thubaity//',
+      name: 'عبدالباري بن عواض الثبيتي',
+      zeroPaddingSurahNumber: true,
+    ),
   ];
-
-  final List<String> reciters = [
-    'عبد الباسط عبد الصمد',
-    'عبدالرحمن السديس',
-    'ابو بكر الشاطري',
-    'هاني الرفاعي',
-    'خليل الحصري',
-    'مشاري العفاسي',
-    'صديق المنشاوي',
-    'سعود الشريم',
-  ];
-
-  String getAudioUrl(int reciterIndex, String surahNumber) {
-    return 'https://download.quranicaudio.com/qdc/${recitersURL[reciterIndex]}/murattal/$surahNumber.mp3';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,36 +92,16 @@ class MurattalPage extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => ListSurahsListeningPage(
-                    audioBaseUrl:
-                        'https://download.quranicaudio.com/qdc/${recitersURL[index]}/murattal/',
-                    reciterName: reciters[index],
+                    audioBaseUrl: reciters[index].url,
+                    reciterName: reciters[index].name,
+                    zeroPadding: reciters[index].zeroPaddingSurahNumber,
                   ),
                 ),
               );
             },
-            child: Container(
-              padding: const EdgeInsets.all(12),
-              width: double.infinity,
-              height: 53,
-              margin: const EdgeInsets.only(top: 8, right: 8, left: 8),
-              decoration: BoxDecoration(
-                color: AppColors.kSecondaryColor,
-                borderRadius: BorderRadius.circular(7),
-              ),
-              child: Row(
-                children: [
-                  Text(
-                    reciters[index],
-                    style: AppStyles.styleCairoMedium15(context)
-                        .copyWith(color: Colors.white),
-                  ),
-                  const Spacer(),
-                  const Icon(
-                    Icons.arrow_forward_ios_outlined,
-                    color: Colors.white,
-                  ),
-                ],
-              ),
+            child: RecitursItem(
+              reciter: reciters[index].name,
+              index: index,
             ),
           );
         },
