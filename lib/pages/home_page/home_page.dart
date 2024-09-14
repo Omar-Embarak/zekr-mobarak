@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jhijri/jHijri.dart';
@@ -6,6 +5,7 @@ import '../../constants/colors.dart';
 import '../../widgets/bottom_sheet.dart';
 import '../../widgets/main_category_widget.dart';
 import '../azkar_pages/azkar_main_page.dart';
+import '../chio5_pages/chio5_page.dart';
 import '../pray_page/pray_page.dart';
 import '../ruqiya_pages/ruqiya_page.dart';
 
@@ -119,11 +119,14 @@ class HomePages extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const DroosPage()));
+                    },
                     child: MainCategoryWidget(
                       width: screenWidth,
                       categoryImg: "assets/images/chio5.jpg",
-                      categoryTitle: "الشيوخ",
+                      categoryTitle: "دروس دينية",
                     ),
                   ),
                 ],
@@ -134,5 +137,4 @@ class HomePages extends StatelessWidget {
       ),
     );
   }
-
-  }
+}

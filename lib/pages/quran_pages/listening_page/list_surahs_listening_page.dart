@@ -77,6 +77,8 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
                 );
               },
             ),
+          ),SizedBox(
+            height:18,
           ),
         ],
       ),

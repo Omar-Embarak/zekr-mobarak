@@ -43,7 +43,6 @@ class MugawwadPage extends StatelessWidget {
             },
             child: RecitursItem(
               reciter: reciters[index].name,
-              index: index,
             ),
           );
         },

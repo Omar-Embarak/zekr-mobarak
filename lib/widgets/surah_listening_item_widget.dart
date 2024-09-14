@@ -74,6 +74,32 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
     super.dispose();
   }
 
+  void adjustSpeed(double speed) async {
+    await _audioPlayer.setPlaybackRate(speed); // Adjust speed
+  }
+
+  void forward() {
+    adjustSpeed(1.25); // Speed up audio by 0.25x
+  }
+
+  void backward() {
+    adjustSpeed(0.75); // Slow down audio by 0.25x
+  }
+
+  void playNextSurah() {
+    final nextSurahIndex = widget.surahIndex + 1;
+    if (nextSurahIndex < 114 && widget.onSurahTap != null) {
+      widget.onSurahTap!(nextSurahIndex); // Callback to parent widget
+    }
+  }
+
+  void playPreviousSurah() {
+    final previousSurahIndex = widget.surahIndex - 1;
+    if (previousSurahIndex >= 0 && widget.onSurahTap != null) {
+      widget.onSurahTap!(previousSurahIndex);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -153,19 +179,31 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            const IconConstrain(
-                                height: 24, imagePath: Assets.imagesNext),
-                            const IconConstrain(
-                                height: 24, imagePath: Assets.imagesForward),
+                            GestureDetector(
+                              onTap: playNextSurah,
+                              child: const IconConstrain(
+                                  height: 24, imagePath: Assets.imagesNext),
+                            ),
+                            GestureDetector(
+                              onTap: forward,
+                              child: const IconConstrain(
+                                  height: 24, imagePath: Assets.imagesForward),
+                            ),
                             IconButton(
                               icon: Icon(
                                   isPlaying ? Icons.pause : Icons.play_arrow),
                               onPressed: togglePlayPause,
                             ),
-                            const IconConstrain(
-                                height: 24, imagePath: Assets.imagesBackward),
-                            const IconConstrain(
-                                height: 24, imagePath: Assets.imagesPrevious),
+                            GestureDetector(
+                              onTap: backward,
+                              child: const IconConstrain(
+                                  height: 24, imagePath: Assets.imagesBackward),
+                            ),
+                            GestureDetector(
+                              onTap: playPreviousSurah,
+                              child: const IconConstrain(
+                                  height: 24, imagePath: Assets.imagesPrevious),
+                            ),
                           ],
                         ),
                       ],

@@ -7,9 +7,7 @@ class RecitursItem extends StatelessWidget {
   const RecitursItem({
     super.key,
     required this.reciter,
-    required this.index,
   });
-  final int index;
   final String reciter;
 
   @override

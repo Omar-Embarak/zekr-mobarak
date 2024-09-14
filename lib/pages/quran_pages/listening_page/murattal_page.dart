@@ -70,6 +70,25 @@ class MurattalPage extends StatelessWidget {
       name: 'عبدالباري بن عواض الثبيتي',
       zeroPaddingSurahNumber: true,
     ),
+    RecitersModel(
+      url: 'https://download.quranicaudio.com/quran/sahl_yaaseen/',
+      name: 'سهل ياسين',
+      zeroPaddingSurahNumber: true,
+    ),
+    RecitersModel(
+      url: 'https://download.quranicaudio.com/quran/salaah_bukhaatir//',
+      name: 'صلاح بوخاطر',
+      zeroPaddingSurahNumber: true,
+    ), RecitersModel(
+      url: 'https://download.quranicaudio.com/quran/ahmed_ibn_3ali_al-3ajamy//',
+      name: 'أحمد بن علي العجمي',
+      zeroPaddingSurahNumber: true,
+    ),
+ RecitersModel(
+      url: 'https://download.quranicaudio.com/quran/sodais_and_shuraim//',
+      name: 'السديس والشريم',
+      zeroPaddingSurahNumber: true,
+    ),
   ];
 
   @override
@@ -101,7 +120,6 @@ class MurattalPage extends StatelessWidget {
             },
             child: RecitursItem(
               reciter: reciters[index].name,
-              index: index,
             ),
           );
         },
