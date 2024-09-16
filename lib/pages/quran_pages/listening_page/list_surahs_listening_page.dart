@@ -1,20 +1,21 @@
-import 'package:azkar_app/pages/quran_pages/quran_text_page.dart';
 import 'package:azkar_app/utils/app_images.dart';
 import 'package:flutter/material.dart';
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:quran/quran.dart' as quran;
-
 import '../../../constants/colors.dart';
+import '../../../widgets/icon_constrain_widget.dart';
 import '../../../widgets/surah_listening_item_widget.dart';
 
 class ListSurahsListeningPage extends StatefulWidget {
   final String audioBaseUrl;
   final String reciterName;
   final bool zeroPadding;
+
   const ListSurahsListeningPage({
     super.key,
     required this.audioBaseUrl,
-    required this.reciterName, required this.zeroPadding,
+    required this.reciterName,
+    required this.zeroPadding,
   });
 
   @override
@@ -62,23 +63,25 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
               ],
             ),
           ),
-          // Scrollable ListView
+
+          // Scrollable list of surahs
           Expanded(
             child: ListView.builder(
+              padding: const EdgeInsets.only(bottom: 20),
               itemCount: 114,
-              itemBuilder: (BuildContext context, int index) {
-                final surahNumber =widget.zeroPadding?  (index + 1) .toString().padLeft(3, '0'):(index + 1);
-              
-                final audioUrl = '${widget.audioBaseUrl}$surahNumber.mp3';
+              itemBuilder: (context, index) {
+                final audioUrl = widget.zeroPadding
+                    ? '${widget.audioBaseUrl}${(index + 1).toString().padLeft(3, '0')}.mp3'
+                    : '${widget.audioBaseUrl}${index + 1}.mp3';
+
                 return SurahListeningItem(
+                  reciterName: widget.reciterName,
                   surahIndex: index,
                   audioUrl: audioUrl,
                   onSurahTap: updateTappedSurahName,
                 );
               },
             ),
-          ),SizedBox(
-            height:18,
           ),
         ],
       ),

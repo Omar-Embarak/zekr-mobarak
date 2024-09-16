@@ -5,6 +5,7 @@ import '../../../utils/app_style.dart';
 import '../../../widgets/reciturs_item.dart';
 import 'list_surahs_listening_page.dart';
 
+// ignore: must_be_immutable
 class MugawwadPage extends StatelessWidget {
   MugawwadPage({super.key});
   List<RecitersModel> reciters = [

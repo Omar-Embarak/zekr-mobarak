@@ -3,6 +3,7 @@ import 'package:azkar_app/pages/quran_pages/listening_page/hadr_page.dart';
 import 'package:azkar_app/pages/quran_pages/listening_page/mugawwad_page.dart';
 import 'package:flutter/material.dart';
 import '../../../widgets/listening_button.dart';
+import 'favorite_page.dart';
 import 'murattal_page.dart';
 
 class ListeningPage extends StatelessWidget {
@@ -45,7 +46,15 @@ class ListeningPage extends StatelessWidget {
             ListeningButtons(
               buttonText: 'حدر',
               builder: (context) => HadrPage(),
-              color: const Color.fromARGB(255, 0, 141, 216),
+              color: const Color.fromARGB(255, 0, 216, 58),
+            ),
+            const Spacer(
+              flex: 1,
+            ),
+            ListeningButtons(
+              buttonText: 'المفضلة',
+              builder: (context) => const FavoritePage(),
+              color: const Color.fromARGB(255, 0, 194, 216),
             ),
             const Spacer(
               flex: 6,

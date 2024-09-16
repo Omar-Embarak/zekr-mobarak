@@ -4,6 +4,7 @@ import 'package:quran/quran.dart' as quran;
 import '../../constants/colors.dart';
 import '../../utils/app_style.dart';
 import '../../utils/app_images.dart';
+import '../../widgets/icon_constrain_widget.dart';
 
 class SurahPage extends StatefulWidget {
   const SurahPage({super.key, required this.surahIndex});
@@ -309,31 +310,3 @@ class QuranContainerButtons extends StatelessWidget {
   }
 }
 
-class IconConstrain extends StatelessWidget {
-  const IconConstrain({
-    super.key,
-    required this.height,
-    required this.imagePath,
-  });
-
-  final double height;
-  final String imagePath;
-
-  @override
-  Widget build(BuildContext context) {
-    return Flexible(
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxHeight: height),
-        child: AspectRatio(
-          aspectRatio: 1,
-          child: Center(
-            child: SvgPicture.asset(
-              imagePath,
-              placeholderBuilder: (context) => const Icon(Icons.error),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
