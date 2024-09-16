@@ -46,6 +46,10 @@ class Assets {
   /// assets/images/heart.svg
   static const String imagesHeart = "assets/images/heart.svg";
 
+  /// Assets for imagesHeartFilled
+  /// assets/images/heart_filled.svg
+  static const String imagesHeartFilled = "assets/images/heart_filled.svg";
+
   /// Assets for imagesHizp
   /// assets/images/hizp.png
   static const String imagesHizp = "assets/images/hizp.png";

@@ -17,7 +17,8 @@ class SurahListeningItem extends StatefulWidget {
     super.key,
     required this.surahIndex,
     required this.audioUrl,
-    this.onSurahTap, required this.reciterName,
+    this.onSurahTap,
+    required this.reciterName,
   });
 
   @override
@@ -110,7 +111,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
         color: Colors.white,
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           buildSurahRow(),
           if (isExpanded) buildExpandedContent(),
@@ -124,14 +125,17 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       children: [
         const SizedBox(width: 10),
         GestureDetector(
-          onTap: toggleFavorite, // Call toggleFavorite on tap
-          child: Icon(
-            Icons.favorite,
-            color: isFavorite
-                ? Colors.red
-                : null, // Change color based on favorite status
-            size: 30,
-          ),
+          onTap: toggleFavorite, 
+          child: isFavorite
+              ? const Icon(
+                  Icons.favorite,
+                  color: Colors.red,
+                  size: 30,
+                )
+              : const IconConstrain(
+                  height: 30,
+                  imagePath: Assets.imagesHeart,
+                ),
         ),
         const SizedBox(width: 10),
         Text(
