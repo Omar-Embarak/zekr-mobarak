@@ -1,4 +1,5 @@
 import 'package:azkar_app/constants.dart';
+import 'package:azkar_app/cubit/add_fav_surahcubit/add_fav_surah_item_cubit.dart';
 import 'package:azkar_app/cubit/ruqiya_cubit/ruqiya_cubit.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,6 @@ import 'cubit/praying_cubit/praying_cubit.dart';
 import 'model/quran_models/fav_model.dart';
 import 'pages/home_page/home_page.dart';
 import 'pages/quran_pages/book_mark_provider.dart';
-import 'pages/quran_pages/surah_list_page.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
@@ -27,7 +27,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-  
+        BlocProvider(
+          create: (context) => AddFavSurahItemCubit(),
+        ),
         BlocProvider(
           create: (context) => AzkarCubit(),
         ),
