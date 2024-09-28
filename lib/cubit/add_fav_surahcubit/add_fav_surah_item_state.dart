@@ -8,6 +8,13 @@ sealed class AddFavSurahItemState extends Equatable {
 }
 
 final class AddFavSurahItemInitial extends AddFavSurahItemState {}
+
 final class AddFavSurahItemLoading extends AddFavSurahItemState {}
+
 final class AddFavSurahItemSuccess extends AddFavSurahItemState {}
-final class AddFavSurahItemFailure extends AddFavSurahItemState {}
+
+final class AddFavSurahItemFailure extends AddFavSurahItemState {
+  final String errMessage;
+
+  const AddFavSurahItemFailure(this.errMessage);
+}
