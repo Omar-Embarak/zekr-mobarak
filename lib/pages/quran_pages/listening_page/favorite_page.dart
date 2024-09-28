@@ -3,18 +3,7 @@ import 'package:azkar_app/widgets/surah_listening_item_widget.dart';
 import 'package:flutter/material.dart';
 import '../../../utils/app_style.dart';
 
-class FavModel {
-  String surahName;
-  String reciterName;
-  String url;
-  FavModel({
-    required this.url,
-    required this.reciterName,
-    required this.surahName,
-  });
-}
 
-List<FavModel> favItems = [];
 
 class FavoritePage extends StatelessWidget {
   const FavoritePage({super.key});
@@ -31,7 +20,7 @@ class FavoritePage extends StatelessWidget {
       ),
       backgroundColor: AppColors.kPrimaryColor,
       body: ListView.builder(
-        itemCount: favItems.length,
+        // itemCount: favItems.length,
         itemBuilder: (context, index) {
           // Use the SurahListeningItem widget to display the favorite item
           return Column(
@@ -39,16 +28,16 @@ class FavoritePage extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              Text(favItems[index].reciterName,
-                  style: AppStyles.styleRajdhaniBold20(context).copyWith(
-                    color: Colors.white,
-                  )),
-              SurahListeningItem(
-                surahIndex:
-                    index, // or map this to an actual Surah index if needed
-                audioUrl: favItems[index].url,
-                reciterName: favItems[index].reciterName,
-              ),
+              // Text(favItems[index].reciterName,
+              //     style: AppStyles.styleRajdhaniBold20(context).copyWith(
+              //       color: Colors.white,
+              //     )),
+              // SurahListeningItem(
+              //   surahIndex:
+              //       index, // or map this to an actual Surah index if needed
+              //   audioUrl: favItems[index].url,
+              //   reciterName: favItems[index].reciterName,
+              // ),
             ],
           );
         },
