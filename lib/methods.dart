@@ -77,7 +77,7 @@ void playNextSurah(
   Function(bool) setIsPlaying
 ) async {
   final nextSurahIndex = surahIndex + 1;
-  if (nextSurahIndex < 114 && onSurahTap != null) {
+  if (nextSurahIndex < 114) {
     onSurahTap(nextSurahIndex);
     await audioPlayer.pause();
     final nextAudioUrl = audioUrl.replaceFirst(
@@ -91,7 +91,7 @@ void playNextSurah(
 
 void playPreviousSurah(int surahIndex, Function(int) onSurahTap) {
   final previousSurahIndex = surahIndex - 1;
-  if (previousSurahIndex >= 0 && onSurahTap != null) {
+  if (previousSurahIndex >= 0) {
     onSurahTap(previousSurahIndex);
   }
 }

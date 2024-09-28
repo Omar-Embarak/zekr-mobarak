@@ -1,6 +1,6 @@
 import 'package:azkar_app/model/quran_models/reciters_model.dart';
 import 'package:flutter/material.dart';
-import '../../../constants/colors.dart';
+import '../../../constants.dart';
 import '../../../utils/app_style.dart';
 import '../../../widgets/reciturs_item.dart';
 import 'list_surahs_listening_page.dart';

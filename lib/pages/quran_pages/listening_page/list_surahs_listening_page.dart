@@ -2,7 +2,7 @@ import 'package:azkar_app/utils/app_images.dart';
 import 'package:flutter/material.dart';
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:quran/quran.dart' as quran;
-import '../../../constants/colors.dart';
+import '../../../constants.dart';
 import '../../../widgets/icon_constrain_widget.dart';
 import '../../../widgets/surah_listening_item_widget.dart';
 

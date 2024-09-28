@@ -1,7 +1,7 @@
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:quran/quran.dart' as quran;
-import '../../constants/colors.dart';
+import '../../constants.dart';
 import 'quran_text_page.dart';
 
 class SurahListPage extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../constants/colors.dart';
+import '../../constants.dart';
 
 class ZekrPage extends StatelessWidget {
   final String zekerCategory;

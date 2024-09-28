@@ -1,4 +1,4 @@
-import 'package:azkar_app/constants/colors.dart';
+import 'package:azkar_app/constants.dart';
 import 'package:azkar_app/widgets/surah_listening_item_widget.dart';
 import 'package:flutter/material.dart';
 import '../../../utils/app_style.dart';

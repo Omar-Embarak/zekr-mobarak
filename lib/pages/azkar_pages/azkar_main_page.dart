@@ -2,7 +2,7 @@ import 'package:azkar_app/cubit/azkar_cubit/azkar_cubit.dart';
 import 'package:azkar_app/cubit/azkar_cubit/azkar_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../constants/colors.dart';
+import '../../constants.dart';
 import '../../utils/app_images.dart';
 import 'zekr_page.dart';
 

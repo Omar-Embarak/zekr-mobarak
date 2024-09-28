@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_qiblah/flutter_qiblah.dart';
 import 'package:geolocator/geolocator.dart';
 
-import '../../constants/colors.dart';
+import '../../constants.dart';
 import 'qiplah_compass.dart';
 
 class ParyPage extends StatefulWidget {

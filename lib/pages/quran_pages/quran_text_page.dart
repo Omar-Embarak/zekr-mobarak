@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:quran/quran.dart' as quran;
-import '../../constants/colors.dart';
+import '../../constants.dart';
 import '../../utils/app_style.dart';
 import '../../utils/app_images.dart';
 import '../../widgets/icon_constrain_widget.dart';

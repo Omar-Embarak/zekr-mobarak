@@ -18,6 +18,8 @@ dependencies:
     sdk: flutter
   flutter_bloc: ^8.1.4
   flutter_localization: ^0.2.0
+  flutter_localizations:
+    sdk: flutter
   flutter_qiblah: ^3.0.3
   flutter_svg: ^2.0.10+1
   flutter_tts: ^4.0.2

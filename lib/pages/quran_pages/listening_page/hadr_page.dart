@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../constants/colors.dart';
+import '../../../constants.dart';
 import '../../../utils/app_style.dart';
 import '../../../widgets/surahs_list_widget.dart';
 

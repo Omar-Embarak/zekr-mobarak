@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../constants/colors.dart';
+import '../constants.dart';
 import '../pages/quran_pages/listening_page/main_listening_page.dart';
 import '../pages/quran_pages/quran_reading_main_page.dart';
 import '../utils/app_images.dart';

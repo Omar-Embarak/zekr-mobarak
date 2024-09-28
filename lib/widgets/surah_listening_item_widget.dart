@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:quran/quran.dart' as quran;
-import 'package:azkar_app/constants/colors.dart';
+import 'package:azkar_app/constants.dart';
 import 'package:azkar_app/utils/app_images.dart';
 import '../methods.dart';
 import '../pages/quran_pages/listening_page/favorite_page.dart';
@@ -69,15 +69,15 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       isFavorite = !isFavorite;
       if (isFavorite) {
         // Add surah to favorite list
-        favItems.add(FavModel(
-          url: widget.audioUrl,
-          reciterName: widget.reciterName, // replace with actual reciter name
-          surahName: quran.getSurahNameArabic(widget.surahIndex + 1),
-        ));
+        // favItems.add(FavModel(
+        //   url: widget.audioUrl,
+        //   reciterName: widget.reciterName, // replace with actual reciter name
+        //   surahName: quran.getSurahNameArabic(widget.surahIndex + 1),
+        // ));
       } else {
         // Remove from favorite list
-        favItems.removeWhere((item) =>
-            item.surahName == quran.getSurahNameArabic(widget.surahIndex + 1));
+        // favItems.removeWhere((item) =>
+        //     item.surahName == quran.getSurahNameArabic(widget.surahIndex + 1));
       }
     });
   }

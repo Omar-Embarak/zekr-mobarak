@@ -1,4 +1,4 @@
-import 'package:azkar_app/constants/colors.dart';
+import 'package:azkar_app/constants.dart';
 import 'package:flutter/material.dart';
 
 class MainCategoryWidget extends StatelessWidget {

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import '../../constants/colors.dart';
+import '../../constants.dart';
 import '../../widgets/reciturs_item.dart';
 
 class DroosPage extends StatefulWidget {

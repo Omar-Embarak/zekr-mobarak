@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import '../../constants/colors.dart';
+import '../../constants.dart';
 
 class RuqiyaPage extends StatefulWidget {
   const RuqiyaPage({super.key});
