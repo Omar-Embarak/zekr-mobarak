@@ -42,9 +42,26 @@ void backward(AudioPlayer audioPlayer) {
 Future<void> shareAudio(String audioUrl) async {
   Share.share(audioUrl);
 }
+ Future<void> downloadDarsAudio(
+      String audioUrl, String title, BuildContext context) async {
+    if (await requestPermission(Permission.storage)) {
+      final dir = await getExternalStorageDirectory();
+      if (dir != null) {
+        String fileName = "$title.mp3";
+        String filePath = "${dir.path}/$fileName";
+
+        Dio dio = Dio();
+        await dio.download(audioUrl, filePath);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Downloaded $fileName')),
+        );
+      }
+    }
+  }
 
 Future<void> downloadAudio(String audioUrl, int surahIndex, BuildContext context) async {
-  if (await _requestPermission(Permission.storage)) {
+  if (await requestPermission(Permission.storage)) {
     final dir = await getExternalStorageDirectory();
     if (dir != null) {
       String fileName = "surah_${surahIndex + 1}.mp3";
@@ -60,7 +77,7 @@ Future<void> downloadAudio(String audioUrl, int surahIndex, BuildContext context
   }
 }
 
-Future<bool> _requestPermission(Permission permission) async {
+Future<bool> requestPermission(Permission permission) async {
   if (await permission.isGranted) {
     return true;
   } else {

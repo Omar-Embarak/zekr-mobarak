@@ -1,18 +1,21 @@
-import 'package:azkar_app/model/quran_models/reciters_model.dart';
 import 'package:flutter/material.dart';
+
 import '../../../constants.dart';
+import '../../../model/quran_models/reciters_model.dart';
 import '../../../utils/app_style.dart';
 import '../../../widgets/reciturs_item.dart';
 import 'list_surahs_listening_page.dart';
 
-// ignore: must_be_immutable
-class MugawwadPage extends StatelessWidget {
-  const MugawwadPage({super.key});
-  final List<RecitersModel> reciters =const [
-    RecitersModel(
-        url: 'https://download.quranicaudio.com/qdc/abdul_baset/mujawwad/',
-        name: 'عبد الباسط عبد الصمد',
-        zeroPaddingSurahNumber: false),
+class AbiAlharethPage extends StatelessWidget {
+  const AbiAlharethPage({super.key});
+
+  final List<RecitersModel> reciters = const[
+ RecitersModel(
+      url:
+          'https://download.quranicaudio.com/quran/abdurrashid_sufi_abi_al7arith//',
+      name: 'عبدالرشيد صوفي برواية ابي الحارث  ',
+      zeroPaddingSurahNumber: true,
+    ),
   ];
 
   @override
@@ -22,7 +25,7 @@ class MugawwadPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppColors.kSecondaryColor,
         title: Text(
-          'القران المجود',
+          'رواية أبي الحارث',
           style: AppStyles.styleCairoBold20(context),
         ),
       ),

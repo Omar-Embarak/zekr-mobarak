@@ -20,99 +20,105 @@ class _RuqiyaPageState extends State<RuqiyaPage> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.kPrimaryColor,
-      appBar: AppBar(
-        backgroundColor: AppColors.kSecondaryColor,
-        centerTitle: true,
-        title: const Text(
-          "الرقية الشرعية",
-          style: TextStyle(color: Colors.white),
+    return BlocProvider(
+      create: (context) => RuqiyaCubit()
+        ..loadRuqiya(), // Ensure cubit is provided and loadRuqiya is called
+      child: Scaffold(
+        backgroundColor: AppColors.kPrimaryColor,
+        appBar: AppBar(
+          backgroundColor: AppColors.kSecondaryColor,
+          centerTitle: true,
+          title: const Text(
+            "الرقية الشرعية",
+            style: TextStyle(color: Colors.white),
+          ),
         ),
-      ),
-      body: BlocBuilder<RuqiyaCubit, RuqiyaState>(
-        builder: ((context, state) {
-          if (state is RuqiyaLoading) {
-            return const Center(
-              child: CircularProgressIndicator(color: Colors.white),
-            );
-          } else if (state is RuqiyaLoaded) {
-            return Padding(
-              padding: const EdgeInsets.all(15),
-              child: ListView.builder(
-                itemCount: state.ruqiya.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: AppColors.kSecondaryColor,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(15),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              state.ruqiya[index].text!,
-                              textAlign: TextAlign.justify,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                height: 2,
-                                fontSize: 20,
+        body: BlocBuilder<RuqiyaCubit, RuqiyaState>(
+          builder: ((context, state) {
+            if (state is RuqiyaLoading) {
+              return const Center(
+                child: CircularProgressIndicator(color: Colors.white),
+              );
+            } else if (state is RuqiyaLoaded) {
+              return Padding(
+                padding: const EdgeInsets.all(15),
+                child: ListView.builder(
+                  itemCount: state.ruqiya.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: AppColors.kSecondaryColor,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(15),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                state.ruqiya[index].text!,
+                                textAlign: TextAlign.justify,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  height: 2,
+                                  fontSize: 20,
+                                ),
                               ),
-                            ),
-                            const Divider(
-                              color: AppColors.kPrimaryColor,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  state.ruqiya[index].info!,
-                                  textAlign: TextAlign.justify,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    height: 2,
-                                    fontSize: 20,
+                              const Divider(
+                                color: AppColors.kPrimaryColor,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    state.ruqiya[index].info!,
+                                    textAlign: TextAlign.justify,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      height: 2,
+                                      fontSize: 20,
+                                    ),
                                   ),
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    Clipboard.setData(ClipboardData(
-                                        text: state.ruqiya[index].text!));
-                                    Fluttertoast.showToast(
-                                        msg: "تم النسخ بنجاح للحافظة");
-                                  },
-                                  icon: const Icon(
-                                    Icons.copy,
-                                    color: Colors.white,
+                                  IconButton(
+                                    onPressed: () {
+                                      Clipboard.setData(ClipboardData(
+                                          text: state.ruqiya[index].text!));
+                                      Fluttertoast.showToast(
+                                          msg: "تم النسخ بنجاح للحافظة");
+                                    },
+                                    icon: const Icon(
+                                      Icons.copy,
+                                      color: Colors.white,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
-              ),
-            );
-          } else if (state is RuqiyaError) {
-            return Center(
-              child: Text(
-                state.error,
-                style: const TextStyle(color: Colors.white),
-              ),
-            );
-          } else {
-            return Container();
-          }
-        }),
+                    );
+                  },
+                ),
+              );
+            } else if (state is RuqiyaError) {
+              return Center(
+                child: Text(
+                  state.error,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              );
+            } else {
+              return Container();
+            }
+          }),
+        ),
       ),
     );
   }

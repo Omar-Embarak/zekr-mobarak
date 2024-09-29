@@ -6,17 +6,13 @@ import '../../../widgets/reciturs_item.dart';
 import 'list_surahs_listening_page.dart';
 
 class MurattalPage extends StatelessWidget {
-  MurattalPage({super.key});
-  final List<RecitersModel> reciters = <RecitersModel>[
+  const MurattalPage({super.key});
+
+  final List<RecitersModel> reciters = const [
     RecitersModel(
       url: 'https://download.quranicaudio.com/qdc/abdul_baset/murattal/',
       name: 'عبد الباسط عبد الصمد',
       zeroPaddingSurahNumber: false,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/abdulbaset_warsh//',
-      name: 'عبد الباسط عبد الصمد برواية ورش ',
-      zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
       url:
@@ -28,12 +24,6 @@ class MurattalPage extends StatelessWidget {
       url: 'https://download.quranicaudio.com/qdc/abu_bakr_shatri/murattal/',
       name: 'ابو بكر الشاطري',
       zeroPaddingSurahNumber: false,
-    ),
-    RecitersModel(
-      url:
-          'https://download.quranicaudio.com/quran/abu_bakr_ash-shatri_tarawee7//',
-      name: 'أبو بكر الشاطري - تراويح  ',
-      zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
       url: 'https://download.quranicaudio.com/qdc/hani_ar_rifai/murattal/',
@@ -49,28 +39,6 @@ class MurattalPage extends StatelessWidget {
       url:
           'https://download.quranicaudio.com/quran/mahmood_khaleel_al-husaree_iza3a//',
       name: 'محمود خليل الحصري - إذاعة  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/qdc/khalil_al_husary/muallim/',
-      name: 'خليل الحصري - المعلم',
-      zeroPaddingSurahNumber: false,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/husary_muallim//',
-      name: 'خليل الحصري - المعلم  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url:
-          'https://download.quranicaudio.com/quran/husary_muallim_kids_repeat//',
-      name: 'خليل الحصري - المعلم مع الاطفال  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url:
-          'https://download.quranicaudio.com/quran/mahmood_khaleel_al-husaree_doori//',
-      name: 'محمود خليل الحصري برواية دوري ',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
@@ -92,11 +60,6 @@ class MurattalPage extends StatelessWidget {
     RecitersModel(
       url: 'https://download.quranicaudio.com/qdc/siddiq_minshawi/murattal/',
       name: 'صديق المنشاوي',
-      zeroPaddingSurahNumber: false,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/qdc/siddiq_minshawi/kids_repeat/',
-      name: 'صديق المنشاوي - المعلم مع الاطفال  ',
       zeroPaddingSurahNumber: false,
     ),
     RecitersModel(
@@ -213,96 +176,6 @@ class MurattalPage extends StatelessWidget {
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/madinah_1419//',
-      name: 'قران المدينة 1419',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/madinah_1423//',
-      name: 'قران المدينة 1423 ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/madinah_1426//',
-      name: 'قران المدينة 1426',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/madinah_1427//',
-      name: 'قران المدينة 1427',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/madinah_1428//',
-      name: 'قران المدينة 1428',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/madinah_1429//',
-      name: 'قران المدينة 1429  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/madinah_1430//',
-      name: 'قران المدينة 1430  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/madinah_1431//',
-      name: 'قران المدينة 1431 ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/madinah_1432//',
-      name: 'قران المدينة 1432  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/madinah_1433//',
-      name: 'قران المدينة 1433  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/madinah_1434//',
-      name: 'قران المدينة 1434  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/madinah_1435//',
-      name: 'قران المدينة 1435  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/madinah_1436//',
-      name: 'قران المدينة 1436  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/madinah_1437//',
-      name: 'قران المدينة 1437  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/madinah_1439//',
-      name: 'قران المدينة 1439  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/madinah_1440//',
-      name: 'قران المدينة 1440  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/madinah_1441//',
-      name: 'قران المدينة 1441  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/madinah_1442//',
-      name: 'قران المدينة 1442  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
       url: 'https://download.quranicaudio.com/quran/mehysni//',
       name: 'محمد المحيسني',
       zeroPaddingSurahNumber: true,
@@ -318,101 +191,6 @@ class MurattalPage extends StatelessWidget {
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/makkah_1424//',
-      name: 'قران مكة 1424 ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/makkah_1425//',
-      name: 'قران مكة 1425 ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/makkah_1426//',
-      name: 'قران مكة 1426',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/makkah_1427//',
-      name: 'قران مكة 1427',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/makkah_1428//',
-      name: 'قران مكة 1428 ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/makkah_1429//',
-      name: 'قران مكة 1429 ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/makkah_1430//',
-      name: 'قران مكة 1430 ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/makkah_1431//',
-      name: 'قران مكة 1431 ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/makkah_1432//',
-      name: 'قران مكة 1432  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/makkah_1433//',
-      name: 'قران مكة 1433  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/makkah_1434//',
-      name: 'قران مكة 1434  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/makkah_1435//',
-      name: 'قران مكة 1435  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/makkah_1436//',
-      name: 'قران مكة 1436  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/makkah_1437//',
-      name: 'قران مكة 1437  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/makkah_1438//',
-      name: 'قران مكة 1438  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/makkah_1439//',
-      name: 'قران مكة 1439  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/makkah_1440//',
-      name: 'قران مكة 1440  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/makkah_1441//',
-      name: 'قران مكة 1441  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/makkah_1442//',
-      name: 'قران مكة 1442  ',
-      zeroPaddingSurahNumber: true,
-    ),
-      RecitersModel(
       url: 'https://download.quranicaudio.com/quran/masjid_quba_1434//',
       name: 'قران مسجد القبة 1434  ',
       zeroPaddingSurahNumber: true,
@@ -434,18 +212,6 @@ class MurattalPage extends StatelessWidget {
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url:
-          'https://download.quranicaudio.com/quran/sudais_shuraim_and_english//',
-      name: 'السديس والشريم and English',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url:
-          'https://download.quranicaudio.com/quran/shakir_qasami_with_english/',
-      name: 'شاكر قاسمي and English ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
       url: 'https://download.quranicaudio.com/quran/salahbudair//',
       name: 'صلاح البدير ',
       zeroPaddingSurahNumber: true,
@@ -460,12 +226,6 @@ class MurattalPage extends StatelessWidget {
       url:
           'https://download.quranicaudio.com/quran/sudais_shuraim_with_naeem_sultan_pickthall//',
       name: 'السديس والشريم مع نعيم سلطان ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url:
-          'https://download.quranicaudio.com/quran/mishaari_with_saabir_mkhan//',
-      name: 'العفاسي and Saabir Mkhan ',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
@@ -491,24 +251,6 @@ class MurattalPage extends StatelessWidget {
     ),
     RecitersModel(
       url:
-          'https://download.quranicaudio.com/quran/alhusaynee_al3azazee_with_children//',
-      name: 'الحسيني العزيزي -المعلم مع الاطفال ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url:
-          'https://download.quranicaudio.com/quran/abdulbasit_w_ibrahim_walk_si//',
-      name: 'عبدالباسط and Ibrahim Walksi ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url:
-          'https://download.quranicaudio.com/quran/mishaari_w_ibrahim_walk_si//',
-      name: 'العفاسي and Ibrahim Walksi ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url:
           'https://download.quranicaudio.com/quran/abdurrashid_sufi_soosi_rec//',
       name: 'عبدالرشيد صوفي ',
       zeroPaddingSurahNumber: true,
@@ -516,28 +258,6 @@ class MurattalPage extends StatelessWidget {
     RecitersModel(
       url: 'https://download.quranicaudio.com/quran/abdurrashid_sufi//',
       name: 'عبدالرشيد صوفي  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url:
-          'https://download.quranicaudio.com/quran/abdurrashid_sufi_-_khalaf_3an_7amza_recitation//',
-      name: 'عبد الرشيد صوفي برواية خلف عن حمزة ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url:
-          'https://download.quranicaudio.com/quran/abdurrashid_sufi_abi_al7arith//',
-      name: 'عبدالرشيد صوفي برواية ابي الحارث  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/abdurrashid_sufi_shu3ba//',
-      name: 'عبدالرشيد صوفي برواية شعبة   ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/abdurrashid_sufi_doori//',
-      name: 'عبدالرشيد صوفي برواية الدوري  ',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
@@ -559,18 +279,6 @@ class MurattalPage extends StatelessWidget {
     RecitersModel(
       url: 'https://download.quranicaudio.com/quran/abdullaah_basfar//',
       name: 'عبدالله بصفر  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url:
-          'https://download.quranicaudio.com/quran/abdullah_basfar_w_ibrahim_walk_si//',
-      name: 'عبدالله بصفر and Ibrahim Walksi ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url:
-          'https://download.quranicaudio.com/quran/sudais_and_shuraim_with_urdu//',
-      name: 'السديس والشريم and urdu ',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
@@ -616,27 +324,7 @@ class MurattalPage extends StatelessWidget {
     ),
     RecitersModel(
       url: 'https://download.quranicaudio.com/quran/hatem_farid/collection//',
-      name: 'حاتم فريد - تشكيلة',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/hatem_farid/taraweeh1430//',
-      name: 'حاتم فريد - تراويح 1430  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/hatem_farid/taraweeh1431//',
-      name: 'حاتم فريد - تراويح 1431 ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/hatem_farid/taraweeh1432//',
-      name: 'حاتم فريد - تراويح 1432 ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/hatem_farid/taraweeh1434//',
-      name: 'حاتم فريد - تراويح 1434  ',
+      name: 'حاتم فريد ',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
@@ -686,11 +374,6 @@ class MurattalPage extends StatelessWidget {
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/huthayfi_qaloon//',
-      name: 'الحذيفي برواية قالون  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
       url: 'https://download.quranicaudio.com/quran/idrees_akbar//',
       name: 'إدريس أبكر  ',
       zeroPaddingSurahNumber: true,
@@ -705,7 +388,6 @@ class MurattalPage extends StatelessWidget {
       name: 'بندر بليلة - كامل  ',
       zeroPaddingSurahNumber: true,
     ),
-  
     RecitersModel(
       url: 'https://download.quranicaudio.com/quran/muhammad_khaleel//',
       name: 'محمد خليل  ',

@@ -5,7 +5,7 @@ import '../../constants.dart';
 import '../../widgets/bottom_sheet.dart';
 import '../../widgets/main_category_widget.dart';
 import '../azkar_pages/azkar_main_page.dart';
-import '../chio5_pages/chio5_page.dart';
+import '../droos_pages/droos_page.dart';
 import '../pray_page/pray_page.dart';
 import '../ruqiya_pages/ruqiya_page.dart';
 

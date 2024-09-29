@@ -11,10 +11,9 @@ class AddFavSurahItemCubit extends Cubit<AddFavSurahItemState> {
   addFavSurahItem(FavModel favSurahItem) async {
     try {
       emit(AddFavSurahItemLoading());
-      var favSurahBox = Hive.box<FavModel>(kFavSurahBox);
-      await favSurahBox.add(favSurahItem);
+      await Hive.box<FavModel>(kFavSurahBox).add(favSurahItem);
       emit(AddFavSurahItemSuccess());
-    }   catch (e) {
+    } catch (e) {
       emit(AddFavSurahItemFailure(e.toString()));
     }
   }

@@ -1,11 +1,15 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:azkar_app/utils/app_style.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:quran/quran.dart' as quran;
-import 'package:azkar_app/constants.dart';
-import 'package:azkar_app/utils/app_images.dart';
+import '../cubit/add_fav_surahcubit/add_fav_surah_item_cubit.dart';
+import '../model/quran_models/fav_model.dart';
 import '../methods.dart';
-import '../pages/quran_pages/listening_page/favorite_page.dart';
+import '../constants.dart';
+import '../utils/app_images.dart';
+import '../utils/app_style.dart';
 import 'icon_constrain_widget.dart';
 
 class SurahListeningItem extends StatefulWidget {
@@ -13,6 +17,7 @@ class SurahListeningItem extends StatefulWidget {
   final String audioUrl;
   final void Function(int surahIndex)? onSurahTap;
   final String reciterName;
+
   const SurahListeningItem({
     super.key,
     required this.surahIndex,
@@ -28,16 +33,18 @@ class SurahListeningItem extends StatefulWidget {
 class _SurahListeningItemState extends State<SurahListeningItem> {
   bool isExpanded = false;
   bool isPlaying = false;
-  bool isFavorite = false; // Add this flag to track favorite status
+  bool isFavorite = false;
   Duration totalDuration = Duration.zero;
   Duration currentDuration = Duration.zero;
   final AudioPlayer _audioPlayer = AudioPlayer();
+  late ConnectivityResult _connectivityStatus;
 
   @override
   void initState() {
     super.initState();
     initializeAudioPlayer(
         _audioPlayer, setTotalDuration, setCurrentDuration, setIsPlaying);
+    _checkInternetConnection();
   }
 
   @override
@@ -64,20 +71,40 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
     });
   }
 
+  Future<void> _checkInternetConnection() async {
+    final List<ConnectivityResult> connectivityResults =
+        await Connectivity().checkConnectivity();
+
+    setState(() {
+      _connectivityStatus =
+          connectivityResults.contains(ConnectivityResult.none)
+              ? ConnectivityResult.none
+              : connectivityResults.first;
+    });
+
+    if (_connectivityStatus == ConnectivityResult.none) {
+      showMessage('لا يوجد اتصال بالانترنت .');
+    }
+  }
+
+  void showMessage(String message) {
+    Fluttertoast.showToast(msg: message);
+  }
+
   void toggleFavorite() {
+
     setState(() {
       isFavorite = !isFavorite;
       if (isFavorite) {
-        // Add surah to favorite list
-        // favItems.add(FavModel(
-        //   url: widget.audioUrl,
-        //   reciterName: widget.reciterName, // replace with actual reciter name
-        //   surahName: quran.getSurahNameArabic(widget.surahIndex + 1),
-        // ));
+        var favSurahModel = FavModel(
+          url: widget.audioUrl,
+          reciterName: widget.reciterName,
+          surahName: quran.getSurahNameArabic(widget.surahIndex + 1),
+        );
+        BlocProvider.of<AddFavSurahItemCubit>(context)
+            .addFavSurahItem(favSurahModel);
       } else {
-        // Remove from favorite list
-        // favItems.removeWhere((item) =>
-        //     item.surahName == quran.getSurahNameArabic(widget.surahIndex + 1));
+        // Code to remove from favorites
       }
     });
   }
@@ -125,17 +152,10 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       children: [
         const SizedBox(width: 10),
         GestureDetector(
-          onTap: toggleFavorite, 
+          onTap: toggleFavorite,
           child: isFavorite
-              ? const Icon(
-                  Icons.favorite,
-                  color: Colors.red,
-                  size: 30,
-                )
-              : const IconConstrain(
-                  height: 30,
-                  imagePath: Assets.imagesHeart,
-                ),
+              ? const Icon(Icons.favorite, color: Colors.red, size: 30)
+              : const IconConstrain(height: 30, imagePath: Assets.imagesHeart),
         ),
         const SizedBox(width: 10),
         Text(
@@ -153,13 +173,24 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         GestureDetector(
-          onTap: () => shareAudio(widget.audioUrl),
+          onTap: () {
+            if (_connectivityStatus == ConnectivityResult.none) {
+              showMessage('لا يتوفر اتصال بالانترنت.');
+            } else {
+              shareAudio(widget.audioUrl);
+            }
+          },
           child: const IconConstrain(height: 30, imagePath: Assets.imagesShare),
         ),
         const SizedBox(width: 10),
         GestureDetector(
-          onTap: () =>
-              downloadAudio(widget.audioUrl, widget.surahIndex, context),
+          onTap: () {
+            if (_connectivityStatus == ConnectivityResult.none) {
+              showMessage('لا يتوفر اتصال بالانترنت.');
+            } else {
+              downloadAudio(widget.audioUrl, widget.surahIndex, context);
+            }
+          },
           child: const IconConstrain(
               height: 30, imagePath: Assets.imagesDocumentDownload),
         ),
@@ -217,18 +248,19 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         GestureDetector(
-          onTap: () => playNextSurah(_audioPlayer, widget.surahIndex,
-              widget.onSurahTap!, widget.audioUrl, setIsPlaying),
-          child: const IconConstrain(height: 24, imagePath: Assets.imagesNext),
-        ),
-        GestureDetector(
           onTap: () => forward(_audioPlayer),
           child:
               const IconConstrain(height: 24, imagePath: Assets.imagesForward),
         ),
         IconButton(
-          onPressed: () => togglePlayPause(
-              _audioPlayer, isPlaying, widget.audioUrl, setIsPlaying),
+          onPressed: () {
+            if (_connectivityStatus == ConnectivityResult.none) {
+              showMessage('No internet connection.');
+            } else {
+              togglePlayPause(
+                  _audioPlayer, isPlaying, widget.audioUrl, setIsPlaying);
+            }
+          },
           icon: Icon(
             isPlaying ? Icons.pause_circle : Icons.play_circle,
             color: AppColors.kSecondaryColor,
@@ -239,11 +271,6 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
           onTap: () => backward(_audioPlayer),
           child:
               const IconConstrain(height: 24, imagePath: Assets.imagesBackward),
-        ),
-        GestureDetector(
-          onTap: () => playPreviousSurah(widget.surahIndex, widget.onSurahTap!),
-          child:
-              const IconConstrain(height: 24, imagePath: Assets.imagesPrevious),
         ),
       ],
     );

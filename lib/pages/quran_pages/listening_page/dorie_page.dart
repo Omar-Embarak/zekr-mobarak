@@ -1,18 +1,26 @@
-import 'package:azkar_app/model/quran_models/reciters_model.dart';
 import 'package:flutter/material.dart';
+
 import '../../../constants.dart';
+import '../../../model/quran_models/reciters_model.dart';
 import '../../../utils/app_style.dart';
 import '../../../widgets/reciturs_item.dart';
 import 'list_surahs_listening_page.dart';
 
-// ignore: must_be_immutable
-class MugawwadPage extends StatelessWidget {
-  const MugawwadPage({super.key});
-  final List<RecitersModel> reciters =const [
+class DoriePage extends StatelessWidget {
+  const DoriePage({super.key});
+
+  final List<RecitersModel> reciters = const[
     RecitersModel(
-        url: 'https://download.quranicaudio.com/qdc/abdul_baset/mujawwad/',
-        name: 'عبد الباسط عبد الصمد',
-        zeroPaddingSurahNumber: false),
+      url:
+          'https://download.quranicaudio.com/quran/mahmood_khaleel_al-husaree_doori//',
+      name: 'محمود خليل الحصري برواية دوري ',
+      zeroPaddingSurahNumber: true,
+    ),
+    RecitersModel(
+      url: 'https://download.quranicaudio.com/quran/abdurrashid_sufi_doori//',
+      name: 'عبدالرشيد صوفي برواية الدوري  ',
+      zeroPaddingSurahNumber: true,
+    ),
   ];
 
   @override
@@ -22,7 +30,7 @@ class MugawwadPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppColors.kSecondaryColor,
         title: Text(
-          'القران المجود',
+          'رواية الدوري',
           style: AppStyles.styleCairoBold20(context),
         ),
       ),
