@@ -4,17 +4,27 @@ sealed class AddFavSurahItemState extends Equatable {
   const AddFavSurahItemState();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
-final class AddFavSurahItemInitial extends AddFavSurahItemState {}
+class AddFavSurahItemInitial extends AddFavSurahItemState {}
 
-final class AddFavSurahItemLoading extends AddFavSurahItemState {}
+class AddFavSurahItemLoading extends AddFavSurahItemState {}
 
-final class AddFavSurahItemSuccess extends AddFavSurahItemState {}
+class AddFavSurahItemSuccess extends AddFavSurahItemState {
+  final List<FavModel>? favSurahs;
 
-final class AddFavSurahItemFailure extends AddFavSurahItemState {
-  final String errMessage;
+  const AddFavSurahItemSuccess({required this.favSurahs});
 
-  const AddFavSurahItemFailure(this.errMessage);
+  @override
+  List<Object?> get props => [favSurahs];
+}
+
+class AddFavSurahItemFailure extends AddFavSurahItemState {
+  final String errorMessage;
+
+  const AddFavSurahItemFailure(this.errorMessage);
+
+  @override
+  List<Object?> get props => [errorMessage];
 }

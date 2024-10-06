@@ -45,11 +45,7 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
     setState(() {
       filteredSurahs = List.generate(114, (index) => index + 1)
           .where((index) =>
-              quran.getSurahNameArabic(index).contains(query) ||
-              quran
-                  .getSurahName(index)
-                  .toLowerCase()
-                  .contains(query.toLowerCase()))
+              quran.getSurahNameArabic(index).contains(query))
           .toList();
     });
   }
@@ -96,7 +92,7 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
         listener: (context, state) {
           if (state is AddFavSurahItemFailure) {
             print(
-                'error while adding the surah to favourite page: ${state.errMessage}');
+                'error while adding the surah to favourite page: ${state.errorMessage}');
           }
           if (state is AddFavSurahItemSuccess) {
             log('added successfully');

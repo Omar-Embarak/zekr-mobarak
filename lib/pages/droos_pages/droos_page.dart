@@ -10,7 +10,6 @@ import '../../constants.dart';
 import '../../methods.dart';
 import '../../utils/app_images.dart';
 import '../../widgets/icon_constrain_widget.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import '../../widgets/reciturs_item.dart';
 
 class DroosPage extends StatefulWidget {

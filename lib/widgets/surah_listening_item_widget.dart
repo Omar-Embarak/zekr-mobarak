@@ -91,23 +91,22 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
     Fluttertoast.showToast(msg: message);
   }
 
-  void toggleFavorite() {
+void toggleFavorite() {
+  setState(() {
+    isFavorite = !isFavorite;
+    if (isFavorite) {
+      var favSurahModel = FavModel(
+        url: widget.audioUrl,
+        reciterName: widget.reciterName,
+        surahName: quran.getSurahNameArabic(widget.surahIndex + 1),
+      );
+      BlocProvider.of<AddFavSurahItemCubit>(context).addFavSurahItem(favSurahModel);
+    } else {
+      BlocProvider.of<AddFavSurahItemCubit>(context).deleteFavSurah(widget.surahIndex);
+    }
+  });
+}
 
-    setState(() {
-      isFavorite = !isFavorite;
-      if (isFavorite) {
-        var favSurahModel = FavModel(
-          url: widget.audioUrl,
-          reciterName: widget.reciterName,
-          surahName: quran.getSurahNameArabic(widget.surahIndex + 1),
-        );
-        BlocProvider.of<AddFavSurahItemCubit>(context)
-            .addFavSurahItem(favSurahModel);
-      } else {
-        // Code to remove from favorites
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -248,7 +247,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         GestureDetector(
-          onTap: () => forward(_audioPlayer),
+          onTap: () => backward(_audioPlayer),
           child:
               const IconConstrain(height: 24, imagePath: Assets.imagesForward),
         ),
@@ -268,7 +267,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
           ),
         ),
         GestureDetector(
-          onTap: () => backward(_audioPlayer),
+          onTap: () => forward (_audioPlayer),
           child:
               const IconConstrain(height: 24, imagePath: Assets.imagesBackward),
         ),

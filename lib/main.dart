@@ -1,4 +1,3 @@
-import 'package:azkar_app/constants.dart';
 import 'package:azkar_app/cubit/add_fav_surahcubit/add_fav_surah_item_cubit.dart';
 import 'package:azkar_app/cubit/ruqiya_cubit/ruqiya_cubit.dart';
 import 'package:azkar_app/simple_bloc_observer.dart';
@@ -9,16 +8,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'cubit/azkar_cubit/azkar_cubit.dart';
 import 'cubit/praying_cubit/praying_cubit.dart';
-import 'model/quran_models/fav_model.dart';
 import 'pages/home_page/home_page.dart';
 import 'pages/quran_pages/book_mark_provider.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
-  await Hive.initFlutter();
   Bloc.observer = SimpleBlocObserver();
-  await Hive.openBox(kFavSurahBox);
-  Hive.registerAdapter(FavModelAdapter());
   runApp(const MyApp());
 }
 

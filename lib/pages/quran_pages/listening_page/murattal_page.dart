@@ -2,12 +2,19 @@ import 'package:azkar_app/model/quran_models/reciters_model.dart';
 import 'package:flutter/material.dart';
 import 'package:azkar_app/constants.dart';
 import 'package:azkar_app/utils/app_style.dart';
+import '../../../utils/app_images.dart';
+import '../../../widgets/icon_constrain_widget.dart';
 import '../../../widgets/reciturs_item.dart';
 import 'list_surahs_listening_page.dart';
 
-class MurattalPage extends StatelessWidget {
+class MurattalPage extends StatefulWidget {
   const MurattalPage({super.key});
 
+  @override
+  State<MurattalPage> createState() => _MurattalPageState();
+}
+
+class _MurattalPageState extends State<MurattalPage> {
   final List<RecitersModel> reciters = const [
     RecitersModel(
       url: 'https://download.quranicaudio.com/qdc/abdul_baset/murattal/',
@@ -480,40 +487,98 @@ class MurattalPage extends StatelessWidget {
       zeroPaddingSurahNumber: false,
     ),
   ];
+  final TextEditingController _searchController = TextEditingController();
+  List<int> filteredReciters = [];
+
+  bool _isSearching = false;
+  @override
+  void initState() {
+    super.initState();
+    filteredReciters = List.generate(
+        reciters.length, (index) => index + 1); // All surahs by default
+  }
+
+  void _filterReciter(String query) {
+    setState(() {
+      filteredReciters = reciters
+          .asMap()
+          .entries
+          .where((entry) => entry.value.name.contains(query))
+          .map((entry) => entry.key)
+          .toList();
+    });
+  }
+
+  void _toggleSearch() {
+    setState(() {
+      _isSearching = !_isSearching; // Toggle search visibility
+      if (!_isSearching) {
+        _searchController.clear();
+        _filterReciter(''); // Reset the list when closing search
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.kPrimaryColor,
       appBar: AppBar(
-        backgroundColor: AppColors.kSecondaryColor,
-        title: Text(
-          'القران المرتل',
-          style: AppStyles.styleCairoBold20(context),
-        ),
-      ),
-      body: ListView.builder(
-        itemCount: reciters.length,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ListSurahsListeningPage(
-                    audioBaseUrl: reciters[index].url,
-                    reciterName: reciters[index].name,
-                    zeroPadding: reciters[index].zeroPaddingSurahNumber,
+          backgroundColor: AppColors.kSecondaryColor,
+          title: _isSearching
+              ? TextField(
+                  controller: _searchController,
+                  onChanged: _filterReciter,
+                  decoration: const InputDecoration(
+                    hintText: 'إبحث عن قاريء ...',
+                    border: InputBorder.none,
                   ),
+                  autofocus: true, // Focus automatically when search is toggled
+                )
+              : Text(
+                  'القران المرتل',
+                  style: AppStyles.styleCairoBold20(context),
                 ),
-              );
-            },
-            child: RecitursItem(
-              reciter: reciters[index].name,
-            ),
-          );
-        },
-      ),
+          actions: [
+            GestureDetector(
+              onTap: _toggleSearch,
+              child: _isSearching
+                  ? const Icon(Icons.close) // Wrap IconData in an Icon widget
+                  : const IconConstrain(
+                      height: 30,
+                      imagePath: Assets.imagesSearch,
+                    ),
+            )
+          ]),
+      body: filteredReciters.isNotEmpty
+          ? ListView.builder(
+              itemCount: filteredReciters.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ListSurahsListeningPage(
+                          audioBaseUrl: reciters[filteredReciters[index]].url,
+                          reciterName: reciters[filteredReciters[index]].name,
+                          zeroPadding: reciters[filteredReciters[index]]
+                              .zeroPaddingSurahNumber,
+                        ),
+                      ),
+                    );
+                  },
+                  child: RecitursItem(
+                    reciter: reciters[filteredReciters[index]].name,
+                  ),
+                );
+              },
+            )
+          : Center(
+              child: Text(
+              'القاريء غير موجود',
+              style: AppStyles.styleCairoBold20(context),
+            )),
     );
   }
 }
