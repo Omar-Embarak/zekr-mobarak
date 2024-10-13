@@ -489,13 +489,12 @@ class _MurattalPageState extends State<MurattalPage> {
   ];
   final TextEditingController _searchController = TextEditingController();
   List<int> filteredReciters = [];
-
   bool _isSearching = false;
   @override
   void initState() {
     super.initState();
     filteredReciters = List.generate(
-        reciters.length, (index) => index + 1); // All surahs by default
+        reciters.length, (index) => index + 1);
   }
 
   void _filterReciter(String query) {
@@ -549,7 +548,7 @@ class _MurattalPageState extends State<MurattalPage> {
                       imagePath: Assets.imagesSearch,
                     ),
             )
-          ]),
+          ],),
       body: filteredReciters.isNotEmpty
           ? ListView.builder(
               itemCount: filteredReciters.length,

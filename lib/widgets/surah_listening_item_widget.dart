@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:quran/quran.dart' as quran;
 import '../cubit/add_fav_surahcubit/add_fav_surah_item_cubit.dart';
+import '../database_helper.dart';
 import '../model/quran_models/fav_model.dart';
 import '../methods.dart';
 import '../constants.dart';
@@ -38,6 +39,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
   Duration currentDuration = Duration.zero;
   final AudioPlayer _audioPlayer = AudioPlayer();
   late ConnectivityResult _connectivityStatus;
+  late DatabaseHelper _databaseHelper;
 
   @override
   void initState() {
@@ -45,6 +47,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
     initializeAudioPlayer(
         _audioPlayer, setTotalDuration, setCurrentDuration, setIsPlaying);
     _checkInternetConnection();
+    _databaseHelper = DatabaseHelper();
   }
 
   @override
@@ -91,29 +94,31 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
     Fluttertoast.showToast(msg: message);
   }
 
-void toggleFavorite() {
-  setState(() {
-    isFavorite = !isFavorite;
-    if (isFavorite) {
-      var favSurahModel = FavModel(
-        url: widget.audioUrl,
-        reciterName: widget.reciterName,
-        surahName: quran.getSurahNameArabic(widget.surahIndex + 1),
-      );
-      BlocProvider.of<AddFavSurahItemCubit>(context).addFavSurahItem(favSurahModel);
-    } else {
-      BlocProvider.of<AddFavSurahItemCubit>(context).deleteFavSurah(widget.surahIndex);
-    }
-  });
-}
-
+  void toggleFavorite() {
+    setState(() {
+      isFavorite = !isFavorite;
+      if (isFavorite) {
+        var favSurahModel = FavModel(
+          url: widget.audioUrl,
+          reciterName: widget.reciterName,
+          surahIndex: widget.surahIndex,
+        );
+        BlocProvider.of<AddFavSurahItemCubit>(context)
+            .addFavSurahItem(favSurahModel);
+      } else {
+        BlocProvider.of<AddFavSurahItemCubit>(context)
+            .deleteFavSurah(widget.surahIndex, widget.reciterName);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         GestureDetector(
-          onTap: () {
+          onTap: () {             
+
             setState(() {
               isExpanded = !isExpanded;
             });
@@ -147,23 +152,68 @@ void toggleFavorite() {
   }
 
   Widget buildSurahRow() {
-    return Row(
-      children: [
-        const SizedBox(width: 10),
-        GestureDetector(
-          onTap: toggleFavorite,
-          child: isFavorite
-              ? const Icon(Icons.favorite, color: Colors.red, size: 30)
-              : const IconConstrain(height: 30, imagePath: Assets.imagesHeart),
-        ),
-        const SizedBox(width: 10),
-        Text(
-          'سورة ${quran.getSurahNameArabic(widget.surahIndex + 1)}',
-          style: AppStyles.styleRajdhaniMedium18(context),
-        ),
-        const Spacer(),
-        buildActionButtons(),
-      ],
+    return FutureBuilder<bool>(
+      future: _databaseHelper.isFavoriteExists(
+          widget.surahIndex, widget.reciterName),
+      builder: (context, snapshot) {
+        // Check if the future is complete and has a valid result
+        if (snapshot.connectionState == ConnectionState.done) {
+          // Check if the future returned a value
+          if (snapshot.hasData && snapshot.data == true) {
+            isFavorite = true;
+            return Row(
+              children: [
+                const SizedBox(width: 10),
+                GestureDetector(
+                  onTap: toggleFavorite,
+                  child:
+                      const Icon(Icons.favorite, color: Colors.red, size: 30),
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  'سورة ${quran.getSurahNameArabic(widget.surahIndex + 1)}',
+                  style: AppStyles.styleRajdhaniMedium18(context),
+                ),
+                const Spacer(),
+                buildActionButtons(),
+              ],
+            );
+          } else {
+            isFavorite = false;
+            return Row(
+              children: [
+                const SizedBox(width: 10),
+                GestureDetector(
+                  onTap: toggleFavorite,
+                  child: const IconConstrain(
+                      height: 30, imagePath: Assets.imagesHeart),
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  'سورة ${quran.getSurahNameArabic(widget.surahIndex + 1)}',
+                  style: AppStyles.styleRajdhaniMedium18(context),
+                ),
+                const Spacer(),
+                buildActionButtons(),
+              ],
+            );
+          }
+        } else {
+          return Row(
+            children: [
+              const SizedBox(width: 10),
+              const CircularProgressIndicator(),
+              const SizedBox(width: 10),
+              Text(
+                'سورة ${quran.getSurahNameArabic(widget.surahIndex + 1)}',
+                style: AppStyles.styleRajdhaniMedium18(context),
+              ),
+              const Spacer(),
+              buildActionButtons(),
+            ],
+          );
+        }
+      },
     );
   }
 
@@ -267,7 +317,7 @@ void toggleFavorite() {
           ),
         ),
         GestureDetector(
-          onTap: () => forward (_audioPlayer),
+          onTap: () => forward(_audioPlayer),
           child:
               const IconConstrain(height: 24, imagePath: Assets.imagesBackward),
         ),

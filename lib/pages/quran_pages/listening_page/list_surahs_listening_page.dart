@@ -1,4 +1,4 @@
-import 'dart:developer';
+
 import 'package:azkar_app/cubit/add_fav_surahcubit/add_fav_surah_item_cubit.dart';
 import 'package:azkar_app/utils/app_images.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +31,7 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
   String? tappedSurahName;
   final TextEditingController _searchController = TextEditingController();
   List<int> filteredSurahs =
-      List.generate(114, (index) => index + 1); // All surahs by default
+      List.generate(114, (index) => index + 1); 
   bool _isSearching = false;
 
   void updateTappedSurahName(int surahIndex) {
@@ -91,11 +91,11 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
       body: BlocConsumer<AddFavSurahItemCubit, AddFavSurahItemState>(
         listener: (context, state) {
           if (state is AddFavSurahItemFailure) {
-            print(
+            debugPrint(
                 'error while adding the surah to favourite page: ${state.errorMessage}');
           }
           if (state is AddFavSurahItemSuccess) {
-            log('added successfully');
+            debugPrint('added successfully');
           }
         },
         builder: (context, state) {
