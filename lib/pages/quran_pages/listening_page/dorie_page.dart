@@ -9,7 +9,7 @@ import 'list_surahs_listening_page.dart';
 class DoriePage extends StatelessWidget {
   const DoriePage({super.key});
 
-  final List<RecitersModel> reciters = const[
+  final List<RecitersModel> reciters = const [
     RecitersModel(
       url:
           'https://download.quranicaudio.com/quran/mahmood_khaleel_al-husaree_doori//',
@@ -43,9 +43,7 @@ class DoriePage extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => ListSurahsListeningPage(
-                    audioBaseUrl: reciters[index].url,
-                    reciterName: reciters[index].name,
-                    zeroPadding: reciters[index].zeroPaddingSurahNumber,
+                    reciter: reciters[index],
                   ),
                 ),
               );

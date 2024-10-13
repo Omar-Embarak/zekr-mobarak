@@ -20,18 +20,36 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'favorites.db');
     return await openDatabase(
       path,
-      version: 1,
-      onCreate: (db, version) {
-        db.execute(
-          'CREATE TABLE favorites( surahIndex INTEGER, reciterName TEXT, url TEXT)',
+      version: 3, // Update the version number
+      onCreate: (db, version) async {
+        await db.execute(
+          '''
+          CREATE TABLE favorites(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            surahIndex INTEGER,
+            reciterName TEXT,
+            reciterUrl TEXT,
+            zeroPaddingSurahNumber INTEGER,
+            url TEXT
+          )
+          '''
         );
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < newVersion) {
+          await db.execute('ALTER TABLE favorites ADD COLUMN zeroPaddingSurahNumber INTEGER');
+        }
       },
     );
   }
 
   Future<void> insertFavorite(FavModel fav) async {
     final db = await database;
-    await db.insert('favorites', fav.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+    await db.insert(
+      'favorites',
+      fav.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   Future<List<FavModel>> getFavorites() async {
@@ -45,9 +63,9 @@ class DatabaseHelper {
   Future<void> deleteFavorite(int surahIndex, String reciterName) async {
     final db = await database;
     await db.delete(
-      'favorites', 
-      where: 'surahIndex = ? AND reciterName = ?', 
-      whereArgs: [surahIndex, reciterName]
+      'favorites',
+      where: 'surahIndex = ? AND reciterName = ?',
+      whereArgs: [surahIndex, reciterName],
     );
   }
 

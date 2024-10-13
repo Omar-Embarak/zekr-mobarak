@@ -1,3 +1,4 @@
+import 'package:azkar_app/model/quran_models/reciters_model.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -17,15 +18,13 @@ class SurahListeningItem extends StatefulWidget {
   final int surahIndex;
   final String audioUrl;
   final void Function(int surahIndex)? onSurahTap;
-  final String reciterName;
-
-  const SurahListeningItem({
-    super.key,
-    required this.surahIndex,
-    required this.audioUrl,
-    this.onSurahTap,
-    required this.reciterName,
-  });
+  final RecitersModel reciter;
+  const SurahListeningItem(
+      {super.key,
+      required this.surahIndex,
+      required this.audioUrl,
+      this.onSurahTap,
+       required this.reciter});
 
   @override
   State<SurahListeningItem> createState() => _SurahListeningItemState();
@@ -52,7 +51,9 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
 
   @override
   void dispose() {
+      _audioPlayer.stop();
     _audioPlayer.dispose();
+
     super.dispose();
   }
 
@@ -100,14 +101,14 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       if (isFavorite) {
         var favSurahModel = FavModel(
           url: widget.audioUrl,
-          reciterName: widget.reciterName,
+          reciter: widget. reciter,
           surahIndex: widget.surahIndex,
         );
         BlocProvider.of<AddFavSurahItemCubit>(context)
             .addFavSurahItem(favSurahModel);
       } else {
         BlocProvider.of<AddFavSurahItemCubit>(context)
-            .deleteFavSurah(widget.surahIndex, widget.reciterName);
+            .deleteFavSurah(widget.surahIndex, widget.reciter.name);
       }
     });
   }
@@ -117,8 +118,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
     return Column(
       children: [
         GestureDetector(
-          onTap: () {             
-
+          onTap: () {
             setState(() {
               isExpanded = !isExpanded;
             });
@@ -154,7 +154,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
   Widget buildSurahRow() {
     return FutureBuilder<bool>(
       future: _databaseHelper.isFavoriteExists(
-          widget.surahIndex, widget.reciterName),
+          widget.surahIndex, widget.reciter.name),
       builder: (context, snapshot) {
         // Check if the future is complete and has a valid result
         if (snapshot.connectionState == ConnectionState.done) {
@@ -279,17 +279,18 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
 
   Widget buildSlider() {
     return Slider(
-      activeColor: AppColors.kSecondaryColor,
-      inactiveColor: AppColors.kPrimaryColor,
-      value: currentDuration.inSeconds.toDouble(),
-      max: totalDuration.inSeconds.toDouble(),
-      onChanged: (value) {
-        setState(() {
-          currentDuration = Duration(seconds: value.toInt());
-        });
-        _audioPlayer.seek(currentDuration);
-      },
-    );
+  activeColor: AppColors.kSecondaryColor,
+  inactiveColor: AppColors.kPrimaryColor,
+  value: currentDuration.inSeconds.toDouble(),
+  max: totalDuration.inSeconds > 0 ? totalDuration.inSeconds.toDouble() : 1,
+  onChanged: totalDuration.inSeconds > 0 ? (value) {
+    setState(() {
+      currentDuration = Duration(seconds: value.toInt());
+    });
+    _audioPlayer.seek(currentDuration);
+  } : null,
+);
+
   }
 
   Widget buildControlButtons() {

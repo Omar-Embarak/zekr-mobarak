@@ -510,10 +510,10 @@ class _MurattalPageState extends State<MurattalPage> {
 
   void _toggleSearch() {
     setState(() {
-      _isSearching = !_isSearching; // Toggle search visibility
+      _isSearching = !_isSearching; 
       if (!_isSearching) {
         _searchController.clear();
-        _filterReciter(''); // Reset the list when closing search
+        _filterReciter('');
       }
     });
   }
@@ -532,7 +532,7 @@ class _MurattalPageState extends State<MurattalPage> {
                     hintText: 'إبحث عن قاريء ...',
                     border: InputBorder.none,
                   ),
-                  autofocus: true, // Focus automatically when search is toggled
+                  autofocus: true, 
                 )
               : Text(
                   'القران المرتل',
@@ -542,7 +542,7 @@ class _MurattalPageState extends State<MurattalPage> {
             GestureDetector(
               onTap: _toggleSearch,
               child: _isSearching
-                  ? const Icon(Icons.close) // Wrap IconData in an Icon widget
+                  ? const Icon(Icons.close) 
                   : const IconConstrain(
                       height: 30,
                       imagePath: Assets.imagesSearch,
@@ -558,11 +558,8 @@ class _MurattalPageState extends State<MurattalPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ListSurahsListeningPage(
-                          audioBaseUrl: reciters[filteredReciters[index]].url,
-                          reciterName: reciters[filteredReciters[index]].name,
-                          zeroPadding: reciters[filteredReciters[index]]
-                              .zeroPaddingSurahNumber,
+                        builder: (context) => ListSurahsListeningPage(                    reciter: reciters[index],
+
                         ),
                       ),
                     );

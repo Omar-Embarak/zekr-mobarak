@@ -8,6 +8,8 @@ import '../../../widgets/icon_constrain_widget.dart';
 import '../../../widgets/surah_listening_item_widget.dart';
 import 'package:quran/quran.dart' as quran;
 
+import 'list_surahs_listening_page.dart';
+
 class FavoritePage extends StatefulWidget {
   const FavoritePage({super.key});
 
@@ -26,9 +28,15 @@ class _FavoritePageState extends State<FavoritePage> {
   void initState() {
     super.initState();
     _databaseHelper = DatabaseHelper();
-    _loadFavorites(); // Load favorites initially
+    _loadFavorites();
   }
 
+@override
+  void dispose(){
+   _searchController.dispose();
+     super.dispose();
+
+}
   void _loadFavorites() async {
     List<FavModel> favorites = await _databaseHelper.getFavorites();
     setState(() {
@@ -40,27 +48,22 @@ class _FavoritePageState extends State<FavoritePage> {
   void _filterFavs(String query) {
     setState(() {
       if (query.trim().isEmpty) {
-        filteredFavs = _favorites; // Show all favorites if query is empty
+        filteredFavs = _favorites;
         return;
       }
-
-      // Normalize the query by trimming leading/trailing spaces
       final normalizedQuery = query.trim();
-
-      // Ignore certain prefixes
       if (normalizedQuery == 'سورة' ||
           normalizedQuery == 'س' ||
           normalizedQuery == 'سو' ||
           normalizedQuery == 'سور') {
         filteredFavs =
-            _favorites; // Show all favorites if ignored prefixes are entered
+            _favorites; 
         return;
       }
 
       filteredFavs = _favorites.where((fav) {
         final surahName = quran.getSurahNameArabic(fav.surahIndex + 1).trim();
 
-        // Check if the surah name contains the normalized query
         return surahName.contains(normalizedQuery);
       }).toList();
     });
@@ -116,13 +119,22 @@ class _FavoritePageState extends State<FavoritePage> {
                 return Column(
                   children: [
                     GestureDetector(
-                      onTap: () {},
-                      child: Text(favModel.reciterName),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ListSurahsListeningPage(
+                            reciter: favModel.reciter,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Text(favModel.reciter.name),
                     ),
                     SurahListeningItem(
+                      reciter: favModel.reciter,
                       surahIndex: favModel.surahIndex,
                       audioUrl: favModel.url,
-                      reciterName: favModel.reciterName,
                     ),
                   ],
                 );

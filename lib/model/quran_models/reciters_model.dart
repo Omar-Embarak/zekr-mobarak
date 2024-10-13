@@ -6,4 +6,5 @@ class RecitersModel {
       {required this.url,
       required this.name,
       required this.zeroPaddingSurahNumber});
+      
 }

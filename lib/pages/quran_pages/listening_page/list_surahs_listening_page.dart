@@ -1,5 +1,5 @@
-
 import 'package:azkar_app/cubit/add_fav_surahcubit/add_fav_surah_item_cubit.dart';
+import 'package:azkar_app/model/quran_models/reciters_model.dart';
 import 'package:azkar_app/utils/app_images.dart';
 import 'package:flutter/material.dart';
 import 'package:azkar_app/utils/app_style.dart';
@@ -11,15 +11,11 @@ import '../../../widgets/icon_constrain_widget.dart';
 import '../../../widgets/surah_listening_item_widget.dart';
 
 class ListSurahsListeningPage extends StatefulWidget {
-  final String audioBaseUrl;
-  final String reciterName;
-  final bool zeroPadding;
-
+  
+  final RecitersModel reciter;
   const ListSurahsListeningPage({
     super.key,
-    required this.audioBaseUrl,
-    required this.reciterName,
-    required this.zeroPadding,
+ required this.reciter,
   });
 
   @override
@@ -30,8 +26,7 @@ class ListSurahsListeningPage extends StatefulWidget {
 class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
   String? tappedSurahName;
   final TextEditingController _searchController = TextEditingController();
-  List<int> filteredSurahs =
-      List.generate(114, (index) => index + 1); 
+  List<int> filteredSurahs = List.generate(114, (index) => index + 1);
   bool _isSearching = false;
 
   void updateTappedSurahName(int surahIndex) {
@@ -44,8 +39,7 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
   void _filterSurahs(String query) {
     setState(() {
       filteredSurahs = List.generate(114, (index) => index + 1)
-          .where((index) =>
-              quran.getSurahNameArabic(index).contains(query))
+          .where((index) => quran.getSurahNameArabic(index).contains(query))
           .toList();
     });
   }
@@ -109,7 +103,7 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
                   child: Column(
                     children: [
                       Text(
-                        widget.reciterName,
+                        widget.reciter.name,
                         style: AppStyles.styleCairoBold20(context),
                       ),
                       if (tappedSurahName != null)
@@ -131,15 +125,14 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
                           itemBuilder: (context, index) {
                             final surahIndex = filteredSurahs[index] -
                                 1; // Adjusting to 0-based index
-                            final audioUrl = widget.zeroPadding
-                                ? '${widget.audioBaseUrl}${(surahIndex + 1).toString().padLeft(3, '0')}.mp3'
-                                : '${widget.audioBaseUrl}${surahIndex + 1}.mp3';
+                            final audioUrl = widget.reciter.zeroPaddingSurahNumber
+                                ? '${widget.reciter.url}${(surahIndex + 1).toString().padLeft(3, '0')}.mp3'
+                                : '${widget.reciter.url}${surahIndex + 1}.mp3';
 
                             return SurahListeningItem(
-                              reciterName: widget.reciterName,
                               surahIndex: surahIndex,
                               audioUrl: audioUrl,
-                              onSurahTap: updateTappedSurahName,
+                              onSurahTap: updateTappedSurahName, reciter: widget.reciter,
                             );
                           },
                         )

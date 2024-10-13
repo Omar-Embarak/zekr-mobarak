@@ -119,10 +119,8 @@ class MadinaPage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ListSurahsListeningPage(
-                    audioBaseUrl: reciters[index].url,
-                    reciterName: reciters[index].name,
-                    zeroPadding: reciters[index].zeroPaddingSurahNumber,
+                  builder: (context) => ListSurahsListeningPage(                    reciter: reciters[index],
+
                   ),
                 ),
               );

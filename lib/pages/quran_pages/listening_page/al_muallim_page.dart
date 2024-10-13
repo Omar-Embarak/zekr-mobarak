@@ -58,9 +58,7 @@ class AlMuallimPage extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => ListSurahsListeningPage(
-                    audioBaseUrl: reciters[index].url,
-                    reciterName: reciters[index].name,
-                    zeroPadding: reciters[index].zeroPaddingSurahNumber,
+                    reciter: reciters[index],
                   ),
                 ),
               );
