@@ -1,3 +1,5 @@
+import 'package:azkar_app/pages/quran_pages/juz_page.dart';
+import 'package:azkar_app/widgets/surahs_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:quran/quran.dart' as quran;
@@ -5,6 +7,7 @@ import '../../constants.dart';
 import '../../utils/app_style.dart';
 import '../../utils/app_images.dart';
 import '../../widgets/icon_constrain_widget.dart';
+import 'doaa_khatm_page.dart';
 
 class SurahPage extends StatefulWidget {
   const SurahPage({super.key, required this.surahIndex});
@@ -33,34 +36,39 @@ class _SurahPageState extends State<SurahPage> {
             child: Container(
               width: double.infinity,
               height: double.infinity,
-              color: Colors.transparent, // Ensure the body area is tappable
-              child: const Center(
-                child: const Text(
-                  'This is the body area. Tap here to hide/show the containers.',
-                  style: TextStyle(fontSize: 20, color: Colors.black),
-                  textAlign: TextAlign.center,
+              color: Colors.transparent,
+              child: SafeArea(
+                child: PageView(
+                  onPageChanged: (value) {
+                    //change variables of the containers
+                  },
+                  children: const [
+                    Text(
+                      'Here is where surah content should be showen',
+                      style: TextStyle(fontSize: 20, color: Colors.black),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
           if (isVisible)
-            Positioned(
+            const Positioned(
               top: 0,
               left: 0,
               right: 0,
               child: IgnorePointer(
-                child: SafeArea(
-                    child: QuranContainerUP(surahIndex: widget.surahIndex)),
+                child: SafeArea(child: QuranContainerUP()),
               ),
             ),
           if (isVisible)
-            Positioned(
+            const Positioned(
               bottom: 0,
               left: 0,
               right: 0,
               child: IgnorePointer(
-                child: SafeArea(
-                    child: QuranContainerDown(surahIndex: widget.surahIndex)),
+                child: SafeArea(child: QuranContainerDown()),
               ),
             ),
         ],
@@ -69,14 +77,23 @@ class _SurahPageState extends State<SurahPage> {
   }
 }
 
-class QuranContainerUP extends StatelessWidget {
+class QuranContainerUP extends StatefulWidget {
   const QuranContainerUP({
     super.key,
-    required this.surahIndex,
-    this.child,
   });
-  final Widget? child;
-  final int surahIndex;
+  @override
+  State<QuranContainerUP> createState() => _QuranContainerUPState();
+}
+
+class _QuranContainerUPState extends State<QuranContainerUP> {
+  String isMakkia = true ? 'مكية' : 'مدنية'; //check here for the surah
+  int surahsAyat = 288;
+  int surahIndex = 1;
+  int hizpNumber = 5;
+  double rob3HizpNumber = 1 / 4;
+  int juzNumber = 3;
+
+  bool isPageLeft = false;
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +124,7 @@ class QuranContainerUP extends StatelessWidget {
                             height: 30, imagePath: Assets.imagesBook),
                         const SizedBox(width: 8),
                         Text(
-                          'سورة ${quran.getSurahNameArabic(surahIndex)} (مكية ،اياتها 286)',
+                          'سورة ${quran.getSurahNameArabic(surahIndex)} ($isMakkia ،اياتها $surahsAyat)',
                           style: AppStyles.styleDiodrumArabicMedium15(context)
                               .copyWith(color: Colors.white),
                         ),
@@ -124,12 +141,14 @@ class QuranContainerUP extends StatelessWidget {
                   children: [
                     Expanded(
                       child: SvgPicture.asset(
-                        Assets.imagesRightPage,
+                        isPageLeft
+                            ? Assets.imagesLeftPage
+                            : Assets.imagesRightPage,
                       ),
                     ),
                     FittedBox(
                       child: Text(
-                        '1/4 الحزب 5   ',
+                        '$rob3HizpNumber الحزب $hizpNumber   ',
                         style: AppStyles.styleDiodrumArabicMedium15(context)
                             .copyWith(color: Colors.white),
                       ),
@@ -145,7 +164,7 @@ class QuranContainerUP extends StatelessWidget {
               const IconConstrain(height: 30, imagePath: Assets.imagesVector),
               const SizedBox(width: 8),
               Text(
-                'الجزء 3',
+                'الجزء $juzNumber',
                 style: AppStyles.styleDiodrumArabicMedium15(context)
                     .copyWith(color: Colors.white),
               ),
@@ -157,10 +176,14 @@ class QuranContainerUP extends StatelessWidget {
   }
 }
 
-class QuranContainerDown extends StatelessWidget {
-  const QuranContainerDown({super.key, required this.surahIndex});
-  final int surahIndex;
+class QuranContainerDown extends StatefulWidget {
+  const QuranContainerDown({super.key});
 
+  @override
+  State<QuranContainerDown> createState() => _QuranContainerDownState();
+}
+
+class _QuranContainerDownState extends State<QuranContainerDown> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -183,7 +206,8 @@ class QuranContainerDown extends StatelessWidget {
                   height: 35,
                   child: TextField(
                     decoration: InputDecoration(
-                      hintText: 'إبحث عن آية',
+                      hintText:
+                          'إبحث عن آية', //this field for search for any aya in the quran , the keyboard should push the container up
                       hintStyle: AppStyles.styleDiodrumArabicMedium15(context)
                           .copyWith(color: Colors.white),
                       suffixIcon: const IconConstrain(
@@ -253,19 +277,40 @@ class QuranContainerDown extends StatelessWidget {
                 iconHeight: 10.07,
                 iconPath: Assets.imagesIndex,
                 text: 'الفهرس',
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) =>
+                        SurahListWidget(onSurahTap: (surahIndex) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              SurahPage(surahIndex: surahIndex),
+                        ),
+                      );
+                    }),
+                  ));
+                },
               ),
               QuranContainerButtons(
                 iconHeight: 15.3,
                 iconPath: Assets.imagesVector,
                 text: 'الأجزاء',
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const JuzListPage(),
+                  ));
+                },
               ),
               QuranContainerButtons(
                 iconHeight: 16.4,
                 iconPath: Assets.imagesHand,
                 text: 'دعاء الختم',
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const DoaaKhatmPage(),
+                  ));
+                },
               ),
             ],
           )
@@ -309,4 +354,3 @@ class QuranContainerButtons extends StatelessWidget {
     );
   }
 }
-

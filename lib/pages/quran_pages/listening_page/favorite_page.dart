@@ -31,12 +31,12 @@ class _FavoritePageState extends State<FavoritePage> {
     _loadFavorites();
   }
 
-@override
-  void dispose(){
-   _searchController.dispose();
-     super.dispose();
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
-}
   void _loadFavorites() async {
     List<FavModel> favorites = await _databaseHelper.getFavorites();
     setState(() {
@@ -56,14 +56,12 @@ class _FavoritePageState extends State<FavoritePage> {
           normalizedQuery == 'س' ||
           normalizedQuery == 'سو' ||
           normalizedQuery == 'سور') {
-        filteredFavs =
-            _favorites; 
+        filteredFavs = _favorites;
         return;
       }
 
       filteredFavs = _favorites.where((fav) {
         final surahName = quran.getSurahNameArabic(fav.surahIndex + 1).trim();
-
         return surahName.contains(normalizedQuery);
       }).toList();
     });
@@ -116,35 +114,47 @@ class _FavoritePageState extends State<FavoritePage> {
               itemCount: filteredFavs.length,
               itemBuilder: (context, index) {
                 final favModel = filteredFavs[index];
-                return Column(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ListSurahsListeningPage(
-                            reciter: favModel.reciter,
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 8.0, horizontal: 16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ListSurahsListeningPage(
+                                reciter: favModel.reciter,
+                              ),
                             ),
+                          );
+                        },
+                        child: Text(
+                          favModel.reciter.name,
+                          style: AppStyles.styleCairoBold20(context).copyWith(
+                            color: AppColors.kSecondaryColor,
+                            decoration: TextDecoration.underline,
                           ),
-                        );
-                      },
-                      child: Text(favModel.reciter.name),
-                    ),
-                    SurahListeningItem(
-                      reciter: favModel.reciter,
-                      surahIndex: favModel.surahIndex,
-                      audioUrl: favModel.url,
-                    ),
-                  ],
+                        ),
+                      ),
+                      SurahListeningItem(
+                        reciter: favModel.reciter,
+                        surahIndex: favModel.surahIndex,
+                        audioUrl: favModel.url,
+                      ),
+                    ],
+                  ),
                 );
               },
             )
           : Center(
               child: Text(
-              ' لا يوجد عناصر في المفضلة بهذا الاسم',
-              style: AppStyles.styleCairoBold20(context),
-            )),
+                ' لا يوجد عناصر في المفضلة بهذا الاسم',
+                style: AppStyles.styleCairoBold20(context),
+              ),
+            ),
     );
   }
 }
