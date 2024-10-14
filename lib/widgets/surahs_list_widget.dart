@@ -6,6 +6,7 @@ import '../constants.dart';
 class SurahListWidget extends StatelessWidget {
   final Function(int surahIndex) onSurahTap;
   const SurahListWidget({super.key, required this.onSurahTap});
+
   final List<int> juzPages = const [
     22,
     42,
@@ -91,7 +92,10 @@ class SurahListWidget extends StatelessWidget {
                 return Row(
                   children: [
                     const SizedBox(width: 10),
-                    Text('1', style: AppStyles.styleRajdhaniMedium18(context)),
+                    Text(
+                      '${entry.key}', // Display the Surah number
+                      style: AppStyles.styleRajdhaniMedium18(context),
+                    ),
                     Expanded(
                       child: ListTile(
                         trailing: Text(

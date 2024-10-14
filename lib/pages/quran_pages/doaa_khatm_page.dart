@@ -19,7 +19,9 @@ class DoaaKhatmPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('دعاء ختم القرآن'),
+        title: Text('دعاء ختم القرآن',
+            style: AppStyles.styleRajdhaniBold18(context)
+                .copyWith(color: Colors.white)),
         backgroundColor: AppColors.kSecondaryColor,
       ),
       backgroundColor: AppColors.kPrimaryColor,
@@ -30,20 +32,20 @@ class DoaaKhatmPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 20),
-              Text(
-                _doaaText,
-                textDirection: TextDirection.rtl,
-                style:AppStyles.styleRajdhaniBold18(context).copyWith(color: Colors.white)
-              ),
+              Text(_doaaText,
+                  textDirection: TextDirection.rtl,
+                  style: AppStyles.styleRajdhaniBold20(context)
+                      .copyWith(color: Colors.white)),
             ],
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        shape: const CircleBorder(),
         onPressed: () {
           _shareDoaa();
         },
-        backgroundColor: Colors.green,
+        backgroundColor: AppColors.kSecondaryColor,
         child: const Icon(Icons.share),
       ),
     );
