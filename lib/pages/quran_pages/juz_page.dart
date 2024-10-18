@@ -1,9 +1,9 @@
-import 'dart:convert';
 import 'package:azkar_app/constants.dart';
 import 'package:azkar_app/utils/app_images.dart';
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
+import '../../methods.dart';
 
 class JuzListPage extends StatefulWidget {
   const JuzListPage({super.key});
@@ -18,20 +18,14 @@ class _JuzListPageState extends State<JuzListPage> {
   @override
   void initState() {
     super.initState();
-    loadJuzData();
+    _loadData();
   }
 
-  Future<void> loadJuzData() async {
-    try {
-      final String response =
-          await rootBundle.loadString('assets/quranjson/juz.json');
-      final data = json.decode(response);
-      setState(() {
-        juzData = data;
-      });
-    } catch (e) {
-      debugPrint('Error loading JSON: $e');
-    }
+  Future<void> _loadData() async {
+    final data = await loadJSONDataList('assets/quranjson/juz.json');
+    setState(() {
+      juzData = data; // Update state with loaded data
+    });
   }
 
   @override
@@ -47,13 +41,12 @@ class _JuzListPageState extends State<JuzListPage> {
                 return Column(
                   children: [
                     Container(
-                      width: double.infinity, // Takes full width of the screen
+                      width: double.infinity,
                       padding: const EdgeInsets.all(10),
                       decoration: const BoxDecoration(
-                        color: AppColors.kSecondaryColor, // Background color
+                        color: AppColors.kSecondaryColor,
                         border: Border(
-                          bottom:
-                              BorderSide(color: Colors.grey), // Bottom border
+                          bottom: BorderSide(color: Colors.grey),
                         ),
                       ),
                       child: Text(
@@ -89,7 +82,7 @@ class _JuzListPageState extends State<JuzListPage> {
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               border: const Border(
-                bottom: BorderSide(color: Colors.grey), // Only bottom border
+                bottom: BorderSide(color: Colors.grey),
               ),
               borderRadius: BorderRadius.circular(8),
             ),
@@ -97,7 +90,7 @@ class _JuzListPageState extends State<JuzListPage> {
               children: [
                 SizedBox(
                   height: 60,
-                  width: 60, // Ensure the image has a fixed width
+                  width: 60,
                   child: Stack(
                     children: [
                       Image.asset(
@@ -112,7 +105,7 @@ class _JuzListPageState extends State<JuzListPage> {
                     ],
                   ),
                 ),
-                const SizedBox(width: 10), // Add spacing between image and text
+                const SizedBox(width: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

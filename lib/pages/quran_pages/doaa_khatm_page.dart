@@ -46,7 +46,10 @@ class DoaaKhatmPage extends StatelessWidget {
           _shareDoaa();
         },
         backgroundColor: AppColors.kSecondaryColor,
-        child: const Icon(Icons.share),
+        child: const Icon(
+          Icons.share,
+          color: Colors.white,
+        ),
       ),
     );
   }

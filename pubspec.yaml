@@ -70,6 +70,7 @@ flutter:
     - assets/db/ruqiya.json
     - assets/quranjson/surah.json
     - assets/quranjson/juz.json
+    - assets/quranjson/surah/
 
 
   fonts:

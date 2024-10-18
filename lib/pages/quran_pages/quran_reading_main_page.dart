@@ -10,7 +10,6 @@ class QuranReadingMainPage extends StatelessWidget {
   const QuranReadingMainPage({super.key});
 
   @override
-  @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3,
@@ -41,14 +40,7 @@ class QuranReadingMainPage extends StatelessWidget {
             Expanded(
               child: TabBarView(
                 children: [
-                  SurahListWidget(onSurahTap: (surahIndex) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SurahPage(surahIndex: surahIndex),
-                      ),
-                    );
-                  }),
+                  SurahListWidget(),
                   const JuzListPage(),
                   const BookmarksPage(),
                 ],

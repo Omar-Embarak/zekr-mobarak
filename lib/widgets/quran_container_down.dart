@@ -92,15 +92,7 @@ class QuranContainerDown extends StatelessWidget {
                 onTap: () {
                   MaterialPageRoute(
                     builder: (context) => SurahListWidget(
-                      onSurahTap: (surahIndex) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                SurahPage(surahIndex: surahIndex),
-                          ),
-                        );
-                      },
+                   
                     ),
                   );
                 },
@@ -123,15 +115,7 @@ class QuranContainerDown extends StatelessWidget {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => SurahListWidget(
-                        onSurahTap: (surahIndex) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  SurahPage(surahIndex: surahIndex),
-                            ),
-                          );
-                        },
+                  
                       ),
                     ),
                   );

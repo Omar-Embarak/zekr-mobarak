@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:azkar_app/methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:quran/quran.dart' as quran;
@@ -8,8 +11,17 @@ import '../../widgets/icon_constrain_widget.dart';
 import '../../widgets/quran_container_down.dart';
 
 class SurahPage extends StatefulWidget {
-  const SurahPage({super.key, required this.surahIndex});
-  final int surahIndex;
+  SurahPage({
+    super.key,
+    required this.surahIndex,
+    required this.isMakkia,
+    required this.juzNumber,
+    required this.surahsAyat,
+  });
+  int surahIndex;
+  int juzNumber;
+  String isMakkia;
+  int surahsAyat; //number of verses in each surah
 
   @override
   State<SurahPage> createState() => _SurahPageState();
@@ -18,6 +30,8 @@ class SurahPage extends StatefulWidget {
 class _SurahPageState extends State<SurahPage> {
   bool isVisible = true;
 
+  List surahContent = [];
+
   void toggleVisibility() {
     setState(() {
       isVisible = !isVisible;
@@ -25,8 +39,42 @@ class _SurahPageState extends State<SurahPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _loadSurahContent();
+  }
+
+  Future<void> _loadSurahContent() async {
+    // Load the JSON data
+    final data = await loadJSONDataMap(
+        'assets/quranjson/surah/surah_${widget.surahIndex}.json');
+
+    // Check the type of the data['verse'] and confirm it's a Map
+    try {
+      if (data['verse'] is Map<String, dynamic>) {
+        final verseData = data['verse'] as Map<String, dynamic>;
+
+        // Clear the existing content
+        surahContent.clear();
+
+        // Iterate over each key-value pair in the map
+        verseData.forEach((key, value) {
+          // Add the verse content (the value part of the key-value pair)
+          surahContent.add(value.toString());
+        });
+
+        // Update the state to reflect the changes
+        setState(() {});
+      }
+    } on Exception catch (e) {
+      log(e.toString());
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.kPrimaryColor,
       body: Stack(
         children: [
           Container(
@@ -41,22 +89,38 @@ class _SurahPageState extends State<SurahPage> {
                 children: [
                   GestureDetector(
                     onTap: toggleVisibility,
-                    child: const Text(
-                      'Here is where surah content should be shown',
-                      style: TextStyle(fontSize: 20, color: Colors.black),
-                      textAlign: TextAlign.center,
-                    ),
+                    child: surahContent.isEmpty
+                        ? const Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : ListView.builder(
+                            itemCount: surahContent.length,
+                            itemBuilder: (context, index) {
+                              return Text(
+                                '${surahContent[index]}',
+                                style: AppStyles.styleRajdhaniBold20(context)
+                                    .copyWith(color: AppColors.kSecondaryColor),
+                                textAlign: TextAlign.center,
+                              );
+                            }),
                   ),
                 ],
               ),
             ),
           ),
           if (isVisible)
-            const Positioned(
+            Positioned(
               top: 0,
               left: 0,
               right: 0,
-              child: SafeArea(child: QuranContainerUP()),
+              child: SafeArea(
+                  child: QuranContainerUP(
+                surahsAyat: widget.surahsAyat, //number of verses in each surah
+
+                juzNumber: widget.juzNumber,
+                surahIndex: widget.surahIndex,
+                isMakkia: widget.isMakkia,
+              )),
             ),
           if (isVisible)
             const Positioned(
@@ -71,17 +135,27 @@ class _SurahPageState extends State<SurahPage> {
   }
 }
 
-class QuranContainerUP extends StatelessWidget {
-  const QuranContainerUP({super.key});
+class QuranContainerUP extends StatefulWidget {
+  QuranContainerUP(
+      {super.key,
+      required this.surahIndex,
+      required this.isMakkia,
+      required this.juzNumber,
+      required this.surahsAyat});
+  int surahIndex;
+  String isMakkia;
+  int juzNumber;
+  int surahsAyat; //number of verses in each surah
 
   @override
+  State<QuranContainerUP> createState() => _QuranContainerUPState();
+}
+
+class _QuranContainerUPState extends State<QuranContainerUP> {
+  @override
   Widget build(BuildContext context) {
-    String isMakkia = true ? 'مكية' : 'مدنية';
-    int surahsAyat = 288;
-    int surahIndex = 1;
     int hizpNumber = 5;
     double rob3HizpNumber = 1 / 4;
-    int juzNumber = 3;
     bool isPageLeft = false;
 
     return Container(
@@ -111,7 +185,7 @@ class QuranContainerUP extends StatelessWidget {
                             height: 30, imagePath: Assets.imagesBook),
                         const SizedBox(width: 8),
                         Text(
-                          'سورة ${quran.getSurahNameArabic(surahIndex)} ($isMakkia ،اياتها $surahsAyat)',
+                          'سورة ${quran.getSurahNameArabic(widget.surahIndex)} (${widget.isMakkia} ،اياتها ${widget.surahsAyat})',
                           style: AppStyles.styleDiodrumArabicMedium15(context)
                               .copyWith(color: Colors.white),
                         ),
@@ -135,7 +209,7 @@ class QuranContainerUP extends StatelessWidget {
                     ),
                     FittedBox(
                       child: Text(
-                        '$rob3HizpNumber الحزب $hizpNumber   ',
+                        '$rob3HizpNumber الحزب $hizpNumber   ', //رقم الحزب ورقم الربع
                         style: AppStyles.styleDiodrumArabicMedium15(context)
                             .copyWith(color: Colors.white),
                       ),
@@ -151,7 +225,7 @@ class QuranContainerUP extends StatelessWidget {
               const IconConstrain(height: 30, imagePath: Assets.imagesVector),
               const SizedBox(width: 8),
               Text(
-                'الجزء $juzNumber',
+                'الجزء ${widget.juzNumber + 1}',
                 style: AppStyles.styleDiodrumArabicMedium15(context)
                     .copyWith(color: Colors.white),
               ),

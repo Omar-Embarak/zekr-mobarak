@@ -4,8 +4,35 @@ import 'package:share_plus/share_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:flutter/services.dart';
+Future<Map<String, dynamic>> loadJSONDataMap(String path) async {
+  try {
+    final String response = await rootBundle.loadString(path);
+    final data = json.decode(response);
+    return data as Map<String, dynamic>; // Return the loaded Map
+  } catch (e) {
+    debugPrint('Error loading JSON: $e');
+    return {}; // Return an empty Map in case of error
+  }
+}
 
-void initializeAudioPlayer(AudioPlayer audioPlayer, Function(Duration) setTotalDuration, Function(Duration) setCurrentDuration, Function(bool) setIsPlaying) {
+Future<List<dynamic>> loadJSONDataList(String path) async {
+  try {
+    final String response = await rootBundle.loadString(path);
+    final data = json.decode(response);
+    return data; // Return the loaded data
+  } catch (e) {
+    debugPrint('Error loading JSON: $e');
+    return []; // Return an empty list in case of error
+  }
+}
+
+void initializeAudioPlayer(
+    AudioPlayer audioPlayer,
+    Function(Duration) setTotalDuration,
+    Function(Duration) setCurrentDuration,
+    Function(bool) setIsPlaying) {
   audioPlayer.onDurationChanged.listen((Duration duration) {
     setTotalDuration(duration);
   });
@@ -18,7 +45,8 @@ void initializeAudioPlayer(AudioPlayer audioPlayer, Function(Duration) setTotalD
   });
 }
 
-Future<void> togglePlayPause(AudioPlayer audioPlayer, bool isPlaying, String audioUrl, Function(bool) setIsPlaying) async {
+Future<void> togglePlayPause(AudioPlayer audioPlayer, bool isPlaying,
+    String audioUrl, Function(bool) setIsPlaying) async {
   if (isPlaying) {
     await audioPlayer.pause();
   } else {
@@ -42,25 +70,27 @@ void backward(AudioPlayer audioPlayer) {
 Future<void> shareAudio(String audioUrl) async {
   Share.share(audioUrl);
 }
- Future<void> downloadDarsAudio(
-      String audioUrl, String title, BuildContext context) async {
-    if (await requestPermission(Permission.storage)) {
-      final dir = await getExternalStorageDirectory();
-      if (dir != null) {
-        String fileName = "$title.mp3";
-        String filePath = "${dir.path}/$fileName";
 
-        Dio dio = Dio();
-        await dio.download(audioUrl, filePath);
+Future<void> downloadDarsAudio(
+    String audioUrl, String title, BuildContext context) async {
+  if (await requestPermission(Permission.storage)) {
+    final dir = await getExternalStorageDirectory();
+    if (dir != null) {
+      String fileName = "$title.mp3";
+      String filePath = "${dir.path}/$fileName";
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Downloaded $fileName')),
-        );
-      }
+      Dio dio = Dio();
+      await dio.download(audioUrl, filePath);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Downloaded $fileName')),
+      );
     }
   }
+}
 
-Future<void> downloadAudio(String audioUrl, int surahIndex, BuildContext context) async {
+Future<void> downloadAudio(
+    String audioUrl, int surahIndex, BuildContext context) async {
   if (await requestPermission(Permission.storage)) {
     final dir = await getExternalStorageDirectory();
     if (dir != null) {
@@ -87,12 +117,11 @@ Future<bool> requestPermission(Permission permission) async {
 }
 
 void playNextSurah(
-  AudioPlayer audioPlayer, 
-  int surahIndex, 
-  Function(int) onSurahTap, 
-  String audioUrl, 
-  Function(bool) setIsPlaying
-) async {
+    AudioPlayer audioPlayer,
+    int surahIndex,
+    Function(int) onSurahTap,
+    String audioUrl,
+    Function(bool) setIsPlaying) async {
   final nextSurahIndex = surahIndex + 1;
   if (nextSurahIndex < 114) {
     onSurahTap(nextSurahIndex);
