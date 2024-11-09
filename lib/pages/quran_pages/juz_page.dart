@@ -1,9 +1,10 @@
-import 'package:azkar_app/constants.dart';
+import 'package:azkar_app/constants.dart'; 
 import 'package:azkar_app/utils/app_images.dart';
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:flutter/material.dart';
 import '../../methods.dart';
-//show quraters' hizp with first verse
+
+// Show quarters' hizb with the first verse
 class JuzListPage extends StatefulWidget {
   const JuzListPage({super.key});
 
@@ -49,12 +50,14 @@ class _JuzListPageState extends State<JuzListPage> {
                         ),
                       ),
                       child: Text(
-                          'الجزء ${arabicOrdinals[int.parse(juz['juz_index']) - 1]}',
-                          textAlign: TextAlign.center,
-                          style: AppStyles.styleRajdhaniBold13(context)
-                              .copyWith(color: Colors.white)),
+                        'الجزء ${arabicOrdinals[int.parse(juz['juz_index']) - 1]}',
+                        textAlign: TextAlign.center,
+                        style: AppStyles.styleRajdhaniBold13(context)
+                            .copyWith(color: Colors.white),
+                      ),
                     ),
-                    ..._buildHizbContainers(juz),
+                    // Pass starting quarter number for each Juz
+                    ..._buildHizbContainers(juz, (index * 2) + 1),
                   ],
                 );
               },
@@ -62,7 +65,7 @@ class _JuzListPageState extends State<JuzListPage> {
     );
   }
 
-  List<Widget> _buildHizbContainers(Map<String, dynamic> juz) {
+  List<Widget> _buildHizbContainers(Map<String, dynamic> juz, int startingQuarter) {
     List<Widget> containers = [];
     List<String> imagesOFRob3 = [
       Assets.imagesHizp,
@@ -70,14 +73,15 @@ class _JuzListPageState extends State<JuzListPage> {
       Assets.imagesHalf,
       Assets.images3rob3,
     ];
+
     for (int i = 1; i <= 8; i++) {
       final hizb = juz['hizb_$i'];
       if (hizb != null) {
         final start = hizb['start'];
         containers.add(
           GestureDetector(
-            onTap:(){
-              //navigate to the corresponding page of the hizp
+            onTap: () {
+              // Navigate to the corresponding page of the hizb
             },
             child: Container(
               width: double.infinity,
@@ -102,7 +106,13 @@ class _JuzListPageState extends State<JuzListPage> {
                         ),
                         Center(
                           child: Text(
-                            i % 4 == 0 ? '${i ~/ 4}' : '',
+                            // Display the incremented quarter number
+                            (i % 4 == 0) ? '${startingQuarter + (i ~/ 4) - 1}' : '',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ],
@@ -112,8 +122,10 @@ class _JuzListPageState extends State<JuzListPage> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('${start['ayah_text']}...',
-                          style: AppStyles.styleRajdhaniBold20(context)),
+                      Text(
+                        '${start['ayah_text']}...',
+                        style: AppStyles.styleRajdhaniBold20(context),
+                      ),
                       Row(
                         children: [
                           Text('آية: ${start['verse']}  '),

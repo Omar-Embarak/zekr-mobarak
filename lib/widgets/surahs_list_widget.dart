@@ -14,38 +14,6 @@ class SurahListWidget extends StatefulWidget {
 
 class _SurahListWidgetState extends State<SurahListWidget> {
   List<dynamic> surahsAyat = [];
-  final List<int> juzPages = const [
-    22,
-    42,
-    62,
-    82,
-    102,
-    122,
-    142,
-    162,
-    182,
-    202,
-    222,
-    242,
-    262,
-    282,
-    302,
-    322,
-    342,
-    362,
-    382,
-    402,
-    422,
-    442,
-    462,
-    482,
-    502,
-    522,
-    542,
-    562,
-    582,
-    602
-  ];
 
   @override
   void initState() {
@@ -60,7 +28,6 @@ class _SurahListWidgetState extends State<SurahListWidget> {
         surahsAyat = data;
       });
     } catch (e) {
-      // Handle error if needed
       debugPrint('Error loading data: $e');
     }
   }
@@ -103,9 +70,9 @@ class _SurahListWidgetState extends State<SurahListWidget> {
       BuildContext context, MapEntry<int, List<int>> entry, int juzIndex) {
     final surahType =
         quran.getPlaceOfRevelation(entry.key) == "Makkah" ? "مكية" : "مدنية";
-    final firstVersePage = entry.value.isNotEmpty
-        ? entry.value.first
-        : 1; // Get the first page of the surah
+
+    // Fetching the actual page where each Surah starts
+    final firstVersePage = quran.getSurahPages(entry.key).first;
 
     return Row(
       children: [
@@ -133,8 +100,8 @@ class _SurahListWidgetState extends State<SurahListWidget> {
                 ),
               ],
             ),
-            onTap: () =>
-                _navigateToSurahPage(context, entry.key, juzIndex, surahType),
+            onTap: () => _navigateToSurahPage(
+                context, entry.key, juzIndex, surahType, firstVersePage),
           ),
         ),
       ],
@@ -156,7 +123,7 @@ class _SurahListWidgetState extends State<SurahListWidget> {
           ),
           const Spacer(),
           Text(
-            '${juzPages[index]}',
+            '${quran.getSurahPages(index + 1).first}', // Page number where each Juz starts
             style: AppStyles.styleRajdhaniMedium18(context)
                 .copyWith(color: Colors.white),
           ),
@@ -166,12 +133,13 @@ class _SurahListWidgetState extends State<SurahListWidget> {
     );
   }
 
-  void _navigateToSurahPage(
-      BuildContext context, int surahIndex, int juzNumber, String surahType) {
+  void _navigateToSurahPage(BuildContext context, int surahIndex, int juzNumber,
+      String surahType, int firstVersePage) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>  SurahPage(
+        builder: (context) => SurahPage(
+          pageNumber: firstVersePage,
           surahIndex: surahIndex,
           isMakkia: surahType,
           juzNumber: juzNumber,

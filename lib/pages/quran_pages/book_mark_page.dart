@@ -9,23 +9,15 @@ class BookmarksPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<BookmarkProvider>(
-      builder: (context, bookmarkProvider, child) {
-        final bookmarks = bookmarkProvider.bookmarks;
-
-        if (bookmarks.isEmpty) {
-          return const Center(child: Text('لا توجد مراجع حالياً.'));
-        }
-
+      builder: (context, provider, child) {
         return ListView.builder(
-          itemCount: bookmarks.length,
+          itemCount: provider.bookmarks.length,
           itemBuilder: (context, index) {
             return ListTile(
-              title: Text(bookmarks[index]),
+              title: Text(provider.bookmarks[index]),
               trailing: IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () {
-                  bookmarkProvider.removeBookmark(bookmarks[index]);
-                },
+                icon: Icon(Icons.delete),
+                onPressed: () => provider.removeBookmark(index),
               ),
             );
           },

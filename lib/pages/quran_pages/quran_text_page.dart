@@ -1,24 +1,28 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:al_quran/al_quran.dart';
+import 'package:provider/provider.dart';
 import '../../constants.dart';
 import '../../methods.dart';
 import '../../utils/app_style.dart';
 import '../../widgets/quran_container_down.dart';
 import '../../widgets/quran_container_up.dart';
+import 'package:quran/quran.dart' as quran;
+import 'quran_data_provider.dart'; // Import the QuranDataProvider file
 
 class SurahPage extends StatefulWidget {
   final int surahIndex;
   final int juzNumber;
   final String isMakkia;
   final int surahsAyat;
-
-  const SurahPage({
+  int pageNumber;
+   SurahPage({
     super.key,
     required this.surahIndex,
     required this.juzNumber,
     required this.isMakkia,
     required this.surahsAyat,
+    required this.pageNumber,
   });
 
   @override
@@ -69,6 +73,9 @@ class _SurahPageState extends State<SurahPage> {
 
   @override
   Widget build(BuildContext context) {
+    final juzData = Provider.of<QuranDataProvider>(context)
+        .juzData; // Juz data from provider
+
     return Scaffold(
       backgroundColor: AppColors.kPrimaryColor,
       body: Stack(
@@ -91,13 +98,12 @@ class _SurahPageState extends State<SurahPage> {
                     child: ListView.builder(
                       itemCount: pageContent[index]?.length ?? 0,
                       itemBuilder: (context, verseIndex) {
-                        // Replace first verse with Bismillah if verseIndex is 0
                         final verseText = (verseIndex == 0)
                             ? AlQuran.getBismillah.unicode
-                            : '${pageContent[index]?[verseIndex]} \u06DD';
+                            : '${pageContent[index]?[verseIndex]} ${quran.getVerseEndSymbol(verseIndex,arabicNumeral: true)}';
 
                         return Text(
-                          verseText, // Display either Bismillah or the verse with end symbol
+                          verseText,
                           style: AppStyles.styleRajdhaniBold20(context)
                               .copyWith(color: AppColors.kSecondaryColor),
                           textAlign: TextAlign.center,
@@ -125,11 +131,14 @@ class _SurahPageState extends State<SurahPage> {
               ),
             ),
           if (isVisible)
-            const Positioned(
+             Positioned(
               bottom: 0,
               left: 0,
               right: 0,
-              child: SafeArea(child: QuranContainerDown()),
+              child: SafeArea(
+                  child: QuranContainerDown(
+                pageNumber: widget.pageNumber,
+              )),
             ),
         ],
       ),

@@ -8,11 +8,19 @@ import '../utils/app_style.dart';
 import 'quran_containers_buttons_widget.dart';
 import 'surahs_list_widget.dart';
 
-class QuranContainerDown extends StatelessWidget {
-  const QuranContainerDown({super.key});
+class QuranContainerDown extends StatefulWidget {
+  QuranContainerDown({super.key, required this.pageNumber});
+  int pageNumber;
 
   @override
-  Widget build(BuildContext context) {
+  State<QuranContainerDown> createState() => _QuranContainerDownState();
+}
+
+class _QuranContainerDownState extends State<QuranContainerDown> {
+  @override
+  Widget build(
+    BuildContext context,
+  ) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 12),
       padding: const EdgeInsets.all(12),
@@ -90,16 +98,14 @@ class QuranContainerDown extends StatelessWidget {
                 text: 'الإنتقال إلي العلامة',
                 onTap: () {
                   MaterialPageRoute(
-                    builder: (context) => SurahListWidget(
-                   
-                    ),
+                    builder: (context) => SurahListWidget(),
                   );
                 },
               ),
               QuranContainerButtons(
                 iconHeight: 18,
                 iconPath: Assets.imagesPage,
-                text: 'تغيير الصفحة',
+                text: '${widget.pageNumber} صفحة',
                 onTap: () {},
               ),
             ],
@@ -113,9 +119,7 @@ class QuranContainerDown extends StatelessWidget {
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => SurahListWidget(
-                  
-                      ),
+                      builder: (context) => SurahListWidget(),
                     ),
                   );
                 },

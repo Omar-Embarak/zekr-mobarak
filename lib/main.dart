@@ -10,6 +10,7 @@ import 'cubit/azkar_cubit/azkar_cubit.dart';
 import 'cubit/praying_cubit/praying_cubit.dart';
 import 'pages/home_page/home_page.dart';
 import 'pages/quran_pages/book_mark_provider.dart';
+import 'pages/quran_pages/quran_data_provider.dart';
 
 void main() async {
   Bloc.observer = SimpleBlocObserver();
@@ -23,6 +24,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+               ChangeNotifierProvider(create: (_) => QuranDataProvider()),
+
         BlocProvider(
           create: (context) => AddFavSurahItemCubit(),
         ),
