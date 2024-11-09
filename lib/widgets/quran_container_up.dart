@@ -11,7 +11,7 @@ class QuranContainerUP extends StatelessWidget {
   final String isMakkia;
   final int juzNumber;
   final int surahsAyat;
-  final bool isPageLeft; // New parameter
+  final bool isPageLeft;
 
   const QuranContainerUP({
     super.key,
@@ -19,7 +19,7 @@ class QuranContainerUP extends StatelessWidget {
     required this.isMakkia,
     required this.juzNumber,
     required this.surahsAyat,
-    required this.isPageLeft, // Initialize isPageLeft
+    required this.isPageLeft,
   });
 
   @override
@@ -56,7 +56,7 @@ class QuranContainerUP extends StatelessWidget {
                         FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
-                            'سورة ${quran.getSurahNameArabic(surahIndex)} ($isMakkia ،اياتها $surahsAyat)',
+                            'سورة ${quran.getSurahNameArabic(surahIndex)} (${isMakkia == 'Makkah' ? 'مكية' : 'مدنية'} ،اياتها $surahsAyat)',
                             style: AppStyles.styleDiodrumArabicMedium15(context)
                                 .copyWith(color: Colors.white),
                           ),

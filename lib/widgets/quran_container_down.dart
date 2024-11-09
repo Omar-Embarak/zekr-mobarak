@@ -98,14 +98,14 @@ class _QuranContainerDownState extends State<QuranContainerDown> {
                 text: 'الإنتقال إلي العلامة',
                 onTap: () {
                   MaterialPageRoute(
-                    builder: (context) => SurahListWidget(),
+                    builder: (context) => const SurahListWidget(),
                   );
                 },
               ),
               QuranContainerButtons(
                 iconHeight: 18,
                 iconPath: Assets.imagesPage,
-                text: '${widget.pageNumber} صفحة',
+                text: 'صفحة ${widget.pageNumber} ',
                 onTap: () {},
               ),
             ],
@@ -119,7 +119,7 @@ class _QuranContainerDownState extends State<QuranContainerDown> {
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => SurahListWidget(),
+                      builder: (context) => const SurahListWidget(),
                     ),
                   );
                 },

@@ -1,14 +1,11 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:al_quran/al_quran.dart';
-import 'package:provider/provider.dart';
+import 'package:quran/page_data.dart';
 import '../../constants.dart';
-import '../../methods.dart';
-import '../../utils/app_style.dart';
 import '../../widgets/quran_container_down.dart';
 import '../../widgets/quran_container_up.dart';
 import 'package:quran/quran.dart' as quran;
-import 'quran_data_provider.dart'; // Import the QuranDataProvider file
 
 class SurahPage extends StatefulWidget {
   final int surahIndex;
@@ -16,7 +13,8 @@ class SurahPage extends StatefulWidget {
   final String isMakkia;
   final int surahsAyat;
   int pageNumber;
-   SurahPage({
+
+  SurahPage({
     super.key,
     required this.surahIndex,
     required this.juzNumber,
@@ -31,51 +29,53 @@ class SurahPage extends StatefulWidget {
 
 class _SurahPageState extends State<SurahPage> {
   bool isVisible = true;
-  bool isPageLeft = true;
-  Map<int, List<String>> pageContent = {};
+  Map<int, List<Map<String, dynamic>>> pageContent = {};
+  int currentSurahIndex = 0;
+  int currentJuzNumber = 0;
 
   @override
   void initState() {
     super.initState();
-    _loadPageContent();
+    _loadPageContent(widget.pageNumber); // Load initial page content
   }
 
-  Future<void> _loadPageContent() async {
+  // Function to load the page content based on page number
+  Future<void> _loadPageContent(int pageNumber) async {
     try {
-      final data = await loadJSONDataMap(
-          'assets/quranjson/surah/surah_${widget.surahIndex}.json');
+      // Clear previous content
+      pageContent.clear();
 
-      if (data['verse'] is Map<String, dynamic>) {
-        final verseData = data['verse'] as Map<String, dynamic>;
+      // Retrieve the content for the specific page
+      List<Map<String, dynamic>> currentPageData = pageData[pageNumber - 1];
 
-        int currentPage = 0;
-        List<String> verses = [];
+      for (var entry in currentPageData) {
+        int surahNumber = entry['surah'];
+        int startVerse = entry['start'];
+        int endVerse = entry['end'];
 
-        verseData.forEach((key, value) {
-          verses.add(value.toString());
-          if (verses.length >= 10) {
-            pageContent[currentPage] = List<String>.from(verses);
-            verses.clear();
-            currentPage++;
-          }
-        });
+        // Track current Surah and Juz for QuranContainerUP
+        currentSurahIndex = surahNumber;
+        currentJuzNumber = quran.getJuzNumber(surahNumber, startVerse);
 
-        if (verses.isNotEmpty) {
-          pageContent[currentPage] = List<String>.from(verses);
+        // Create a list of verse information, including actual verse numbers
+        List<Map<String, dynamic>> verses = [];
+        for (int verse = startVerse; verse <= endVerse; verse++) {
+          verses.add({
+            'verseNumber': verse,
+            'verseText': quran.getVerse(surahNumber, verse),
+          });
         }
-
-        setState(() {});
+        pageContent[surahNumber] = verses;
       }
-    } on Exception catch (e) {
+
+      setState(() {}); // Refresh UI
+    } catch (e) {
       log(e.toString());
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final juzData = Provider.of<QuranDataProvider>(context)
-        .juzData; // Juz data from provider
-
     return Scaffold(
       backgroundColor: AppColors.kPrimaryColor,
       body: Stack(
@@ -86,35 +86,91 @@ class _SurahPageState extends State<SurahPage> {
             color: Colors.transparent,
             child: SafeArea(
               child: PageView.builder(
-                itemCount: pageContent.length,
-                onPageChanged: (value) {
+                controller: PageController(initialPage: widget.pageNumber - 1),
+                onPageChanged: (newPageIndex) {
                   setState(() {
-                    isPageLeft = !isPageLeft;
+                    widget.pageNumber = newPageIndex + 1;
                   });
+                  _loadPageContent(widget.pageNumber); // Load new page content
                 },
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: toggleVisibility,
-                    child: ListView.builder(
-                      itemCount: pageContent[index]?.length ?? 0,
-                      itemBuilder: (context, verseIndex) {
-                        final verseText = (verseIndex == 0)
-                            ? AlQuran.getBismillah.unicode
-                            : '${pageContent[index]?[verseIndex]} ${quran.getVerseEndSymbol(verseIndex,arabicNumeral: true)}';
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8.0, vertical: 16.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            RichText(
+                              textAlign: TextAlign.center,
+                              text: TextSpan(
+                                style: const TextStyle(
+                                  fontFamily:
+                                      'Amiri', // Use the family name specified in pubspec.yaml
+                                  color: AppColors.kSecondaryColor,
+                                  fontSize: 22.0,
+                                  height: 1.5,
+                                ),
+                                children: [
+                                  ...pageContent.entries.expand((entry) {
+                                    int surahNumber = entry.key;
+                                    return entry.value.map((verseEntry) {
+                                      int verseIndex =
+                                          verseEntry['verseNumber'];
+                                      String verseText =
+                                          verseEntry['verseText'];
 
-                        return Text(
-                          verseText,
-                          style: AppStyles.styleRajdhaniBold20(context)
-                              .copyWith(color: AppColors.kSecondaryColor),
-                          textAlign: TextAlign.center,
-                        );
-                      },
+                                      // Conditional check to display Bismillah only before the first verse of each Surah
+                                      List<TextSpan> textSpans = [];
+
+                                      // Show Surah name and Bismillah only if the verseIndex is 1 and not Surah Al-Fatihah
+                                      if (verseIndex == 1 &&
+                                          currentSurahIndex != 1) {
+                                        textSpans.add(TextSpan(
+                                          text:
+                                              '\n سورة ${quran.getSurahNameArabic(surahNumber)}\n',
+                                          style: const TextStyle(
+                                            fontFamily:
+                                                'Amiri', // Use the family name specified in pubspec.yaml
+                                            color: AppColors.kSecondaryColor,
+                                            fontSize: 22.0,
+                                            height: 1.5,
+                                          ),
+                                        ));
+                                        textSpans.add(TextSpan(
+                                          text:
+                                              '${AlQuran.getBismillah.unicode}\n\n',
+                                          style: const TextStyle(
+                                            fontFamily:
+                                                'Amiri', // Use the family name specified in pubspec.yaml
+                                            color: AppColors.kSecondaryColor,
+                                            fontSize: 22.0,
+                                            height: 1.5,
+                                          ),
+                                        ));
+                                      }
+                                      textSpans.add(TextSpan(
+                                        text:
+                                            ' $verseText${quran.getVerseEndSymbol(verseIndex, arabicNumeral: true)} ',
+                                      ));
+                                      return textSpans;
+                                    }).expand((e) => e); // Flatten nested list
+                                  }),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   );
                 },
               ),
             ),
           ),
+          // Upper container with dynamic surah and juz info
           if (isVisible)
             Positioned(
               top: 0,
@@ -122,29 +178,32 @@ class _SurahPageState extends State<SurahPage> {
               right: 0,
               child: SafeArea(
                 child: QuranContainerUP(
-                  surahsAyat: widget.surahsAyat,
-                  juzNumber: widget.juzNumber,
-                  surahIndex: widget.surahIndex,
-                  isMakkia: widget.isMakkia,
-                  isPageLeft: isPageLeft,
+                  surahIndex: currentSurahIndex,
+                  isMakkia: quran.getPlaceOfRevelation(currentSurahIndex),
+                  juzNumber: currentJuzNumber - 1,
+                  surahsAyat: quran.getVerseCount(currentSurahIndex),
+                  isPageLeft: widget.pageNumber % 2 == 0,
                 ),
               ),
             ),
+          // Bottom container with page number
           if (isVisible)
-             Positioned(
+            Positioned(
               bottom: 0,
               left: 0,
               right: 0,
               child: SafeArea(
-                  child: QuranContainerDown(
-                pageNumber: widget.pageNumber,
-              )),
+                child: QuranContainerDown(
+                  pageNumber: widget.pageNumber,
+                ),
+              ),
             ),
         ],
       ),
     );
   }
 
+  // Function to toggle visibility of upper and lower containers
   void toggleVisibility() {
     setState(() {
       isVisible = !isVisible;
