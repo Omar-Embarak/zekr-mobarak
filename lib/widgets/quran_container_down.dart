@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../constants.dart';
 import '../pages/quran_pages/doaa_khatm_page.dart';
 import '../pages/quran_pages/juz_page.dart';
-import '../pages/quran_pages/quran_text_page.dart';
 import '../utils/app_images.dart';
 import '../utils/app_style.dart';
 import 'quran_containers_buttons_widget.dart';

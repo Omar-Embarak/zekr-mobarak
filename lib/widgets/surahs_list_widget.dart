@@ -171,7 +171,7 @@ class _SurahListWidgetState extends State<SurahListWidget> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SurahPage(
+        builder: (context) =>  SurahPage(
           surahIndex: surahIndex,
           isMakkia: surahType,
           juzNumber: juzNumber,

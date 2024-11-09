@@ -2,9 +2,8 @@ import 'package:azkar_app/constants.dart';
 import 'package:azkar_app/utils/app_images.dart';
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:flutter/material.dart';
-
 import '../../methods.dart';
-
+//show quraters' hizp with first verse
 class JuzListPage extends StatefulWidget {
   const JuzListPage({super.key});
 
@@ -76,53 +75,58 @@ class _JuzListPageState extends State<JuzListPage> {
       if (hizb != null) {
         final start = hizb['start'];
         containers.add(
-          Container(
-            width: double.infinity,
-            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              border: const Border(
-                bottom: BorderSide(color: Colors.grey),
-              ),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              children: [
-                SizedBox(
-                  height: 60,
-                  width: 60,
-                  child: Stack(
-                    children: [
-                      Image.asset(
-                        imagesOFRob3[i % imagesOFRob3.length],
-                        fit: BoxFit.cover,
-                      ),
-                      Center(
-                        child: Text(
-                          i % 4 == 0 ? '${i ~/ 4}' : '',
-                        ),
-                      ),
-                    ],
-                  ),
+          GestureDetector(
+            onTap:(){
+              //navigate to the corresponding page of the hizp
+            },
+            child: Container(
+              width: double.infinity,
+              margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                border: const Border(
+                  bottom: BorderSide(color: Colors.grey),
                 ),
-                const SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('${start['ayah_text']}...',
-                        style: AppStyles.styleRajdhaniBold20(context)),
-                    Row(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  SizedBox(
+                    height: 60,
+                    width: 60,
+                    child: Stack(
                       children: [
-                        Text('آية: ${start['verse']}  '),
-                        Text(
-                          'سورة: ${start['surah']}',
-                          style: AppStyles.styleRajdhaniBold18(context),
+                        Image.asset(
+                          imagesOFRob3[i % imagesOFRob3.length],
+                          fit: BoxFit.cover,
+                        ),
+                        Center(
+                          child: Text(
+                            i % 4 == 0 ? '${i ~/ 4}' : '',
+                          ),
                         ),
                       ],
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                  const SizedBox(width: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('${start['ayah_text']}...',
+                          style: AppStyles.styleRajdhaniBold20(context)),
+                      Row(
+                        children: [
+                          Text('آية: ${start['verse']}  '),
+                          Text(
+                            'سورة: ${start['surah']}',
+                            style: AppStyles.styleRajdhaniBold18(context),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );

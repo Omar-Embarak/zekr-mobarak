@@ -1,4 +1,3 @@
-import 'package:azkar_app/pages/quran_pages/quran_text_page.dart';
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:azkar_app/widgets/surahs_list_widget.dart';
 import 'package:flutter/material.dart';
@@ -37,12 +36,12 @@ class QuranReadingMainPage extends StatelessWidget {
                 Tab(text: 'المراجعيات'),
               ],
             ),
-            Expanded(
+            const Expanded(
               child: TabBarView(
                 children: [
                   SurahListWidget(),
-                  const JuzListPage(),
-                  const BookmarksPage(),
+                  JuzListPage(),
+                  BookmarksPage(),
                 ],
               ),
             ),
