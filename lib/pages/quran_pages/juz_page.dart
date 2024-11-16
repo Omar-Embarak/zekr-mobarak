@@ -1,7 +1,9 @@
-import 'package:azkar_app/constants.dart'; 
+import 'package:azkar_app/constants.dart';
+import 'package:azkar_app/pages/quran_pages/quran_text_page.dart';
 import 'package:azkar_app/utils/app_images.dart';
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:flutter/material.dart';
+import 'package:quran/quran.dart';
 import '../../methods.dart';
 
 // Show quarters' hizb with the first verse
@@ -24,7 +26,7 @@ class _JuzListPageState extends State<JuzListPage> {
   Future<void> _loadData() async {
     final data = await loadJSONDataList('assets/quranjson/juz.json');
     setState(() {
-      juzData = data; // Update state with loaded data
+      juzData = data;
     });
   }
 
@@ -50,14 +52,14 @@ class _JuzListPageState extends State<JuzListPage> {
                         ),
                       ),
                       child: Text(
-                        'الجزء ${arabicOrdinals[int.parse(juz['juz_index']) - 1]}',
+                        'الجزء ${arabicOrdinals[index]}',
                         textAlign: TextAlign.center,
                         style: AppStyles.styleRajdhaniBold13(context)
                             .copyWith(color: Colors.white),
                       ),
                     ),
-                    // Pass starting quarter number for each Juz
-                    ..._buildHizbContainers(juz, (index * 2) + 1),
+                    if (juz["arbaa"] != null)
+                      ..._buildQuarterContainers(juz["arbaa"]),
                   ],
                 );
               },
@@ -65,23 +67,31 @@ class _JuzListPageState extends State<JuzListPage> {
     );
   }
 
-  List<Widget> _buildHizbContainers(Map<String, dynamic> juz, int startingQuarter) {
+  List<Widget> _buildQuarterContainers(List<dynamic> quarters) {
     List<Widget> containers = [];
-    List<String> imagesOFRob3 = [
+    List<String> quarterImages = [
       Assets.imagesHizp,
       Assets.imagesRob3,
       Assets.imagesHalf,
       Assets.images3rob3,
     ];
 
-    for (int i = 1; i <= 8; i++) {
-      final hizb = juz['hizb_$i'];
-      if (hizb != null) {
-        final start = hizb['start'];
+    for (int i = 0; i < quarters.length; i++) {
+      final quarter = quarters[i];
+      if (quarter != null) {
+        final surahNumber = quarter['surah_number'];
+        final verseNumber = quarter['verse_number'];
+
         containers.add(
           GestureDetector(
             onTap: () {
-              // Navigate to the corresponding page of the hizb
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => SurahPage(
+                    pageNumber: getPageNumber(surahNumber, verseNumber),
+                  ),
+                ),
+              );
             },
             child: Container(
               width: double.infinity,
@@ -95,42 +105,30 @@ class _JuzListPageState extends State<JuzListPage> {
               ),
               child: Row(
                 children: [
-                  SizedBox(
-                    height: 60,
-                    width: 60,
-                    child: Stack(
-                      children: [
-                        Image.asset(
-                          imagesOFRob3[i % imagesOFRob3.length],
-                          fit: BoxFit.cover,
-                        ),
-                        Center(
-                          child: Text(
-                            // Display the incremented quarter number
-                            (i % 4 == 0) ? '${startingQuarter + (i ~/ 4) - 1}' : '',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                  HizbImage(
+                    quarterImages: quarterImages,
+                    index: i,
                   ),
                   const SizedBox(width: 10),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${start['ayah_text']}...',
-                        style: AppStyles.styleRajdhaniBold20(context),
+                        "${getVerse(surahNumber, verseNumber).length > 30 ? getVerse(surahNumber, verseNumber).substring(0, 30) : getVerse(surahNumber, verseNumber)}...",
+                        style: AppStyles.styleAmiriMedium20(context),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
+                      const SizedBox(height: 8),
                       Row(
                         children: [
-                          Text('آية: ${start['verse']}  '),
                           Text(
-                            'سورة: ${start['surah']}',
+                            'آية: $verseNumber',
+                            style: AppStyles.styleRajdhaniMedium18(context),
+                          ),
+                          const SizedBox(width: 16),
+                          Text(
+                            getSurahNameArabic(surahNumber),
                             style: AppStyles.styleRajdhaniBold18(context),
                           ),
                         ],
@@ -147,4 +145,50 @@ class _JuzListPageState extends State<JuzListPage> {
 
     return containers;
   }
+}
+
+class HizbImage extends StatelessWidget {
+  const HizbImage({
+    super.key,
+    required this.quarterImages,
+    required this.index,
+  });
+
+  final List<String> quarterImages;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 60,
+      width: 60,
+      child: Stack(
+        children: [
+          Image.asset(
+            quarterImages[index % quarterImages.length],
+            fit: BoxFit.cover,
+          ),
+          Center(
+            child: Text(
+              '${index + 1}',
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+int getSurahNumberByName(String surahName) {
+  for (int i = 1; i <= 114; i++) {
+    if (getSurahNameArabic(i) == surahName) {
+      return i;
+    }
+  }
+  throw Exception('Surah not found: $surahName');
 }

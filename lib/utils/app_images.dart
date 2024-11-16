@@ -142,6 +142,10 @@ class Assets {
   /// assets/images/share.svg
   static const String imagesShare = "assets/images/share.svg";
 
+  /// Assets for imagesSurahBorder
+  /// assets/images/surahBorder.png
+  static const String imagesSurahBorder = "assets/images/surahBorder.png";
+
   /// Assets for imagesVector
   /// assets/images/Vector.svg
   static const String imagesVector = "assets/images/Vector.svg";

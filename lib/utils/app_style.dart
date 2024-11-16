@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../constants.dart';
 import 'size_config.dart';
 
 abstract class AppStyles {
   static TextStyle styleCairoMedium15(context) {
     return TextStyle(
-      color: const Color(0xff6A564F),
+      color: AppColors.kSecondaryColor,
       fontSize: getResponsiveFontSize(context, fontSize: 15),
       fontFamily: 'Cairo',
       fontWeight: FontWeight.w500,
@@ -14,7 +15,7 @@ abstract class AppStyles {
 
   static TextStyle styleRajdhaniMedium20(context) {
     return TextStyle(
-      color: const Color(0xff6A564F),
+      color: AppColors.kSecondaryColor,
       fontSize: getResponsiveFontSize(context, fontSize: 20),
       fontFamily: 'Rajdhani',
       fontWeight: FontWeight.w500,
@@ -32,7 +33,7 @@ abstract class AppStyles {
 
   static TextStyle styleRajdhaniBold20(context) {
     return TextStyle(
-      color: const Color(0xff6A564F),
+      color: AppColors.kSecondaryColor,
       fontSize: getResponsiveFontSize(context, fontSize: 20),
       fontFamily: 'Rajdhani',
       fontWeight: FontWeight.w700,
@@ -75,6 +76,15 @@ abstract class AppStyles {
     );
   }
 
+  static TextStyle styleDiodrumArabicMedium11(context) {
+    return TextStyle(
+      color: const Color(0xffffffff),
+      fontSize: getResponsiveFontSize(context, fontSize: 11),
+      fontFamily: 'DiodrumArabic',
+      fontWeight: FontWeight.w500,
+    );
+  }
+
   static TextStyle styleRajdhaniMedium13(context) {
     return TextStyle(
       color: const Color(0xff575757),
@@ -95,10 +105,18 @@ abstract class AppStyles {
 
   static TextStyle styleCairoMedium10(context) {
     return TextStyle(
-      color: const Color(0xff6A564F),
+      color: AppColors.kSecondaryColor,
       fontSize: getResponsiveFontSize(context, fontSize: 10),
       fontFamily: 'Cairo',
       fontWeight: FontWeight.w500,
+    );
+  }
+
+  static TextStyle styleAmiriMedium20(context) {
+    return TextStyle(
+      fontFamily: 'Amiri',
+      fontSize: getResponsiveFontSize(context, fontSize: 20),
+      color: AppColors.kSecondaryColor,
     );
   }
 }

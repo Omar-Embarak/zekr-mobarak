@@ -10,6 +10,7 @@ environment:
 dependencies:
   al_quran: ^0.1.1+5
   audioplayers: ^6.1.0
+  auto_size_text: ^3.0.0
   collection: ^1.17.1
   connectivity_plus: ^6.0.5
   cupertino_icons: ^1.0.6
@@ -74,7 +75,6 @@ flutter:
     - assets/quranjson/juz.json
     - assets/quranjson/surah/
 
-
   fonts:
     - family: Cairo
       fonts:
@@ -93,3 +93,8 @@ flutter_assets:
   output_path: lib/utils/
   filename: app_images.dart
   field_prefix: null
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/logo.png"

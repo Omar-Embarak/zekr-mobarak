@@ -1,6 +1,6 @@
-import 'package:azkar_app/utils/app_style.dart';
-import 'package:azkar_app/widgets/surahs_list_widget.dart';
 import 'package:flutter/material.dart';
+import '../../utils/app_style.dart';
+import '../../widgets/surahs_list_widget.dart';
 import '../../constants.dart';
 import 'book_mark_page.dart';
 import 'juz_page.dart';
@@ -12,7 +12,6 @@ class QuranReadingMainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3,
-      initialIndex: 0,
       child: Scaffold(
         backgroundColor: AppColors.kPrimaryColor,
         appBar: AppBar(

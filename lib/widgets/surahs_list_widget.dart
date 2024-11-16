@@ -34,8 +34,6 @@ class _SurahListWidgetState extends State<SurahListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final shownSurahs = <int>{}; // Track displayed Surahs
-
     return Scaffold(
       backgroundColor: AppColors.kPrimaryColor,
       body: surahsAyat.isEmpty
@@ -44,24 +42,20 @@ class _SurahListWidgetState extends State<SurahListWidget> {
               itemCount: quran.totalJuzCount,
               itemBuilder: (context, index) {
                 final surahsInJuz = quran.getSurahAndVersesFromJuz(index + 1);
-                return _buildJuzSection(
-                    context, index, surahsInJuz, shownSurahs);
+                return _buildJuzSection(context, index, surahsInJuz);
               },
             ),
     );
   }
 
-  Widget _buildJuzSection(BuildContext context, int index,
-      Map<int, List<int>> surahsInJuz, Set<int> shownSurahs) {
+  Widget _buildJuzSection(
+      BuildContext context, int index, Map<int, List<int>> surahsInJuz) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildJuzHeader(context, index),
-        ...surahsInJuz.entries.where((entry) {
-          if (shownSurahs.contains(entry.key)) return false;
-          shownSurahs.add(entry.key);
-          return true;
-        }).map((entry) => _buildSurahRow(context, entry, index)),
+        ...surahsInJuz.entries
+            .map((entry) => _buildSurahRow(context, entry, index)),
       ],
     );
   }
@@ -140,10 +134,6 @@ class _SurahListWidgetState extends State<SurahListWidget> {
       MaterialPageRoute(
         builder: (context) => SurahPage(
           pageNumber: firstVersePage,
-          surahIndex: surahIndex,
-          isMakkia: surahType,
-          juzNumber: juzNumber,
-          surahsAyat: surahsAyat[surahIndex - 1]['count'],
         ),
       ),
     );
