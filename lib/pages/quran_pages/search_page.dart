@@ -1,5 +1,8 @@
 import 'dart:developer';
 
+import 'package:azkar_app/constants.dart';
+import 'package:azkar_app/pages/quran_pages/surah_page.dart';
+import 'package:azkar_app/utils/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:quran/quran.dart' as quran;
 import 'package:quran/quran_text.dart'; // To access quranText directly
@@ -51,45 +54,54 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-   
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _searchController,
-              decoration: const InputDecoration(
-                labelText: "Search",
-                border: OutlineInputBorder(),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: AppColors.kPrimaryColor,
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                controller: _searchController,
+                decoration: const InputDecoration(
+                  labelText: "البحث",
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: _search,
               ),
-              onChanged: _search,
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: searchResults.length,
-              itemBuilder: (context, index) {
-                final result = searchResults[index];
-                return ListTile(
-                  title: Text(
-                    quran.getVerse(
-                      result['surah'],
-                      result['verse'],
+            Expanded(
+              child: ListView.builder(
+                itemCount: searchResults.length,
+                itemBuilder: (context, index) {
+                  final result = searchResults[index];
+                  return ListTile(
+                    title: Text(
+                      quran.getVerse(
+                        result['surah'],
+                        result['verse'],
+                      ),
+                      style: AppStyles.styleAmiriMedium20(context),
                     ),
-                    style: const TextStyle(fontFamily: 'Amiri', fontSize: 16),
-                  ),
-                  subtitle: Text(
-                    'Surah: ${quran.getSurahNameArabic(result['surah'])}, Ayah: ${result['verse']}',
-                  ),
-                  onTap: () {
-                    Navigator.pop(context, result);
-                  },
-                );
-              },
+                    subtitle: Text(
+                      'سورة: ${quran.getSurahNameArabic(result['surah'])}, آية: ${result['verse']}',
+                    ),
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => SurahPage(
+                          pageNumber: quran.getPageNumber(
+                            result['surah'],
+                            result['verse'],
+                          ),
+                        ),
+                      ));
+                    },
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
