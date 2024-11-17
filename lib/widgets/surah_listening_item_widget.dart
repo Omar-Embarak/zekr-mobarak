@@ -24,7 +24,7 @@ class SurahListeningItem extends StatefulWidget {
       required this.surahIndex,
       required this.audioUrl,
       this.onSurahTap,
-       required this.reciter});
+      required this.reciter});
 
   @override
   State<SurahListeningItem> createState() => _SurahListeningItemState();
@@ -51,7 +51,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
 
   @override
   void dispose() {
-      _audioPlayer.stop();
+    _audioPlayer.stop();
     _audioPlayer.dispose();
 
     super.dispose();
@@ -91,17 +91,13 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
     }
   }
 
-  void showMessage(String message) {
-    Fluttertoast.showToast(msg: message);
-  }
-
   void toggleFavorite() {
     setState(() {
       isFavorite = !isFavorite;
       if (isFavorite) {
         var favSurahModel = FavModel(
           url: widget.audioUrl,
-          reciter: widget. reciter,
+          reciter: widget.reciter,
           surahIndex: widget.surahIndex,
         );
         BlocProvider.of<AddFavSurahItemCubit>(context)
@@ -237,7 +233,8 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
             if (_connectivityStatus == ConnectivityResult.none) {
               showMessage('لا يتوفر اتصال بالانترنت.');
             } else {
-              downloadAudio(widget.audioUrl, widget.surahIndex, context);
+              downloadAudio(widget.audioUrl,
+                  quran.getSurahNameArabic(widget.surahIndex), context);
             }
           },
           child: const IconConstrain(
@@ -279,18 +276,19 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
 
   Widget buildSlider() {
     return Slider(
-  activeColor: AppColors.kSecondaryColor,
-  inactiveColor: AppColors.kPrimaryColor,
-  value: currentDuration.inSeconds.toDouble(),
-  max: totalDuration.inSeconds > 0 ? totalDuration.inSeconds.toDouble() : 1,
-  onChanged: totalDuration.inSeconds > 0 ? (value) {
-    setState(() {
-      currentDuration = Duration(seconds: value.toInt());
-    });
-    _audioPlayer.seek(currentDuration);
-  } : null,
-);
-
+      activeColor: AppColors.kSecondaryColor,
+      inactiveColor: AppColors.kPrimaryColor,
+      value: currentDuration.inSeconds.toDouble(),
+      max: totalDuration.inSeconds > 0 ? totalDuration.inSeconds.toDouble() : 1,
+      onChanged: totalDuration.inSeconds > 0
+          ? (value) {
+              setState(() {
+                currentDuration = Duration(seconds: value.toInt());
+              });
+              _audioPlayer.seek(currentDuration);
+            }
+          : null,
+    );
   }
 
   Widget buildControlButtons() {
@@ -305,10 +303,11 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
         IconButton(
           onPressed: () {
             if (_connectivityStatus == ConnectivityResult.none) {
-              showMessage('No internet connection.');
+              showMessage('لا يتوفر اتصال بالانترنت');
             } else {
               togglePlayPause(
                   _audioPlayer, isPlaying, widget.audioUrl, setIsPlaying);
+              showMessage('...جاري تشغيل السورة');
             }
           },
           icon: Icon(

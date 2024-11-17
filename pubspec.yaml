@@ -74,7 +74,7 @@ flutter:
     - assets/quranjson/surah.json
     - assets/quranjson/juz.json
     - assets/quranjson/surah/
-
+    - assets/quranjson/translation/ar/
   fonts:
     - family: Cairo
       fonts:
