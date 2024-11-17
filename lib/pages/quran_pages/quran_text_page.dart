@@ -11,9 +11,9 @@ import '../../widgets/surah_border.dart';
 import '../../widgets/verse_buttons_widget.dart';
 
 class SurahPage extends StatefulWidget {
-  int pageNumber;
+  final int pageNumber;
 
-  SurahPage({super.key, required this.pageNumber});
+  const SurahPage({super.key, required this.pageNumber});
 
   @override
   State<SurahPage> createState() => _SurahPageState();
@@ -27,11 +27,12 @@ class _SurahPageState extends State<SurahPage> {
   int currentJuzNumber = 0; // Current Juz
   int? highlightedVerse; // Highlighted verse number
   Offset? buttonPosition; // Position for the action buttons
-
+  late int pageNumber;
   @override
   void initState() {
     super.initState();
-    _loadPageContent(widget.pageNumber);
+    pageNumber = widget.pageNumber;
+    _loadPageContent(pageNumber);
   }
 
   /// Loads content for the specified page number
@@ -92,13 +93,13 @@ class _SurahPageState extends State<SurahPage> {
             onLongPressStart: (details) => _selectVerse(details.globalPosition),
             child: SafeArea(
               child: PageView.builder(
-                controller: PageController(initialPage: widget.pageNumber - 1),
+                controller: PageController(initialPage: pageNumber - 1),
                 onPageChanged: (newPageIndex) {
                   setState(() {
-                    widget.pageNumber = newPageIndex + 1; // Update page number
+                    pageNumber = newPageIndex + 1; // Update page number
                     highlightedVerse = null; // Clear highlights
                   });
-                  _loadPageContent(widget.pageNumber); // Reload content
+                  _loadPageContent(pageNumber); // Reload content
                 },
                 itemBuilder: (context, index) {
                   return _buildPageContent();
@@ -197,7 +198,7 @@ class _SurahPageState extends State<SurahPage> {
       right: 0,
       child: SafeArea(
         child: QuranContainerDown(
-          pageNumber: widget.pageNumber,
+          pageNumber: pageNumber,
         ),
       ),
     );

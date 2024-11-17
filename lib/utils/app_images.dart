@@ -22,6 +22,10 @@ class Assets {
   /// assets/images/book.svg
   static const String imagesBook = "assets/images/book.svg";
 
+  /// Assets for imagesBookmark
+  /// assets/images/bookmark.jpg
+  static const String imagesBookmark = "assets/images/bookmark.jpg";
+
   /// Assets for imagesChio5
   /// assets/images/chio5.jpg
   static const String imagesChio5 = "assets/images/chio5.jpg";
@@ -65,6 +69,10 @@ class Assets {
   /// Assets for imagesLeftPage
   /// assets/images/left_page.svg
   static const String imagesLeftPage = "assets/images/left_page.svg";
+
+  /// Assets for imagesLogo
+  /// assets/images/logo.jpg
+  static const String imagesLogo = "assets/images/logo.jpg";
 
   /// Assets for imagesMuslimPrayer
   /// assets/images/muslim_prayer.png

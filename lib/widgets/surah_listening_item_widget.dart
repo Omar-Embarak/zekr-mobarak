@@ -3,7 +3,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:quran/quran.dart' as quran;
 import '../cubit/add_fav_surahcubit/add_fav_surah_item_cubit.dart';
 import '../database_helper.dart';

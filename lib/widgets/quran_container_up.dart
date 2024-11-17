@@ -103,7 +103,7 @@ class QuranContainerUP extends StatelessWidget {
               const IconConstrain(height: 30, imagePath: Assets.imagesVector),
               const SizedBox(width: 8),
               Text(
-                'الجزء ${juzNumber + 1}',
+                'الجزء $juzNumber  ',
                 style: AppStyles.styleDiodrumArabicMedium15(context)
                     .copyWith(color: Colors.white),
               ),

@@ -9,8 +9,8 @@ import 'quran_containers_buttons_widget.dart';
 import 'surahs_list_widget.dart';
 
 class QuranContainerDown extends StatefulWidget {
-  QuranContainerDown({super.key, required this.pageNumber});
-  int pageNumber;
+  const QuranContainerDown({super.key, required this.pageNumber});
+  final int pageNumber;
 
   @override
   State<QuranContainerDown> createState() => _QuranContainerDownState();
