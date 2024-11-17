@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:quran/quran.dart' as quran;
+import 'package:quran/quran_text.dart'; // To access quranText directly
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -12,18 +15,44 @@ class _SearchPageState extends State<SearchPage> {
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> searchResults = [];
 
+  // Function to remove diacritics (Tashkeel) from Arabic text
+  String _removeTashkeel(String text) {
+    return text.replaceAll(RegExp(r'[ًٌٍَُِّْ]'), '');
+  }
+
   void _search(String query) {
-    setState(() {
-      searchResults = quran.searchWords([query])['result'];
-    });
+    try {
+      // Remove Tashkeel from the query
+      String processedQuery = _removeTashkeel(query);
+      List<Map<String, dynamic>> results = [];
+
+      // Iterate over quranText to find matches
+      for (var verse in quranText) {
+        String verseContent = _removeTashkeel(verse['content']);
+        if (verseContent.contains(processedQuery)) {
+          results.add({
+            "surah": verse['surah_number'],
+            "verse": verse['verse_number'],
+          });
+        }
+      }
+
+      setState(() {
+        searchResults = results;
+      });
+      log(searchResults.toString());
+    } catch (e) {
+      log("Error during search: $e");
+      setState(() {
+        searchResults = [];
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Search"),
-      ),
+   
       body: Column(
         children: [
           Padding(
@@ -34,7 +63,7 @@ class _SearchPageState extends State<SearchPage> {
                 labelText: "Search",
                 border: OutlineInputBorder(),
               ),
-              onSubmitted: _search,
+              onChanged: _search,
             ),
           ),
           Expanded(
@@ -51,7 +80,7 @@ class _SearchPageState extends State<SearchPage> {
                     style: const TextStyle(fontFamily: 'Amiri', fontSize: 16),
                   ),
                   subtitle: Text(
-                    'Surah: ${quran.getSurahName(result['surah'])}, Ayah: ${result['verse']}',
+                    'Surah: ${quran.getSurahNameArabic(result['surah'])}, Ayah: ${result['verse']}',
                   ),
                   onTap: () {
                     Navigator.pop(context, result);

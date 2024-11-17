@@ -1,12 +1,19 @@
+import 'package:azkar_app/pages/quran_pages/book_mark_page.dart';
+import 'package:azkar_app/pages/quran_pages/book_mark_provider.dart';
+import 'package:azkar_app/pages/quran_pages/search_page.dart';
 import 'package:azkar_app/widgets/icon_constrain_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:quran/page_data.dart';
 import '../constants.dart';
+import '../model/book_mark_model.dart';
 import '../pages/quran_pages/doaa_khatm_page.dart';
 import '../pages/quran_pages/juz_page.dart';
 import '../utils/app_images.dart';
 import '../utils/app_style.dart';
 import 'quran_containers_buttons_widget.dart';
 import 'surahs_list_widget.dart';
+import 'package:quran/quran.dart' as quran;
 
 class QuranContainerDown extends StatefulWidget {
   const QuranContainerDown({super.key, required this.pageNumber});
@@ -18,9 +25,13 @@ class QuranContainerDown extends StatefulWidget {
 
 class _QuranContainerDownState extends State<QuranContainerDown> {
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
+    final bookmarkProvider = Provider.of<BookmarkProvider>(context);
+
+    // Check if the current page is bookmarked
+    final isBookmarked = bookmarkProvider.bookmarks
+        .any((bookmark) => bookmark.pageNumber == widget.pageNumber);
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 12),
       padding: const EdgeInsets.all(12),
@@ -41,12 +52,17 @@ class _QuranContainerDownState extends State<QuranContainerDown> {
                   height: 35,
                   child: TextField(
                     decoration: InputDecoration(
-                      hintText:
-                          'إبحث عن آية', //this field for search for any aya in the quran , the keyboard should push the container up
+                      hintText: 'إبحث عن آية', // Search for any Ayah
                       hintStyle: AppStyles.styleDiodrumArabicMedium15(context)
                           .copyWith(color: Colors.white),
-                      suffixIcon: const IconConstrain(
-                          height: 26, imagePath: Assets.imagesSearch),
+                      suffixIcon: GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => const SearchPage()));
+                        },
+                        child: const IconConstrain(
+                            height: 26, imagePath: Assets.imagesSearch),
+                      ),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0),
                           borderSide: BorderSide.none),
@@ -69,21 +85,51 @@ class _QuranContainerDownState extends State<QuranContainerDown> {
                     borderRadius: BorderRadius.circular(3),
                   ),
                   child: Center(
-                    child: Row(
-                      children: [
-                        const IconConstrain(
-                          imagePath: Assets.imagesSave,
-                          height: 22,
+                    child: GestureDetector(
+                      onTap: () async {
+                        if (isBookmarked) {
+                          final index = bookmarkProvider.bookmarks.indexWhere(
+                            (bookmark) =>
+                                bookmark.pageNumber == widget.pageNumber,
+                          );
+                          if (index != -1) {
+                            await bookmarkProvider.removeBookmark(index);
+                          }
+                        } else {
+                          final newBookmark = BookMarkModel(
+                            surahName: quran.getSurahNameArabic(
+                              pageData[widget.pageNumber - 1][0]['surah'],
+                            ),
+                            pageNumber: widget.pageNumber,
+                          );
+                          await bookmarkProvider.addBookmark(newBookmark);
+                        }
+                      },
+                      child: FittedBox(
+                        fit: BoxFit.fill,
+                        child: Row(
+                          children: [
+                            isBookmarked
+                                ? const Icon(
+                                    Icons.bookmark_outlined,
+                                    color: Colors.white,
+                                  )
+                                : const Icon(
+                                    Icons.bookmark_border_rounded,
+                                    color: Colors.white,
+                                  ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              isBookmarked ? 'إزالة العلامة' : 'حفظ علامة',
+                              style:
+                                  AppStyles.styleDiodrumArabicMedium15(context)
+                                      .copyWith(color: Colors.white),
+                            ),
+                          ],
                         ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          'حفظ علامة ',
-                          style: AppStyles.styleDiodrumArabicMedium15(context)
-                              .copyWith(color: Colors.white),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
@@ -97,8 +143,10 @@ class _QuranContainerDownState extends State<QuranContainerDown> {
                 iconPath: Assets.imagesSaveFilled,
                 text: 'الإنتقال إلي العلامة',
                 onTap: () {
-                  MaterialPageRoute(
-                    builder: (context) => const SurahListWidget(),
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const BookmarksPage(),
+                    ),
                   );
                 },
               ),
@@ -149,7 +197,7 @@ class _QuranContainerDownState extends State<QuranContainerDown> {
                 },
               ),
             ],
-          )
+          ),
         ],
       ),
     );

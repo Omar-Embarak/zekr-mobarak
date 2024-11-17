@@ -1,5 +1,5 @@
 import 'package:azkar_app/constants.dart';
-import 'package:azkar_app/pages/quran_pages/quran_text_page.dart';
+import 'package:azkar_app/pages/quran_pages/surah_page.dart';
 import 'package:azkar_app/utils/app_images.dart';
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:flutter/material.dart';
