@@ -1,32 +1,32 @@
-// Import statements
 import 'dart:developer';
-import 'package:azkar_app/utils/app_style.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:azkar_app/utils/app_style.dart';
 import 'package:quran/page_data.dart';
+import 'package:quran/quran.dart' as quran;
 import '../../constants.dart';
-import '../../widgets/basmalla_widget.dart';
 import '../../widgets/quran_container_down.dart';
 import '../../widgets/quran_container_up.dart';
-import 'package:quran/quran.dart' as quran;
 import '../../widgets/surah_border.dart';
+import '../../widgets/verse_buttons_widget.dart';
 
 class SurahPage extends StatefulWidget {
   int pageNumber;
 
-  SurahPage({
-    super.key,
-    required this.pageNumber,
-  });
+  SurahPage({super.key, required this.pageNumber});
 
   @override
   State<SurahPage> createState() => _SurahPageState();
 }
 
 class _SurahPageState extends State<SurahPage> {
-  bool isVisible = true;
-  Map<int, List<Map<String, dynamic>>> pageContent = {};
-  int currentSurahIndex = 0;
-  int currentJuzNumber = 0;
+  bool isVisible = true; // Toggle visibility for UI components
+  Map<int, List<Map<String, dynamic>>> pageContent =
+      {}; // Stores verses for the current page
+  int currentSurahIndex = 0; // Current Surah
+  int currentJuzNumber = 0; // Current Juz
+  int? highlightedVerse; // Highlighted verse number
+  Offset? buttonPosition; // Position for the action buttons
 
   @override
   void initState() {
@@ -34,18 +34,24 @@ class _SurahPageState extends State<SurahPage> {
     _loadPageContent(widget.pageNumber);
   }
 
+  /// Loads content for the specified page number
   Future<void> _loadPageContent(int pageNumber) async {
     try {
+      // Clear previous content
       pageContent.clear();
+
+      // Get data for the current page
       List<Map<String, dynamic>> currentPageData = pageData[pageNumber - 1];
 
       for (var entry in currentPageData) {
         int surahNumber = entry['surah'];
         int startVerse = entry['start'];
         int endVerse = entry['end'];
-        currentSurahIndex = surahNumber;
-        currentJuzNumber = quran.getJuzNumber(surahNumber, startVerse) - 1;
 
+        currentSurahIndex = surahNumber;
+        currentJuzNumber = quran.getJuzNumber(surahNumber, startVerse);
+
+        // Collect all verses for the Surah on this page
         List<Map<String, dynamic>> verses = [];
         for (int verse = startVerse; verse <= endVerse; verse++) {
           verses.add({
@@ -53,13 +59,22 @@ class _SurahPageState extends State<SurahPage> {
             'verseText': quran.getVerse(surahNumber, verse),
           });
         }
+
         pageContent[surahNumber] = verses;
       }
 
       setState(() {});
     } catch (e) {
-      log(e.toString());
+      log("Error loading page content: $e");
     }
+  }
+
+  /// Handles the selection of a verse
+  void _selectVerse(Offset globalPosition, [int? verseNumber]) {
+    setState(() {
+      highlightedVerse = verseNumber ?? 1; // Set highlighted verse
+      buttonPosition = globalPosition; // Save button position
+    });
   }
 
   @override
@@ -68,110 +83,136 @@ class _SurahPageState extends State<SurahPage> {
       backgroundColor: AppColors.kPrimaryColor,
       body: Stack(
         children: [
-          SafeArea(
-            child: PageView.builder(
-              controller: PageController(initialPage: widget.pageNumber - 1),
-              onPageChanged: (newPageIndex) {
-                setState(() {
-                  widget.pageNumber = newPageIndex + 1;
-                });
-                _loadPageContent(widget.pageNumber);
-              },
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: toggleVisibility,
-                  child: Container(
-                    // If isCentered is false, use EdgeInsets.zero padding to fill the entire screen
-                    padding: const EdgeInsets.only(right: 8, top: 8),
-                    alignment: Alignment.center,
-                    child: Text.rich(
-                      softWrap: true,
-                      TextSpan(
-                        style: AppStyles.styleAmiriMedium20(context),
-                        children: [
-                          ...pageContent.entries.expand((entry) {
-                            int surahNumber = entry.key;
-                            return entry.value.map((verseEntry) {
-                              int verseIndex = verseEntry['verseNumber'];
-                              String verseText = verseEntry['verseText'];
-
-                              List<InlineSpan> inlineSpans = [];
-                              if (verseIndex == 1 && currentSurahIndex == 1) {
-                                inlineSpans.add(
-                                  WidgetSpan(
-                                    alignment: PlaceholderAlignment.middle,
-                                    child:
-                                        SurahBorder(surahNumber: surahNumber),
-                                  ),
-                                );
-                              }
-
-                              if (verseIndex == 1 && currentSurahIndex != 1) {
-                                inlineSpans.add(
-                                  WidgetSpan(
-                                    alignment: PlaceholderAlignment.middle,
-                                    child:
-                                        SurahBorder(surahNumber: surahNumber),
-                                  ),
-                                );
-                                // Inside your text span
-                                inlineSpans.add(
-                                  bamallaWidget(context),
-                                );
-                              }
-
-                              inlineSpans.add(TextSpan(
-                                text:
-                                    ' $verseText${quran.getVerseEndSymbol(verseIndex, arabicNumeral: true)} ',
-                              ));
-
-                              return inlineSpans;
-                            }).expand((e) => e);
-                          }),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
+          // Main Quran Page Content
+          GestureDetector(
+            onTap: () => setState(() {
+              isVisible = !isVisible; // Toggle UI visibility
+              highlightedVerse = null; // Clear highlighted verse
+            }),
+            onLongPressStart: (details) => _selectVerse(details.globalPosition),
+            child: SafeArea(
+              child: PageView.builder(
+                controller: PageController(initialPage: widget.pageNumber - 1),
+                onPageChanged: (newPageIndex) {
+                  setState(() {
+                    widget.pageNumber = newPageIndex + 1; // Update page number
+                    highlightedVerse = null; // Clear highlights
+                  });
+                  _loadPageContent(widget.pageNumber); // Reload content
+                },
+                itemBuilder: (context, index) {
+                  return _buildPageContent();
+                },
+              ),
             ),
           ),
-          if (isVisible)
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: SafeArea(
-                child: QuranContainerUP(
-                  surahIndex: currentSurahIndex,
-                  isMakkia: quran.getPlaceOfRevelation(currentSurahIndex),
-                  juzNumber: currentJuzNumber,
-                  surahsAyat: quran.getVerseCount(currentSurahIndex),
-                  isPageLeft: widget.pageNumber % 2 == 0,
-                  verseNumber: int.parse(
-                      (pageData[widget.pageNumber][0]['start']).toString()),
-                ),
-              ),
-            ),
-          if (isVisible)
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: SafeArea(
-                child: QuranContainerDown(
-                  pageNumber: widget.pageNumber,
-                ),
-              ),
-            ),
+
+          // Top Header Container
+          if (isVisible) _buildTopHeader(),
+
+          // Bottom Navigation Container
+          if (isVisible) _buildBottomFooter(),
+
+          // Action Buttons for Highlighted Verse
+          if (highlightedVerse != null && buttonPosition != null)
+            _buildActionButtons(),
         ],
       ),
     );
   }
 
-  void toggleVisibility() {
-    setState(() {
-      isVisible = !isVisible;
-    });
+  /// Builds the Quranic content for the page
+  Widget _buildPageContent() {
+    return GestureDetector(
+      onDoubleTapDown: (details) => _selectVerse(details.globalPosition),
+      child: Container(
+        padding: const EdgeInsets.only(right: 8),
+        alignment: Alignment.center,
+        child: RichText(
+          text: TextSpan(
+            style: AppStyles.styleAmiriMedium20(context),
+            children: pageContent.entries.expand((entry) {
+              int surahNumber = entry.key;
+              return entry.value.map((verseEntry) {
+                int verseIndex = verseEntry['verseNumber'];
+                String verseText = verseEntry['verseText'];
+                bool isHighlighted = highlightedVerse == verseIndex;
+
+                return TextSpan(
+                  children: [
+                    if (verseIndex == 1)
+                      WidgetSpan(
+                        alignment: PlaceholderAlignment.middle,
+                        child: SurahBorder(surahNumber: surahNumber),
+                      ),
+                    TextSpan(
+                      text:
+                          ' $verseText${quran.getVerseEndSymbol(verseIndex, arabicNumeral: true)} ',
+                      style: TextStyle(
+                        backgroundColor: isHighlighted
+                            ? Colors.yellow.withOpacity(0.4)
+                            : Colors.transparent,
+                        color: isHighlighted ? Colors.red : null,
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () => setState(() {
+                              highlightedVerse = verseIndex; // Highlight verse
+                            }),
+                    ),
+                  ],
+                );
+              });
+            }).toList(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Builds the top header container
+  Widget _buildTopHeader() {
+    return Positioned(
+      top: 0,
+      left: 0,
+      right: 0,
+      child: SafeArea(
+        child: QuranContainerUP(
+          surahIndex: currentSurahIndex,
+          isMakkia: quran.getPlaceOfRevelation(currentSurahIndex),
+          juzNumber: currentJuzNumber,
+          surahsAyat: quran.getVerseCount(currentSurahIndex),
+          isPageLeft: widget.pageNumber % 2 == 0,
+          verseNumber: int.parse(
+              (pageData[widget.pageNumber - 1][0]['start']).toString()),
+        ),
+      ),
+    );
+  }
+
+  /// Builds the bottom footer container
+  Widget _buildBottomFooter() {
+    return Positioned(
+      bottom: 0,
+      left: 0,
+      right: 0,
+      child: SafeArea(
+        child: QuranContainerDown(
+          pageNumber: widget.pageNumber,
+        ),
+      ),
+    );
+  }
+
+  /// Builds the action buttons for the highlighted verse
+  Widget _buildActionButtons() {
+    return Positioned(
+      left:
+          buttonPosition!.dx.clamp(0, MediaQuery.of(context).size.width - 150),
+      top: buttonPosition!.dy.clamp(0, MediaQuery.of(context).size.height - 50),
+      child: VerseButtons(
+        currentSurahIndex: currentSurahIndex,
+        highlightedVerse: highlightedVerse!,
+      ),
+    );
   }
 }
