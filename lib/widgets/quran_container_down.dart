@@ -50,24 +50,30 @@ class _QuranContainerDownState extends State<QuranContainerDown> {
                 flex: 3,
                 child: SizedBox(
                   height: 35,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'إبحث عن آية', // Search for any Ayah
-                      hintStyle: AppStyles.styleDiodrumArabicMedium15(context)
-                          .copyWith(color: Colors.white),
-                      suffixIcon: GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const SearchPage()));
-                        },
-                        child: const IconConstrain(
-                            height: 26, imagePath: Assets.imagesSearch),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const SearchPage()));
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      color: const Color(0x66CFAD65),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          // Hint text
+                          Text(
+                            'إبحث عن آية', // Search for an Ayah
+                            style: AppStyles.styleDiodrumArabicMedium15(context)
+                                .copyWith(color: Colors.white),
+                          ),
+                          // Icon
+                          const IconConstrain(
+                            height: 26,
+                            imagePath: Assets.imagesSearch,
+                          ),
+                        ],
                       ),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: BorderSide.none),
-                      filled: true,
-                      fillColor: const Color(0x66CFAD65),
                     ),
                   ),
                 ),

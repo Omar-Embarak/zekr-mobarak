@@ -9,8 +9,8 @@ import 'list_surahs_listening_page.dart';
 class KhalafPage extends StatelessWidget {
   const KhalafPage({super.key});
 
-  final List<RecitersModel> reciters =const[
-   RecitersModel(
+  final List<RecitersModel> reciters = const [
+    RecitersModel(
       url:
           'https://download.quranicaudio.com/quran/abdurrashid_sufi_-_khalaf_3an_7amza_recitation//',
       name: 'عبد الرشيد صوفي برواية خلف عن حمزة ',
@@ -37,14 +37,14 @@ class KhalafPage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ListSurahsListeningPage(                    reciter: reciters[index],
-
+                  builder: (context) => ListSurahsListeningPage(
+                    reciter: reciters[index],
                   ),
                 ),
               );
             },
             child: RecitursItem(
-              reciter: reciters[index].name,
+              Title: reciters[index].name,
             ),
           );
         },

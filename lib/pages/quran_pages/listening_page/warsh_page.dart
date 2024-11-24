@@ -36,14 +36,14 @@ class WarshPage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ListSurahsListeningPage(                    reciter: reciters[index],
-
+                  builder: (context) => ListSurahsListeningPage(
+                    reciter: reciters[index],
                   ),
                 ),
               );
             },
             child: RecitursItem(
-              reciter: reciters[index].name,
+              Title: reciters[index].name,
             ),
           );
         },

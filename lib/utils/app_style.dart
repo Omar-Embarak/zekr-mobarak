@@ -4,9 +4,9 @@ import '../constants.dart';
 import 'size_config.dart';
 
 abstract class AppStyles {
-  static TextStyle styleCairoMedium15(context) {
+  static TextStyle styleCairoMedium15white(context) {
     return TextStyle(
-      color: AppColors.kSecondaryColor,
+      color: Colors.white,
       fontSize: getResponsiveFontSize(context, fontSize: 15),
       fontFamily: 'Cairo',
       fontWeight: FontWeight.w500,
@@ -105,17 +105,25 @@ abstract class AppStyles {
 
   static TextStyle styleCairoMedium10(context) {
     return TextStyle(
-      color: AppColors.kSecondaryColor,
+      color: Colors.white,
       fontSize: getResponsiveFontSize(context, fontSize: 10),
       fontFamily: 'Cairo',
       fontWeight: FontWeight.w500,
     );
   }
 
-  static TextStyle styleAmiriMedium20(context) {
+  static TextStyle styleAmiriMedium30(context) {
     return TextStyle(
       fontFamily: 'Amiri',
-      fontSize: getResponsiveFontSize(context, fontSize: 20),
+      fontSize: getResponsiveFontSize(context, fontSize: 30),
+      color: AppColors.kSecondaryColor,
+    );
+  }
+
+  static TextStyle styleAmiriMedium11(context) {
+    return TextStyle(
+      fontFamily: 'Amiri',
+      fontSize: getResponsiveFontSize(context, fontSize: 11),
       color: AppColors.kSecondaryColor,
     );
   }

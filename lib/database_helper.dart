@@ -1,3 +1,4 @@
+import 'package:azkar_app/model/fav_dars_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../model/quran_models/fav_model.dart';
@@ -117,6 +118,35 @@ class DatabaseHelper {
     // Proceed with deletion
     await db.delete(
       'bookmarks',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+    Future<void> insertFavDars(FavDarsModel favDars) async {
+    final db = await database;
+    await db.insert(
+      'favDars',
+      favDars.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  } Future<List<FavDarsModel>> getFavsDars() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('favDars');
+    return List.generate(maps.length, (i) {
+      return FavDarsModel.fromMap(maps[i]);
+    });
+  }
+    Future<void> deleteFavDars(int? id) async {
+    final db = await database;
+
+    // Check if the ID is null
+    if (id == null) {
+      throw ArgumentError("Cannot delete a bookmark without an ID.");
+    }
+
+    // Proceed with deletion
+    await db.delete(
+      'favDars',
       where: 'id = ?',
       whereArgs: [id],
     );

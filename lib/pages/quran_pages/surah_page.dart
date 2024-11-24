@@ -9,6 +9,7 @@ import '../../widgets/quran_container_down.dart';
 import '../../widgets/quran_container_up.dart';
 import '../../widgets/surah_border.dart';
 import '../../widgets/verse_buttons_widget.dart';
+import 'quran_reading_main_page.dart';
 
 class SurahPage extends StatefulWidget {
   final int pageNumber;
@@ -80,44 +81,56 @@ class _SurahPageState extends State<SurahPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.kPrimaryColor,
-      body: Stack(
-        children: [
-          // Main Quran Page Content
-          GestureDetector(
-            onTap: () => setState(() {
-              isVisible = !isVisible; // Toggle UI visibility
-              highlightedVerse = null; // Clear highlighted verse
-            }),
-            onLongPressStart: (details) => _selectVerse(details.globalPosition),
-            child: SafeArea(
-              child: PageView.builder(
-                controller: PageController(initialPage: pageNumber - 1),
-                onPageChanged: (newPageIndex) {
-                  setState(() {
-                    pageNumber = newPageIndex + 1; // Update page number
-                    highlightedVerse = null; // Clear highlights
-                  });
-                  _loadPageContent(pageNumber); // Reload content
-                },
-                itemBuilder: (context, index) {
-                  return _buildPageContent();
-                },
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, Object? result) async {
+        // Navigate to QuranReadingMainPage
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const QuranReadingMainPage()),
+          (route) => false, // Clear all previous routes
+        );
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.kPrimaryColor,
+        body: Stack(
+          children: [
+            // Main Quran Page Content
+            GestureDetector(
+              onTap: () => setState(() {
+                isVisible = !isVisible; // Toggle UI visibility
+                highlightedVerse = null; // Clear highlighted verse
+              }),
+              onLongPressStart: (details) =>
+                  _selectVerse(details.globalPosition),
+              child: SafeArea(
+                child: PageView.builder(
+                  controller: PageController(initialPage: pageNumber - 1),
+                  onPageChanged: (newPageIndex) {
+                    setState(() {
+                      pageNumber = newPageIndex + 1; // Update page number
+                      highlightedVerse = null; // Clear highlights
+                    });
+                    _loadPageContent(pageNumber); // Reload content
+                  },
+                  itemBuilder: (context, index) {
+                    return _buildPageContent();
+                  },
+                ),
               ),
             ),
-          ),
 
-          // Top Header Container
-          if (isVisible) _buildTopHeader(),
+            // Top Header Container
+            if (isVisible) _buildTopHeader(),
 
-          // Bottom Navigation Container
-          if (isVisible) _buildBottomFooter(),
+            // Bottom Navigation Container
+            if (isVisible) _buildBottomFooter(),
 
-          // Action Buttons for Highlighted Verse
-          if (highlightedVerse != null && buttonPosition != null)
-            _buildActionButtons(),
-        ],
+            // Action Buttons for Highlighted Verse
+            if (highlightedVerse != null && buttonPosition != null)
+              _buildActionButtons(),
+          ],
+        ),
       ),
     );
   }
@@ -126,44 +139,47 @@ class _SurahPageState extends State<SurahPage> {
   Widget _buildPageContent() {
     return GestureDetector(
       onDoubleTapDown: (details) => _selectVerse(details.globalPosition),
-      child: Container(
-        padding: const EdgeInsets.only(right: 8),
-        alignment: Alignment.center,
-        child: RichText(
-          text: TextSpan(
-            style: AppStyles.styleAmiriMedium20(context),
-            children: pageContent.entries.expand((entry) {
-              int surahNumber = entry.key;
-              return entry.value.map((verseEntry) {
-                int verseIndex = verseEntry['verseNumber'];
-                String verseText = verseEntry['verseText'];
-                bool isHighlighted = highlightedVerse == verseIndex;
+      child: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.only(right: 8),
+          alignment: Alignment.center,
+          child: RichText(
+            text: TextSpan(
+              style: AppStyles.styleAmiriMedium30(context),
+              children: pageContent.entries.expand((entry) {
+                int surahNumber = entry.key;
+                return entry.value.map((verseEntry) {
+                  int verseIndex = verseEntry['verseNumber'];
+                  String verseText = verseEntry['verseText'];
+                  bool isHighlighted = highlightedVerse == verseIndex;
 
-                return TextSpan(
-                  children: [
-                    if (verseIndex == 1)
-                      WidgetSpan(
-                        alignment: PlaceholderAlignment.middle,
-                        child: SurahBorder(surahNumber: surahNumber),
+                  return TextSpan(
+                    children: [
+                      if (verseIndex == 1)
+                        WidgetSpan(
+                          alignment: PlaceholderAlignment.middle,
+                          child: SurahBorder(surahNumber: surahNumber),
+                        ),
+                      TextSpan(
+                        text:
+                            ' $verseText${quran.getVerseEndSymbol(verseIndex, arabicNumeral: true)} ',
+                        style: TextStyle(
+                          backgroundColor: isHighlighted
+                              ? Colors.yellow.withOpacity(0.4)
+                              : Colors.transparent,
+                          color: isHighlighted ? Colors.red : null,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () => setState(() {
+                                highlightedVerse =
+                                    verseIndex; // Highlight verse
+                              }),
                       ),
-                    TextSpan(
-                      text:
-                          ' $verseText${quran.getVerseEndSymbol(verseIndex, arabicNumeral: true)} ',
-                      style: TextStyle(
-                        backgroundColor: isHighlighted
-                            ? Colors.yellow.withOpacity(0.4)
-                            : Colors.transparent,
-                        color: isHighlighted ? Colors.red : null,
-                      ),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () => setState(() {
-                              highlightedVerse = verseIndex; // Highlight verse
-                            }),
-                    ),
-                  ],
-                );
-              });
-            }).toList(),
+                    ],
+                  );
+                });
+              }).toList(),
+            ),
           ),
         ),
       ),

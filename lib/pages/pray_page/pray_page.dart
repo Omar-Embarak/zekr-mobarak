@@ -36,10 +36,6 @@ class _ParyPageState extends State<ParyPage> {
       latitude: latitude!,
       longitude: longitude!,
     );
-    print("${DateTime.now().year}");
-    print("${DateTime.now().month}");
-    print(latitude.toString());
-    print(longitude.toString());
   }
 
   @override
@@ -49,13 +45,13 @@ class _ParyPageState extends State<ParyPage> {
       appBar: AppBar(
         backgroundColor: AppColors.kSecondaryColor,
         centerTitle: true,
-        title: Text(
+        title: const Text(
           "الصلاة",
           style: TextStyle(color: Colors.white),
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
             Container(
@@ -63,13 +59,13 @@ class _ParyPageState extends State<ParyPage> {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   color: AppColors.kSecondaryColor),
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: Column(
                 children: [
                   BlocBuilder<PrayingCubit, PrayingState>(
                       builder: (context, state) {
                     if (state is PrayingLoading) {
-                      return CircularProgressIndicator();
+                      return const CircularProgressIndicator();
                     } else if (state is PrayingLoaded) {
                       return Column(
                         children: [
@@ -81,10 +77,8 @@ class _ParyPageState extends State<ParyPage> {
                                 color: Colors.white),
                             child: Row(
                               children: [
-                                Container(
-                                  child: Image.asset(
-                                    "assets/images/next_prayer.png",
-                                  ),
+                                Image.asset(
+                                  "assets/images/next_prayer.png",
                                 ),
                                 SizedBox(
                                   width:
@@ -96,7 +90,7 @@ class _ParyPageState extends State<ParyPage> {
                                   children: [
                                     Text(
                                       "صلاة ${state.nextPrayerName}",
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontSize: 20,
                                           color: AppColors.kSecondaryColor),
                                     ),
@@ -104,7 +98,7 @@ class _ParyPageState extends State<ParyPage> {
                                       // Use Flexible here
                                       child: Text(
                                         state.nextPraying,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontSize: 17,
                                             color: AppColors.kSecondaryColor),
                                         overflow: TextOverflow
@@ -124,28 +118,28 @@ class _ParyPageState extends State<ParyPage> {
                             children: [
                               Column(
                                 children: [
-                                  Text(
+                                  const Text(
                                     "الفجر",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 20),
                                   ),
                                   Text(
                                     "${state.timings.fajr}",
-                                    style: TextStyle(color: Colors.white),
+                                    style: const TextStyle(color: Colors.white),
                                   ),
                                 ],
                               ),
                               //---------------
                               Column(
                                 children: [
-                                  Text(
+                                  const Text(
                                     "الظهر",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 20),
                                   ),
                                   Text(
                                     "${state.timings.dhuhr}",
-                                    style: TextStyle(color: Colors.white),
+                                    style: const TextStyle(color: Colors.white),
                                   ),
                                 ],
                               ),
@@ -153,42 +147,42 @@ class _ParyPageState extends State<ParyPage> {
                               //--------------------
                               Column(
                                 children: [
-                                  Text(
+                                  const Text(
                                     "العصر",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 20),
                                   ),
                                   Text(
                                     "${state.timings.asr}",
-                                    style: TextStyle(color: Colors.white),
+                                    style: const TextStyle(color: Colors.white),
                                   ),
                                 ],
                               ),
                               //-----------------
                               Column(
                                 children: [
-                                  Text(
+                                  const Text(
                                     "المغرب",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 20),
                                   ),
                                   Text(
                                     "${state.timings.maghrib}",
-                                    style: TextStyle(color: Colors.white),
+                                    style: const TextStyle(color: Colors.white),
                                   ),
                                 ],
                               ),
                               //----------------
                               Column(
                                 children: [
-                                  Text(
+                                  const Text(
                                     "العشاء",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 20),
                                   ),
                                   Text(
                                     "${state.timings.isha}",
-                                    style: TextStyle(color: Colors.white),
+                                    style: const TextStyle(color: Colors.white),
                                   ),
                                 ],
                               ),
@@ -205,8 +199,7 @@ class _ParyPageState extends State<ParyPage> {
                 ],
               ),
             ),
-            //-----------
-            Container(
+            SizedBox(
               height: MediaQuery.of(context).size.height * 0.5,
               child: Center(
                 child: FutureBuilder(

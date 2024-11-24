@@ -1,4 +1,5 @@
 import 'package:azkar_app/cubit/add_fav_surahcubit/add_fav_surah_item_cubit.dart';
+import 'package:azkar_app/methods.dart';
 import 'package:azkar_app/model/quran_models/reciters_model.dart';
 import 'package:azkar_app/utils/app_images.dart';
 import 'package:flutter/material.dart';
@@ -11,11 +12,10 @@ import '../../../widgets/icon_constrain_widget.dart';
 import '../../../widgets/surah_listening_item_widget.dart';
 
 class ListSurahsListeningPage extends StatefulWidget {
-  
   final RecitersModel reciter;
   const ListSurahsListeningPage({
     super.key,
- required this.reciter,
+    required this.reciter,
   });
 
   @override
@@ -59,8 +59,10 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
     return Scaffold(
       backgroundColor: AppColors.kSecondaryColor,
       appBar: AppBar(
+          centerTitle: true,
           title: _isSearching
               ? TextField(
+                  style: AppStyles.styleCairoMedium15white(context),
                   controller: _searchController,
                   onChanged: _filterSurahs,
                   decoration: const InputDecoration(
@@ -69,27 +71,31 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
                   ),
                   autofocus: true, // Focus automatically when search is toggled
                 )
-              : const Text('استماع القران الكريم'),
+              : Text('استماع القران الكريم',
+                  style: AppStyles.styleCairoMedium15white(context)),
           backgroundColor: AppColors.kPrimaryColor,
           actions: [
-            GestureDetector(
-              onTap: _toggleSearch,
-              child: _isSearching
-                  ? const Icon(Icons.close) // Wrap IconData in an Icon widget
-                  : const IconConstrain(
-                      height: 30,
-                      imagePath: Assets.imagesSearch,
-                    ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                onTap: _toggleSearch,
+                child: _isSearching
+                    ? const Icon(Icons.close) // Wrap IconData in an Icon widget
+                    : const IconConstrain(
+                        height: 30,
+                        imagePath: Assets.imagesSearch,
+                      ),
+              ),
             )
           ]),
       body: BlocConsumer<AddFavSurahItemCubit, AddFavSurahItemState>(
         listener: (context, state) {
           if (state is AddFavSurahItemFailure) {
-            debugPrint(
-                'error while adding the surah to favourite page: ${state.errorMessage}');
+            showMessage(
+                'حدث خطأ ما: ${state.errorMessage}');
           }
           if (state is AddFavSurahItemSuccess) {
-            debugPrint('added successfully');
+            showMessage('تمت اضافة السورة الي المفضلة');
           }
         },
         builder: (context, state) {
@@ -109,8 +115,7 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
                       if (tappedSurahName != null)
                         Text(
                           tappedSurahName!,
-                          style: AppStyles.styleCairoMedium15(context)
-                              .copyWith(color: Colors.white),
+                          style: AppStyles.styleCairoMedium15white(context),
                         ),
                     ],
                   ),
@@ -125,14 +130,16 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
                           itemBuilder: (context, index) {
                             final surahIndex = filteredSurahs[index] -
                                 1; // Adjusting to 0-based index
-                            final audioUrl = widget.reciter.zeroPaddingSurahNumber
+                            final audioUrl = widget
+                                    .reciter.zeroPaddingSurahNumber
                                 ? '${widget.reciter.url}${(surahIndex + 1).toString().padLeft(3, '0')}.mp3'
                                 : '${widget.reciter.url}${surahIndex + 1}.mp3';
 
                             return SurahListeningItem(
                               surahIndex: surahIndex,
                               audioUrl: audioUrl,
-                              onSurahTap: updateTappedSurahName, reciter: widget.reciter,
+                              onSurahTap: updateTappedSurahName,
+                              reciter: widget.reciter,
                             );
                           },
                         )

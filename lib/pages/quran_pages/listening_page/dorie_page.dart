@@ -49,7 +49,7 @@ class DoriePage extends StatelessWidget {
               );
             },
             child: RecitursItem(
-              reciter: reciters[index].name,
+              Title: reciters[index].name,
             ),
           );
         },

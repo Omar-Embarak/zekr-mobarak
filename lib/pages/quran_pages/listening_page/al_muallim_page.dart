@@ -30,7 +30,7 @@ class AlMuallimPage extends StatelessWidget {
       name: 'صديق المنشاوي - المعلم مع الاطفال  ',
       zeroPaddingSurahNumber: false,
     ),
-        RecitersModel(
+    RecitersModel(
       url:
           'https://download.quranicaudio.com/quran/alhusaynee_al3azazee_with_children//',
       name: 'الحسيني العزيزي -المعلم مع الاطفال ',
@@ -64,7 +64,7 @@ class AlMuallimPage extends StatelessWidget {
               );
             },
             child: RecitursItem(
-              reciter: reciters[index].name,
+              Title: reciters[index].name,
             ),
           );
         },

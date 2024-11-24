@@ -85,11 +85,14 @@ class _FavoritePageState extends State<FavoritePage> {
           backgroundColor: AppColors.kSecondaryColor,
           title: _isSearching
               ? TextField(
+                  style: AppStyles.styleCairoMedium15white(
+                    context,
+                  ),
                   controller: _searchController,
                   onChanged: _filterFavs,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                       hintText: 'سورة ...',
-                      hintStyle: TextStyle(color: Colors.white),
+                      hintStyle: AppStyles.styleCairoMedium15white(context),
                       border: InputBorder.none,
                       fillColor: Colors.white),
                   autofocus: true,
@@ -99,14 +102,17 @@ class _FavoritePageState extends State<FavoritePage> {
                   style: AppStyles.styleCairoBold20(context),
                 ),
           actions: [
-            GestureDetector(
-              onTap: _toggleSearch,
-              child: _isSearching
-                  ? const Icon(Icons.close)
-                  : const IconConstrain(
-                      height: 30,
-                      imagePath: Assets.imagesSearch,
-                    ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                onTap: _toggleSearch,
+                child: _isSearching
+                    ? const Icon(Icons.close)
+                    : const IconConstrain(
+                        height: 30,
+                        imagePath: Assets.imagesSearch,
+                      ),
+              ),
             )
           ]),
       body: filteredFavs.isNotEmpty
@@ -151,7 +157,7 @@ class _FavoritePageState extends State<FavoritePage> {
             )
           : Center(
               child: Text(
-                ' لا يوجد عناصر في المفضلة بهذا الاسم',
+                ' لا يوجد عناصر لعرضها',
                 style: AppStyles.styleCairoBold20(context),
               ),
             ),

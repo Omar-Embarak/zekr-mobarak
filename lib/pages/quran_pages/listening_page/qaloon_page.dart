@@ -9,7 +9,7 @@ import 'list_surahs_listening_page.dart';
 class QaloonPage extends StatelessWidget {
   const QaloonPage({super.key});
 
-  final List<RecitersModel> reciters = const[
+  final List<RecitersModel> reciters = const [
     RecitersModel(
       url: 'https://download.quranicaudio.com/quran/huthayfi_qaloon//',
       name: 'الحذيفي برواية قالون  ',
@@ -36,14 +36,14 @@ class QaloonPage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ListSurahsListeningPage(                    reciter: reciters[index],
-
+                  builder: (context) => ListSurahsListeningPage(
+                    reciter: reciters[index],
                   ),
                 ),
               );
             },
             child: RecitursItem(
-              reciter: reciters[index].name,
+              Title: reciters[index].name,
             ),
           );
         },

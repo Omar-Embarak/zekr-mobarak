@@ -8,7 +8,7 @@ import 'list_surahs_listening_page.dart';
 // ignore: must_be_immutable
 class MugawwadPage extends StatelessWidget {
   const MugawwadPage({super.key});
-  final List<RecitersModel> reciters =const [
+  final List<RecitersModel> reciters = const [
     RecitersModel(
         url: 'https://download.quranicaudio.com/qdc/abdul_baset/mujawwad/',
         name: 'عبد الباسط عبد الصمد',
@@ -34,14 +34,14 @@ class MugawwadPage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ListSurahsListeningPage(                    reciter: reciters[index],
-
+                  builder: (context) => ListSurahsListeningPage(
+                    reciter: reciters[index],
                   ),
                 ),
               );
             },
             child: RecitursItem(
-              reciter: reciters[index].name,
+              Title: reciters[index].name,
             ),
           );
         },

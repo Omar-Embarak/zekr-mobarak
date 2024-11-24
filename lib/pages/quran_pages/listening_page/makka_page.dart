@@ -8,7 +8,7 @@ import 'list_surahs_listening_page.dart';
 class MakkaPage extends StatelessWidget {
   const MakkaPage({super.key});
 
-  final List<RecitersModel> reciters = const[
+  final List<RecitersModel> reciters = const [
     RecitersModel(
       url: 'https://download.quranicaudio.com/quran/makkah_1424//',
       name: 'قران مكة 1424 ',
@@ -125,14 +125,14 @@ class MakkaPage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ListSurahsListeningPage(                    reciter: reciters[index],
-
+                  builder: (context) => ListSurahsListeningPage(
+                    reciter: reciters[index],
                   ),
                 ),
               );
             },
             child: RecitursItem(
-              reciter: reciters[index].name,
+              Title: reciters[index].name,
             ),
           );
         },

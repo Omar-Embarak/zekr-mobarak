@@ -493,8 +493,7 @@ class _MurattalPageState extends State<MurattalPage> {
   @override
   void initState() {
     super.initState();
-    filteredReciters = List.generate(
-        reciters.length, (index) => index + 1);
+    filteredReciters = List.generate(reciters.length, (index) => index);
   }
 
   void _filterReciter(String query) {
@@ -510,7 +509,7 @@ class _MurattalPageState extends State<MurattalPage> {
 
   void _toggleSearch() {
     setState(() {
-      _isSearching = !_isSearching; 
+      _isSearching = !_isSearching;
       if (!_isSearching) {
         _searchController.clear();
         _filterReciter('');
@@ -523,32 +522,38 @@ class _MurattalPageState extends State<MurattalPage> {
     return Scaffold(
       backgroundColor: AppColors.kPrimaryColor,
       appBar: AppBar(
-          backgroundColor: AppColors.kSecondaryColor,
-          title: _isSearching
-              ? TextField(
-                  controller: _searchController,
-                  onChanged: _filterReciter,
-                  decoration: const InputDecoration(
-                    hintText: 'إبحث عن قاريء ...',
-                    border: InputBorder.none,
-                  ),
-                  autofocus: true, 
-                )
-              : Text(
-                  'القران المرتل',
-                  style: AppStyles.styleCairoBold20(context),
+        backgroundColor: AppColors.kSecondaryColor,
+        title: _isSearching
+            ? TextField(
+                controller: _searchController,
+                onChanged: _filterReciter,
+                style: AppStyles.styleCairoMedium15white(context),
+                decoration: InputDecoration(
+                  hintText: 'إبحث عن قاريء ...',
+                  hintStyle: AppStyles.styleCairoMedium15white(context),
+                  border: InputBorder.none,
                 ),
-          actions: [
-            GestureDetector(
+                autofocus: true,
+              )
+            : Text(
+                'القران المرتل',
+                style: AppStyles.styleCairoBold20(context),
+              ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GestureDetector(
               onTap: _toggleSearch,
               child: _isSearching
-                  ? const Icon(Icons.close) 
+                  ? const Icon(Icons.close)
                   : const IconConstrain(
                       height: 30,
                       imagePath: Assets.imagesSearch,
                     ),
-            )
-          ],),
+            ),
+          )
+        ],
+      ),
       body: filteredReciters.isNotEmpty
           ? ListView.builder(
               itemCount: filteredReciters.length,
@@ -558,14 +563,14 @@ class _MurattalPageState extends State<MurattalPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ListSurahsListeningPage(                    reciter: reciters[index],
-
+                        builder: (context) => ListSurahsListeningPage(
+                          reciter: reciters[index],
                         ),
                       ),
                     );
                   },
                   child: RecitursItem(
-                    reciter: reciters[filteredReciters[index]].name,
+                    Title: reciters[filteredReciters[index]].name,
                   ),
                 );
               },

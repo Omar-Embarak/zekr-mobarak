@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:azkar_app/model/quran_models/reciters_model.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -18,12 +19,13 @@ class SurahListeningItem extends StatefulWidget {
   final String audioUrl;
   final void Function(int surahIndex)? onSurahTap;
   final RecitersModel reciter;
-  const SurahListeningItem(
-      {super.key,
-      required this.surahIndex,
-      required this.audioUrl,
-      this.onSurahTap,
-      required this.reciter});
+
+  const SurahListeningItem({super.key, 
+    required this.surahIndex,
+    required this.audioUrl,
+    this.onSurahTap,
+    required this.reciter,
+  });
 
   @override
   State<SurahListeningItem> createState() => _SurahListeningItemState();
@@ -38,12 +40,12 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
   final AudioPlayer _audioPlayer = AudioPlayer();
   late ConnectivityResult _connectivityStatus;
   late DatabaseHelper _databaseHelper;
+  StreamSubscription<PlayerState>? _playerStateSubscription;
 
   @override
   void initState() {
     super.initState();
-    initializeAudioPlayer(
-        _audioPlayer, setTotalDuration, setCurrentDuration, setIsPlaying);
+    _initializeAudioPlayer();
     _checkInternetConnection();
     _databaseHelper = DatabaseHelper();
   }
@@ -52,41 +54,49 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
   void dispose() {
     _audioPlayer.stop();
     _audioPlayer.dispose();
-
+    _playerStateSubscription?.cancel();
     super.dispose();
   }
 
-  void setTotalDuration(Duration duration) {
-    setState(() {
-      totalDuration = duration;
+  Future<void> _initializeAudioPlayer() async {
+    _playerStateSubscription =
+        _audioPlayer.onPlayerStateChanged.listen((state) {
+      setState(() {
+        isPlaying = state == PlayerState.playing;
+      });
     });
-  }
-
-  void setCurrentDuration(Duration duration) {
-    setState(() {
-      currentDuration = duration;
+    _audioPlayer.onDurationChanged.listen((duration) {
+      setState(() {
+        totalDuration = duration;
+      });
     });
-  }
-
-  void setIsPlaying(bool playing) {
-    setState(() {
-      isPlaying = playing;
+    _audioPlayer.onPositionChanged.listen((position) {
+      setState(() {
+        currentDuration = position;
+      });
     });
   }
 
   Future<void> _checkInternetConnection() async {
     final List<ConnectivityResult> connectivityResults =
         await Connectivity().checkConnectivity();
-
     setState(() {
       _connectivityStatus =
           connectivityResults.contains(ConnectivityResult.none)
               ? ConnectivityResult.none
               : connectivityResults.first;
     });
+  }
 
+  void _showOfflineMessage() {
+    showMessage('لا يتوفر اتصال بالانترنت.');
+  }
+
+  void _handleAudioAction(Function() action) {
     if (_connectivityStatus == ConnectivityResult.none) {
-      showMessage('لا يوجد اتصال بالانترنت .');
+      _showOfflineMessage();
+    } else {
+      action();
     }
   }
 
@@ -151,53 +161,36 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       future: _databaseHelper.isFavoriteExists(
           widget.surahIndex, widget.reciter.name),
       builder: (context, snapshot) {
-        // Check if the future is complete and has a valid result
         if (snapshot.connectionState == ConnectionState.done) {
-          // Check if the future returned a value
-          if (snapshot.hasData && snapshot.data == true) {
-            isFavorite = true;
-            return Row(
-              children: [
-                const SizedBox(width: 10),
-                GestureDetector(
-                  onTap: toggleFavorite,
-                  child:
-                      const Icon(Icons.favorite, color: Colors.red, size: 30),
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  'سورة ${quran.getSurahNameArabic(widget.surahIndex + 1)}',
-                  style: AppStyles.styleRajdhaniMedium18(context),
-                ),
-                const Spacer(),
-                buildActionButtons(),
-              ],
-            );
-          } else {
-            isFavorite = false;
-            return Row(
-              children: [
-                const SizedBox(width: 10),
-                GestureDetector(
-                  onTap: toggleFavorite,
-                  child: const IconConstrain(
-                      height: 30, imagePath: Assets.imagesHeart),
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  'سورة ${quran.getSurahNameArabic(widget.surahIndex + 1)}',
-                  style: AppStyles.styleRajdhaniMedium18(context),
-                ),
-                const Spacer(),
-                buildActionButtons(),
-              ],
-            );
-          }
+          isFavorite = snapshot.data ?? false;
+          return Row(
+            children: [
+              const SizedBox(width: 10),
+              GestureDetector(
+                onTap: toggleFavorite,
+                child: isFavorite
+                    ? const Icon(Icons.favorite, color: Colors.red, size: 30)
+                    : const IconConstrain(
+                        height: 30, imagePath: Assets.imagesHeart),
+              ),
+              const SizedBox(width: 10),
+              Text(
+                'سورة ${quran.getSurahNameArabic(widget.surahIndex + 1)}',
+                style: AppStyles.styleRajdhaniMedium18(context),
+              ),
+              const Spacer(),
+              buildActionButtons(),
+            ],
+          );
         } else {
           return Row(
             children: [
               const SizedBox(width: 10),
-              const CircularProgressIndicator(),
+              GestureDetector(
+                onTap: () {},
+                child: const IconConstrain(
+                    height: 30, imagePath: Assets.imagesHeart),
+              ),
               const SizedBox(width: 10),
               Text(
                 'سورة ${quran.getSurahNameArabic(widget.surahIndex + 1)}',
@@ -217,25 +210,15 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         GestureDetector(
-          onTap: () {
-            if (_connectivityStatus == ConnectivityResult.none) {
-              showMessage('لا يتوفر اتصال بالانترنت.');
-            } else {
-              shareAudio(widget.audioUrl);
-            }
-          },
+          onTap: () => shareAudio(widget.audioUrl),
           child: const IconConstrain(height: 30, imagePath: Assets.imagesShare),
         ),
         const SizedBox(width: 10),
         GestureDetector(
-          onTap: () {
-            if (_connectivityStatus == ConnectivityResult.none) {
-              showMessage('لا يتوفر اتصال بالانترنت.');
-            } else {
-              downloadAudio(widget.audioUrl,
-                  quran.getSurahNameArabic(widget.surahIndex), context);
-            }
-          },
+          onTap: () => _handleAudioAction(() {
+            downloadAudio(widget.audioUrl,
+                quran.getSurahNameArabic(widget.surahIndex), context);
+          }),
           child: const IconConstrain(
               height: 30, imagePath: Assets.imagesDocumentDownload),
         ),
@@ -245,31 +228,31 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
   }
 
   Widget buildExpandedContent() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: Column(
-        children: [
-          buildDurationRow(),
-          buildSlider(),
-          buildControlButtons(),
-        ],
-      ),
+    return Column(
+      children: [
+        buildDurationRow(),
+        buildSlider(),
+        buildControlButtons(),
+      ],
     );
   }
 
   Widget buildDurationRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          '${currentDuration.inMinutes}:${(currentDuration.inSeconds % 60).toString().padLeft(2, '0')}',
-          style: AppStyles.styleRajdhaniMedium18(context),
-        ),
-        Text(
-          '${totalDuration.inMinutes}:${(totalDuration.inSeconds % 60).toString().padLeft(2, '0')}',
-          style: AppStyles.styleRajdhaniMedium18(context),
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            '${currentDuration.inMinutes}:${(currentDuration.inSeconds % 60).toString().padLeft(2, '0')}',
+            style: AppStyles.styleRajdhaniMedium18(context),
+          ),
+          Text(
+            '${totalDuration.inMinutes}:${(totalDuration.inSeconds % 60).toString().padLeft(2, '0')}',
+            style: AppStyles.styleRajdhaniMedium18(context),
+          ),
+        ],
+      ),
     );
   }
 
@@ -300,15 +283,10 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
               const IconConstrain(height: 24, imagePath: Assets.imagesForward),
         ),
         IconButton(
-          onPressed: () {
-            if (_connectivityStatus == ConnectivityResult.none) {
-              showMessage('لا يتوفر اتصال بالانترنت');
-            } else {
-              togglePlayPause(
-                  _audioPlayer, isPlaying, widget.audioUrl, setIsPlaying);
-              showMessage('...جاري تشغيل السورة');
-            }
-          },
+          onPressed: () => _handleAudioAction(() {
+            togglePlayPause(
+                _audioPlayer, isPlaying, widget.audioUrl, setIsPlaying);
+          }),
           icon: Icon(
             isPlaying ? Icons.pause_circle : Icons.play_circle,
             color: AppColors.kSecondaryColor,
@@ -322,5 +300,11 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
         ),
       ],
     );
+  }
+
+  void setIsPlaying(bool value) {
+    setState(() {
+      isPlaying = value;
+    });
   }
 }

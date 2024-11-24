@@ -9,7 +9,7 @@ import 'list_surahs_listening_page.dart';
 class QuranEnglishPage extends StatelessWidget {
   const QuranEnglishPage({super.key});
 
-  final List<RecitersModel> reciters = const[
+  final List<RecitersModel> reciters = const [
     RecitersModel(
       url:
           'https://download.quranicaudio.com/quran/sudais_shuraim_and_english//',
@@ -67,14 +67,14 @@ class QuranEnglishPage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ListSurahsListeningPage(                    reciter: reciters[index],
-
+                  builder: (context) => ListSurahsListeningPage(
+                    reciter: reciters[index],
                   ),
                 ),
               );
             },
             child: RecitursItem(
-              reciter: reciters[index].name,
+              Title: reciters[index].name,
             ),
           );
         },

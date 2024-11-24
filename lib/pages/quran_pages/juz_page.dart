@@ -115,7 +115,7 @@ class _JuzListPageState extends State<JuzListPage> {
                     children: [
                       Text(
                         "${getVerse(surahNumber, verseNumber).length > 30 ? getVerse(surahNumber, verseNumber).substring(0, 30) : getVerse(surahNumber, verseNumber)}...",
-                        style: AppStyles.styleAmiriMedium20(context),
+                        style: AppStyles.styleAmiriMedium30(context),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),

@@ -21,7 +21,7 @@ class SurahBorder extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Text(
             'سورة ${quran.getSurahNameArabic(surahNumber)}',
-            style: AppStyles.styleAmiriMedium20(context).copyWith(fontSize: 12),
+            style: AppStyles.styleAmiriMedium30(context).copyWith(fontSize: 12),
             textAlign: TextAlign.center,
           ),
         ),

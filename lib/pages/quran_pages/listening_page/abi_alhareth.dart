@@ -9,8 +9,8 @@ import 'list_surahs_listening_page.dart';
 class AbiAlharethPage extends StatelessWidget {
   const AbiAlharethPage({super.key});
 
-  final List<RecitersModel> reciters = const[
- RecitersModel(
+  final List<RecitersModel> reciters = const [
+    RecitersModel(
       url:
           'https://download.quranicaudio.com/quran/abdurrashid_sufi_abi_al7arith//',
       name: 'عبدالرشيد صوفي برواية ابي الحارث  ',
@@ -44,7 +44,7 @@ class AbiAlharethPage extends StatelessWidget {
               );
             },
             child: RecitursItem(
-              reciter: reciters[index].name,
+              Title: reciters[index].name,
             ),
           );
         },

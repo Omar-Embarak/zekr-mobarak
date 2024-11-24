@@ -9,7 +9,7 @@ import 'list_surahs_listening_page.dart';
 class Sho3baPage extends StatelessWidget {
   const Sho3baPage({super.key});
 
-  final List<RecitersModel> reciters = const[
+  final List<RecitersModel> reciters = const [
     RecitersModel(
       url: 'https://download.quranicaudio.com/quran/abdurrashid_sufi_shu3ba//',
       name: 'عبدالرشيد صوفي برواية شعبة   ',
@@ -36,14 +36,14 @@ class Sho3baPage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ListSurahsListeningPage(                    reciter: reciters[index],
-
+                  builder: (context) => ListSurahsListeningPage(
+                    reciter: reciters[index],
                   ),
                 ),
               );
             },
             child: RecitursItem(
-              reciter: reciters[index].name,
+              Title: reciters[index].name,
             ),
           );
         },

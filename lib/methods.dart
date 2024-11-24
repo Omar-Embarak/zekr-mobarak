@@ -25,7 +25,8 @@ Future<Map<String, dynamic>> loadJSONDataMap(String path) async {
 }
 
 void showMessage(String message) {
-  Fluttertoast.showToast(msg: message);
+  Fluttertoast.showToast(
+      msg: message, backgroundColor: Colors.black.withOpacity(0.5));
 }
 
 Future<List<dynamic>> loadJSONDataList(String path) async {
@@ -113,7 +114,7 @@ void showTafseer({
           child: SingleChildScrollView(
             child: Text(
               tafseerAyah,
-              style: AppStyles.styleAmiriMedium20(context)
+              style: AppStyles.styleAmiriMedium30(context)
                   .copyWith(color: Colors.white),
               textAlign: TextAlign.justify,
             ),
@@ -147,10 +148,12 @@ void showTafseer({
 
 void forward(AudioPlayer audioPlayer) {
   adjustSpeed(audioPlayer, 1.25);
+  showMessage('الصوت علي سرعة 1.25');
 }
 
 void backward(AudioPlayer audioPlayer) {
   adjustSpeed(audioPlayer, 0.75);
+  showMessage('الصوت علي سرعة 0.75');
 }
 
 Future<void> shareAudio(String audioUrl) async {
