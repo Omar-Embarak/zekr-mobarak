@@ -12,6 +12,7 @@ dependencies:
   animations: ^2.0.11
   audioplayers: ^6.1.0
   auto_size_text: ^3.0.0
+  bloc: ^8.1.4
   collection: ^1.17.1
   connectivity_plus: ^6.0.5
   cupertino_icons: ^1.0.6

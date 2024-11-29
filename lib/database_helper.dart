@@ -25,7 +25,7 @@ class DatabaseHelper {
     // Create a new database
     return await openDatabase(
       path,
-      version: 4, // Ensure this matches your new schema version
+      version: 5, // Ensure this matches your new schema version
       onCreate: (db, version) async {
         await db.execute('''
         CREATE TABLE favorites(
@@ -37,14 +37,20 @@ class DatabaseHelper {
           url TEXT
         )
       ''');
-
-        await db.execute('''
+ await db.execute('''
      CREATE TABLE bookmarks(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   surahName TEXT,
   pageNumber INTEGER
 )
 
+      ''');
+        await db.execute('''
+      CREATE TABLE favDars(
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT,
+          url TEXT
+        )
       ''');
       },
     );

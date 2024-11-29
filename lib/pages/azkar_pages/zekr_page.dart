@@ -1,3 +1,4 @@
+import 'package:azkar_app/utils/app_style.dart';
 import 'package:flutter/material.dart';
 
 import '../../constants.dart';
@@ -5,7 +6,8 @@ import '../../constants.dart';
 class ZekrPage extends StatelessWidget {
   final String zekerCategory;
   final List zekerList;
-  ZekrPage({super.key, required this.zekerCategory, required this.zekerList});
+  const ZekrPage(
+      {super.key, required this.zekerCategory, required this.zekerList});
 
   @override
   Widget build(BuildContext context) {
@@ -16,11 +18,11 @@ class ZekrPage extends StatelessWidget {
         centerTitle: true,
         title: Text(
           zekerCategory,
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(15),
+        padding: const EdgeInsets.all(15),
         child: ListView.builder(
           itemCount: zekerList.length,
           itemBuilder: (context, index) {
@@ -33,51 +35,57 @@ class ZekrPage extends StatelessWidget {
                   color: AppColors.kSecondaryColor,
                 ),
                 child: Padding(
-                  padding: EdgeInsets.all(15),
+                  padding: const EdgeInsets.all(15),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
                           CircleAvatar(
+                            backgroundColor: Colors.white,
                             child: Center(
                               child: Text(
                                 "${index + 1}",
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.w800),
                               ),
                             ),
-                            backgroundColor: Colors.white,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 10,
                           ),
-                          Text(
-                            "من ${zekerCategory}",
-                            style: TextStyle(
-                                fontSize: 18, color: AppColors.kPrimaryColor),
+                          Flexible(
+                            // Ensures the text wraps properly within the available space
+                            child: Text(
+                              "من $zekerCategory",
+                              style:
+                                  AppStyles.styleRajdhaniBoldOrange20(context),
+                              maxLines: 2, // Limit to 2 lines
+                              overflow: TextOverflow
+                                  .ellipsis, // Add ellipsis when overflowed
+                            ),
                           ),
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Text(
                         zekerList[index].text,
                         textAlign: TextAlign.justify,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           height: 2,
                           fontSize: 20,
                         ),
                       ),
-                      Divider(
+                      const Divider(
                         color: AppColors.kPrimaryColor,
                       ),
                       Text(
                         "التكرار : ${zekerList[index].count}",
                         textAlign: TextAlign.justify,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           height: 2,
                           fontSize: 20,

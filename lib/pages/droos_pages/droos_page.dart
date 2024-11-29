@@ -7,6 +7,7 @@ import '../../constants.dart';
 import '../../methods.dart';
 import '../../widgets/dars_listening_item.dart';
 import '../../widgets/reciturs_item.dart';
+import 'fav_dars_page.dart';
 
 class DroosPage extends StatefulWidget {
   const DroosPage({super.key});
@@ -73,51 +74,72 @@ class _DroosPageState extends State<DroosPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'الدروس الدينية',
-          style: AppStyles.styleCairoBold20(context),
+        appBar: AppBar(
+          title: Text(
+            'الدروس الدينية',
+            style: AppStyles.styleCairoBold20(context),
+          ),
+          backgroundColor: AppColors.kSecondaryColor,
         ),
-        backgroundColor: AppColors.kSecondaryColor,
-      ),
-      backgroundColor: AppColors.kPrimaryColor,
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : audioList.isEmpty
-              ? const Center(
-                  child: Text(
-                    'لا توجد بيانات متاحة',
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                )
-              : ListView.builder(
-                  itemCount: audioList.length,
-                  itemBuilder: (context, index) {
-                    final item = audioList[index];
-                    final title = item['title'];
-                    final attachments = item['attachments'];
-                    final description = item['prepared_by'][1]['title'] ??
-                        item['prepared_by'][0]['title'];
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DroosListeningPage(
-                              darsName: title,
-                              audios: attachments,
-                            ),
+        backgroundColor: AppColors.kPrimaryColor,
+        body: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : audioList.isEmpty
+                ? const Center(
+                    child: Text(
+                      'لا توجد بيانات متاحة',
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                  )
+                : ListView.builder(
+                    itemCount:
+                        audioList.length + 1, // Add 1 to include the extra item
+                    itemBuilder: (context, index) {
+                      if (index == 0) {
+                        // The first item: Navigate to FavDarsPage
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const FavDarsPage(), // Navigate to FavDarsPage
+                              ),
+                            );
+                          },
+                          child: const RecitursItem(
+                            title: 'المفضلة',
                           ),
                         );
-                      },
-                      child: RecitursItem(
-                        Title: title,
-                        description: description,
-                      ),
-                    );
-                  },
-                ),
-    );
+                      } else {
+                        // For the rest of the items
+                        final item = audioList[index -
+                            1]; // Adjust index to access the correct item
+                        final title = item['title'];
+                        final attachments = item['attachments'];
+                        final description = item['prepared_by'][1]['title'] ??
+                            item['prepared_by'][0]['title'];
+
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DroosListeningPage(
+                                  darsName: title,
+                                  audios: attachments,
+                                ),
+                              ),
+                            );
+                          },
+                          child: RecitursItem(
+                            title: title,
+                            description: description,
+                          ),
+                        );
+                      }
+                    },
+                  ));
   }
 }
 

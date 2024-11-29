@@ -570,7 +570,7 @@ class _MurattalPageState extends State<MurattalPage> {
                     );
                   },
                   child: RecitursItem(
-                    Title: reciters[filteredReciters[index]].name,
+                    title: reciters[filteredReciters[index]].name,
                   ),
                 );
               },

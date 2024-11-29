@@ -1,7 +1,10 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:azkar_app/model/fav_dars_model.dart';
+import 'package:azkar_app/pages/droos_pages/fav_dars_provider.dart';
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../constants.dart';
 import '../../methods.dart';
 import '../../utils/app_images.dart';
@@ -25,7 +28,6 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
   final ConnectivityResult _connectivityStatus = ConnectivityResult.none;
   bool isExpanded = false; // Control if the item is expanded
   bool isPlaying = false;
-  bool isFavorite = false;
   Duration totalDuration = Duration.zero;
   Duration currentDuration = Duration.zero;
   final AudioPlayer _audioPlayer = AudioPlayer();
@@ -61,11 +63,7 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
     });
   }
 
-  void toggleFavorite() {
-    setState(() {
-      isFavorite = !isFavorite;
-    });
-  }
+
 
   void toggleExpanded() {
     setState(() {
@@ -87,6 +85,7 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
 
   @override
   Widget build(BuildContext context) {
+ 
     return Column(
       children: [
         GestureDetector(
@@ -117,24 +116,55 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
   }
 
   Widget buildSurahRow() {
+         final favDarsProvider = Provider.of<FavDarsProvider>(context);
+
+    // Check if the current page is bookmarked
+    final isFavorite = favDarsProvider.favsDars
+        .any((favsDars) => favsDars.url== widget.audioUrl);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start, // Align for long text
       children: [
         const SizedBox(width: 10),
-        GestureDetector(
-          onTap: toggleFavorite,
-          child: isFavorite
-              ? const Icon(
-                  Icons.favorite,
-                  color: Colors.red,
-                  size: 30,
-                )
-              : const IconConstrain(
-                  height: 30,
-                  imagePath: Assets.imagesHeart,
-                ),
+      GestureDetector(
+  onTap: () async {
+    // Check if the item is already a favorite
+    final isFavorite = favDarsProvider.favsDars
+        .any((favDars) => favDars.url == widget.audioUrl);
+
+    if (isFavorite) {
+      // Remove from favorites
+      final index = favDarsProvider.favsDars.indexWhere(
+        (favDars) => favDars.url == widget.audioUrl,
+      );
+
+      // Ensure async call is awaited
+      await favDarsProvider.removeFavDars(index);
+    } else {
+      // Add to favorites
+      final newFavDars = FavDarsModel(
+        name: widget.title,
+        url: widget.audioUrl,
+      );
+
+      // Ensure async call is awaited
+      await favDarsProvider.addFavDars(newFavDars);
+    }
+
+    // Update the UI after the favorite status changes
+    setState(() {});
+  },
+  child: isFavorite
+      ? const Icon(
+          Icons.favorite,
+          color: Colors.red,
+          size: 30,
+        )
+      : const IconConstrain(
+          height: 30,
+          imagePath: Assets.imagesHeart,
         ),
-        const SizedBox(width: 10),
+),
+   const SizedBox(width: 10),
         // Expanded text to allow full view of long titles
         Expanded(
           child: Text(

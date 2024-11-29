@@ -1,5 +1,6 @@
 import 'package:azkar_app/cubit/add_fav_surahcubit/add_fav_surah_item_cubit.dart';
 import 'package:azkar_app/cubit/ruqiya_cubit/ruqiya_cubit.dart';
+import 'package:azkar_app/pages/droos_pages/fav_dars_provider.dart';
 import 'package:azkar_app/simple_bloc_observer.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
                ChangeNotifierProvider(create: (_) => QuranDataProvider()),
+               ChangeNotifierProvider(create: (_) => FavDarsProvider()),
 
         BlocProvider(
           create: (context) => AddFavSurahItemCubit(),

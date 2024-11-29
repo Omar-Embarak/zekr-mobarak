@@ -17,8 +17,8 @@ class PrayingLoaded extends PrayingState {
       this.prayerTimes, this.nextPraying, this.nextPrayerName, this.timings);
 }
 
-class PrayingEError extends PrayingState {
+class PrayingError extends PrayingState {
   final String error;
 
-  PrayingEError(this.error);
+  PrayingError(this.error);
 }

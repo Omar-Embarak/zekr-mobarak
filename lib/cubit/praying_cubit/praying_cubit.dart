@@ -55,7 +55,7 @@ class PrayingCubit extends Cubit<PrayingState> {
         ));
       }
     } catch (e) {
-      emit(PrayingEError(e.toString()));
+      emit(PrayingError(e.toString()));
     }
   }
 

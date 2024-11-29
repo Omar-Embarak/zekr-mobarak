@@ -58,6 +58,15 @@ abstract class AppStyles {
     );
   }
 
+  static TextStyle styleRajdhaniBoldOrange20(context) {
+    return TextStyle(
+      color: AppColors.kPrimaryColor,
+      fontSize: getResponsiveFontSize(context, fontSize: 20),
+      fontFamily: 'Rajdhani',
+      fontWeight: FontWeight.w700,
+    );
+  }
+
   static TextStyle styleRajdhaniMedium15(context) {
     return TextStyle(
       color: const Color(0xff000000),

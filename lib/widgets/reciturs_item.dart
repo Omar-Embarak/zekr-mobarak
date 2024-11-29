@@ -5,11 +5,11 @@ import '../utils/app_style.dart';
 class RecitursItem extends StatelessWidget {
   const RecitursItem({
     super.key,
-    required this.Title,
+    required this.title,
     this.description,
   });
 
-  final String Title;
+  final String title;
   final String? description;
 
   @override
@@ -34,7 +34,7 @@ class RecitursItem extends StatelessWidget {
                   CrossAxisAlignment.start, // Align text to the left
               children: [
                 Text(
-                  Title,
+                  title,
                   style: AppStyles.styleCairoMedium15white(context),
                   maxLines: 2, // Limit text to 2 lines to prevent overflow
                   overflow:

@@ -132,7 +132,7 @@ class MakkaPage extends StatelessWidget {
               );
             },
             child: RecitursItem(
-              Title: reciters[index].name,
+              title: reciters[index].name,
             ),
           );
         },

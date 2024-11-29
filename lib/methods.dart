@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -10,7 +9,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart';
-
 import 'constants.dart';
 
 Future<Map<String, dynamic>> loadJSONDataMap(String path) async {
