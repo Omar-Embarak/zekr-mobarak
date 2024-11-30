@@ -78,7 +78,7 @@ abstract class AppStyles {
 
   static TextStyle styleDiodrumArabicMedium15(context) {
     return TextStyle(
-      color: const Color(0xff000000),
+      color: Colors.white,
       fontSize: getResponsiveFontSize(context, fontSize: 15),
       fontFamily: 'DiodrumArabic',
       fontWeight: FontWeight.w500,
@@ -114,7 +114,7 @@ abstract class AppStyles {
 
   static TextStyle styleCairoMedium10(context) {
     return TextStyle(
-      color: Colors.white,
+      color: Colors.black,
       fontSize: getResponsiveFontSize(context, fontSize: 10),
       fontFamily: 'Cairo',
       fontWeight: FontWeight.w500,

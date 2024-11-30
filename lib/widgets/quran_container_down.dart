@@ -11,6 +11,7 @@ import '../pages/quran_pages/doaa_khatm_page.dart';
 import '../pages/quran_pages/juz_page.dart';
 import '../utils/app_images.dart';
 import '../utils/app_style.dart';
+import 'font_slider_widget.dart';
 import 'quran_containers_buttons_widget.dart';
 import 'surahs_list_widget.dart';
 import 'package:quran/quran.dart' as quran;
@@ -35,7 +36,6 @@ class _QuranContainerDownState extends State<QuranContainerDown> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 12),
       padding: const EdgeInsets.all(12),
-      height: 136,
       width: double.infinity,
       decoration: BoxDecoration(
         color: AppColors.kSecondaryColor.withOpacity(0.87),
@@ -64,8 +64,8 @@ class _QuranContainerDownState extends State<QuranContainerDown> {
                           // Hint text
                           Text(
                             'إبحث عن آية', // Search for an Ayah
-                            style: AppStyles.styleDiodrumArabicMedium15(context)
-                                .copyWith(color: Colors.white),
+                            style:
+                                AppStyles.styleDiodrumArabicMedium15(context),
                           ),
                           // Icon
                           const IconConstrain(
@@ -130,8 +130,7 @@ class _QuranContainerDownState extends State<QuranContainerDown> {
                             Text(
                               isBookmarked ? 'إزالة العلامة' : 'حفظ علامة',
                               style:
-                                  AppStyles.styleDiodrumArabicMedium15(context)
-                                      .copyWith(color: Colors.white),
+                                  AppStyles.styleDiodrumArabicMedium15(context),
                             ),
                           ],
                         ),
@@ -141,6 +140,9 @@ class _QuranContainerDownState extends State<QuranContainerDown> {
                 ),
               ),
             ],
+          ),
+          const SizedBox(
+            height: 8,
           ),
           Row(
             children: [
@@ -163,6 +165,9 @@ class _QuranContainerDownState extends State<QuranContainerDown> {
                 onTap: () {},
               ),
             ],
+          ),
+          const SizedBox(
+            height: 8,
           ),
           Row(
             children: [
@@ -204,6 +209,7 @@ class _QuranContainerDownState extends State<QuranContainerDown> {
               ),
             ],
           ),
+          const FontSlider(),
         ],
       ),
     );

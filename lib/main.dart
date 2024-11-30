@@ -12,6 +12,7 @@ import 'cubit/praying_cubit/praying_cubit.dart';
 import 'pages/home_page/home_page.dart';
 import 'pages/quran_pages/book_mark_provider.dart';
 import 'pages/quran_pages/quran_data_provider.dart';
+import 'pages/quran_pages/quran_font_size_provider.dart';
 
 void main() async {
   Bloc.observer = SimpleBlocObserver();
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
       providers: [
                ChangeNotifierProvider(create: (_) => QuranDataProvider()),
                ChangeNotifierProvider(create: (_) => FavDarsProvider()),
+               ChangeNotifierProvider(create: (_) => QuranFontSizeProvider()),
 
         BlocProvider(
           create: (context) => AddFavSurahItemCubit(),

@@ -105,7 +105,7 @@ class QuranContainerUP extends StatelessWidget {
               Text(
                 'الجزء $juzNumber  ',
                 style: AppStyles.styleDiodrumArabicMedium15(context)
-                    .copyWith(color: Colors.white),
+             ,
               ),
             ],
           ),

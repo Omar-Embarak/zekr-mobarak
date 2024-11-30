@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:azkar_app/utils/app_style.dart';
+import 'package:provider/provider.dart';
 import 'package:quran/page_data.dart';
 import 'package:quran/quran.dart' as quran;
 import '../../constants.dart';
@@ -9,6 +10,7 @@ import '../../widgets/quran_container_down.dart';
 import '../../widgets/quran_container_up.dart';
 import '../../widgets/surah_border.dart';
 import '../../widgets/verse_buttons_widget.dart';
+import 'quran_font_size_provider.dart';
 import 'quran_reading_main_page.dart';
 
 class SurahPage extends StatefulWidget {
@@ -137,52 +139,56 @@ class _SurahPageState extends State<SurahPage> {
 
   /// Builds the Quranic content for the page
   Widget _buildPageContent() {
-    return GestureDetector(
-      onDoubleTapDown: (details) => _selectVerse(details.globalPosition),
-      child: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.only(right: 8),
-          alignment: Alignment.center,
-          child: RichText(
-            text: TextSpan(
-              style: AppStyles.styleAmiriMedium30(context),
-              children: pageContent.entries.expand((entry) {
-                int surahNumber = entry.key;
-                return entry.value.map((verseEntry) {
-                  int verseIndex = verseEntry['verseNumber'];
-                  String verseText = verseEntry['verseText'];
-                  bool isHighlighted = highlightedVerse == verseIndex;
+    return Consumer<QuranFontSizeProvider>(
+      builder: (context, fontSizeProvider, child) {
+        return GestureDetector(
+          onDoubleTapDown: (details) => _selectVerse(details.globalPosition),
+          child: SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.only(right: 8),
+              alignment: Alignment.center,
+              child: RichText(
+                text: TextSpan(
+                  style: AppStyles.styleAmiriMedium30(context).copyWith(fontSize:fontSizeProvider.fontSize),
+                  children: pageContent.entries.expand((entry) {
+                    int surahNumber = entry.key;
+                    return entry.value.map((verseEntry) {
+                      int verseIndex = verseEntry['verseNumber'];
+                      String verseText = verseEntry['verseText'];
+                      bool isHighlighted = highlightedVerse == verseIndex;
 
-                  return TextSpan(
-                    children: [
-                      if (verseIndex == 1)
-                        WidgetSpan(
-                          alignment: PlaceholderAlignment.middle,
-                          child: SurahBorder(surahNumber: surahNumber),
-                        ),
-                      TextSpan(
-                        text:
-                            ' $verseText${quran.getVerseEndSymbol(verseIndex, arabicNumeral: true)} ',
-                        style: TextStyle(
-                          backgroundColor: isHighlighted
-                              ? Colors.yellow.withOpacity(0.4)
-                              : Colors.transparent,
-                          color: isHighlighted ? Colors.red : null,
-                        ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () => setState(() {
-                                highlightedVerse =
-                                    verseIndex; // Highlight verse
-                              }),
-                      ),
-                    ],
-                  );
-                });
-              }).toList(),
+                      return TextSpan(
+                        children: [
+                          if (verseIndex == 1)
+                            WidgetSpan(
+                              alignment: PlaceholderAlignment.middle,
+                              child: SurahBorder(surahNumber: surahNumber),
+                            ),
+                          TextSpan(
+                            text:
+                                ' $verseText${quran.getVerseEndSymbol(verseIndex, arabicNumeral: true)} ',
+                            style: TextStyle(
+                              backgroundColor: isHighlighted
+                                  ? Colors.yellow.withOpacity(0.4)
+                                  : Colors.transparent,
+                              color: isHighlighted ? Colors.red : null,
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () => setState(() {
+                                    highlightedVerse =
+                                        verseIndex; // Highlight verse
+                                  }),
+                          ),
+                        ],
+                      );
+                    });
+                  }).toList(),
+                ),
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

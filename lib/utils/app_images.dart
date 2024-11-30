@@ -118,6 +118,14 @@ class Assets {
   /// assets/images/right_page.svg
   static const String imagesRightPage = "assets/images/right_page.svg";
 
+  /// Assets for imagesRightborder
+  /// assets/images/rightborder.jpeg
+  static const String imagesRightborder = "assets/images/rightborder.jpeg";
+
+  /// Assets for imagesRightborderRemovebgPreview
+  /// assets/images/rightborder-removebg-preview.png
+  static const String imagesRightborderRemovebgPreview = "assets/images/rightborder-removebg-preview.png";
+
   /// Assets for imagesRob3
   /// assets/images/rob3.png
   static const String imagesRob3 = "assets/images/rob3.png";
@@ -157,5 +165,8 @@ class Assets {
   /// Assets for imagesVector
   /// assets/images/Vector.svg
   static const String imagesVector = "assets/images/Vector.svg";
+
+  /// Assets for imagesWhatsApp Image 20241130 at 10727 PM
+  /// assets/images/WhatsApp Image 2024-11-30 at 1.07.27 PM.jpg
 }
 

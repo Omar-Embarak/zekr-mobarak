@@ -29,7 +29,7 @@ class QuranContainerButtons extends StatelessWidget {
             Text(
               text,
               style: AppStyles.styleDiodrumArabicMedium15(context)
-                  .copyWith(color: Colors.white),
+                ,
             )
           ],
         ),
