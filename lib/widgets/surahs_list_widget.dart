@@ -106,7 +106,7 @@ class _SurahListWidgetState extends State<SurahListWidget> {
     return Container(
       height: 41,
       width: double.infinity,
-      decoration: const BoxDecoration(color: AppColors.kSecondaryColor),
+      decoration:  BoxDecoration(color: AppColors.kSecondaryColor),
       child: Row(
         children: [
           const SizedBox(width: 10),

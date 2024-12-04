@@ -1,7 +1,10 @@
+import 'package:azkar_app/utils/app_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jhijri/jHijri.dart';
+import 'package:provider/provider.dart';
 import '../../constants.dart';
+import '../../cubit/theme_cubit/theme_cubit.dart';
 import '../../widgets/bottom_sheet.dart';
 import '../../widgets/main_category_widget.dart';
 import '../azkar_pages/azkar_main_page.dart';
@@ -9,8 +12,14 @@ import '../droos_pages/droos_page.dart';
 import '../pray_page/pray_page.dart';
 import '../ruqiya_pages/ruqiya_page.dart';
 
-class HomePages extends StatelessWidget {
-  HomePages({super.key});
+class HomePages extends StatefulWidget {
+  const HomePages({super.key});
+
+  @override
+  State<HomePages> createState() => _HomePagesState();
+}
+
+class _HomePagesState extends State<HomePages> {
   final jHijri = JHijri.now();
 
   @override
@@ -27,9 +36,50 @@ class HomePages extends StatelessWidget {
           style: TextStyle(color: Colors.white),
         ),
         leading: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            final RenderBox overlay =
+                Overlay.of(context).context.findRenderObject() as RenderBox;
+            final themeCubit = context.read<ThemeCubit>();
+
+            showMenu(
+              color: AppColors.kSecondaryColor,
+              context: context,
+              position: RelativeRect.fromRect(
+                Rect.fromLTWH(
+                  overlay.size.width - 50, // مكان ظهور القائمة
+                  50, // ارتفاع القائمة
+                  50,
+                  50,
+                ),
+                Offset.zero & overlay.size,
+              ),
+              items: [
+                PopupMenuItem(
+                  onTap: () => themeCubit.setTheme(lightTheme),
+                  child: Text(
+                    'الوضع الفاتح',
+                    style: AppStyles.styleCairoMedium15white(context),
+                  ),
+                ),
+                PopupMenuItem(
+                  onTap: () => themeCubit.setTheme(darkTheme),
+                  child: Text(
+                    'الوضع المظلم',
+                    style: AppStyles.styleCairoMedium15white(context),
+                  ),
+                ),
+                PopupMenuItem(
+                  onTap: () => themeCubit.setTheme(defaultTheme),
+                  child: Text(
+                    'الوضع الافتراضي',
+                    style: AppStyles.styleCairoMedium15white(context),
+                  ),
+                ),
+              ],
+            );
+          },
           icon: const Icon(
-            Icons.notifications,
+            Icons.light_mode,
             color: Colors.white,
           ),
         ),

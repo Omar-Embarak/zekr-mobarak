@@ -69,7 +69,7 @@ class _RuqiyaPageState extends State<RuqiyaPage> {
                                   fontSize: 20,
                                 ),
                               ),
-                              const Divider(
+                               Divider(
                                 color: AppColors.kPrimaryColor,
                               ),
                               Row(

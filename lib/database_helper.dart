@@ -1,3 +1,4 @@
+import 'package:azkar_app/constants.dart';
 import 'package:azkar_app/model/fav_dars_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -20,7 +21,7 @@ class DatabaseHelper {
 
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'favorites.db');
-    // await deleteDatabase(path);
+    await deleteDatabase(path);
 
     // Create a new database
     return await openDatabase(
@@ -37,12 +38,12 @@ class DatabaseHelper {
           url TEXT
         )
       ''');
- await db.execute('''
-     CREATE TABLE bookmarks(
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  surahName TEXT,
-  pageNumber INTEGER
-)
+        await db.execute('''
+       CREATE TABLE bookmarks(  
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          surahName TEXT,
+          pageNumber INTEGER
+        )
 
       ''');
         await db.execute('''
@@ -51,7 +52,13 @@ class DatabaseHelper {
           name TEXT,
           url TEXT
         )
-      ''');
+      ''');     await db.execute('''
+      CREATE TABLE fontSize(
+          fontSize DOUBLE
+        )
+      ''');   await db.execute(
+          'CREATE TABLE theme (id INTEGER PRIMARY KEY, themeMode TEXT)',
+        );
       },
     );
   }
@@ -112,7 +119,6 @@ class DatabaseHelper {
   }
 
   // Delete Bookmark
-  // Delete Bookmark
   Future<void> deleteBookmark(int? id) async {
     final db = await database;
 
@@ -128,21 +134,25 @@ class DatabaseHelper {
       whereArgs: [id],
     );
   }
-    Future<void> insertFavDars(FavDarsModel favDars) async {
+
+  Future<void> insertFavDars(FavDarsModel favDars) async {
     final db = await database;
     await db.insert(
       'favDars',
       favDars.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-  } Future<List<FavDarsModel>> getFavsDars() async {
+  }
+
+  Future<List<FavDarsModel>> getFavsDars() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query('favDars');
     return List.generate(maps.length, (i) {
       return FavDarsModel.fromMap(maps[i]);
     });
   }
-    Future<void> deleteFavDars(int? id) async {
+
+  Future<void> deleteFavDars(int? id) async {
     final db = await database;
 
     // Check if the ID is null
@@ -156,5 +166,49 @@ class DatabaseHelper {
       where: 'id = ?',
       whereArgs: [id],
     );
+  }
+  
+  Future<void> changeFontSize(double fontSize) async {
+  final db = await database;
+
+  // Insert or update the font size
+  await db.insert(
+    'fontSize',
+    {'fontSize': fontSize},
+    conflictAlgorithm: ConflictAlgorithm.replace, // Replace the record if it exists
+  );
+}
+Future<double> getFontSize() async {
+  final db = await database;
+
+  final List<Map<String, dynamic>> results = await db.query(
+    'fontSize',
+    columns: ['fontSize'],
+    limit: 1,
+  );
+
+  // Return the fontSize if it exists, otherwise return a default value
+  if (results.isNotEmpty) {
+    return results.first['fontSize'] as double;
+  }
+  return 35.0; // Default font size
+}
+
+   Future<void> saveTheme(String themeMode) async {
+    final db = await database;
+    await db.insert(
+      'theme',
+      {'id': 1, 'themeMode': themeMode},
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+   Future<String?> fetchTheme() async {
+    final db = await database;
+    final result = await db.query('theme', where: 'id = ?', whereArgs: [1]);
+    if (result.isNotEmpty) {
+      return result.first['themeMode'] as String;
+    }
+    return defaultTheme;
   }
 }

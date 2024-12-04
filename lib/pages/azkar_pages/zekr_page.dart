@@ -79,7 +79,7 @@ class ZekrPage extends StatelessWidget {
                           fontSize: 20,
                         ),
                       ),
-                      const Divider(
+                       Divider(
                         color: AppColors.kPrimaryColor,
                       ),
                       Text(

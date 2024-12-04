@@ -45,9 +45,9 @@ class _JuzListPageState extends State<JuzListPage> {
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(10),
-                      decoration: const BoxDecoration(
+                      decoration:  BoxDecoration(
                         color: AppColors.kSecondaryColor,
-                        border: Border(
+                        border: const Border(
                           bottom: BorderSide(color: Colors.grey),
                         ),
                       ),

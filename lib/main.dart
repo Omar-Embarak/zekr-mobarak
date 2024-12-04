@@ -9,6 +9,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'cubit/azkar_cubit/azkar_cubit.dart';
 import 'cubit/praying_cubit/praying_cubit.dart';
+import 'cubit/theme_cubit/theme_cubit.dart';
 import 'pages/home_page/home_page.dart';
 import 'pages/quran_pages/book_mark_provider.dart';
 import 'pages/quran_pages/quran_data_provider.dart';
@@ -26,10 +27,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-               ChangeNotifierProvider(create: (_) => QuranDataProvider()),
-               ChangeNotifierProvider(create: (_) => FavDarsProvider()),
-               ChangeNotifierProvider(create: (_) => QuranFontSizeProvider()),
-
+        ChangeNotifierProvider(create: (_) => QuranDataProvider()),
+        ChangeNotifierProvider(create: (_) => FavDarsProvider()),
+        ChangeNotifierProvider(create: (_) => QuranFontSizeProvider()),
+        BlocProvider(
+          create: (context) => ThemeCubit(),
+        ),
         BlocProvider(
           create: (context) => AddFavSurahItemCubit(),
         ),
@@ -59,13 +62,10 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Azkar App',
         theme: ThemeData(
-          appBarTheme:
-              const AppBarTheme(iconTheme: IconThemeData(color: Colors.white)),
           fontFamily: "Cairo",
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: HomePages(),
+        home: const HomePages(),
       ),
     );
   }

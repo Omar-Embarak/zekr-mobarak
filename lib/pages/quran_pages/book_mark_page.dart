@@ -14,7 +14,7 @@ class BookmarksPage extends StatelessWidget {
       builder: (context, provider, child) {
         // Check if bookmarks are empty
         if (provider.bookmarks.isEmpty) {
-          return const Center(
+          return  Center(
             child: Text(
               'لا يوجد صفحات محفوظة',
               style: TextStyle(color: AppColors.kSecondaryColor),
@@ -45,7 +45,7 @@ class BookmarksPage extends StatelessWidget {
                   ),
                   title: Text(
                     'سورة ${bookmark.surahName}',
-                    style: const TextStyle(color: AppColors.kSecondaryColor),
+                    style:  TextStyle(color: AppColors.kSecondaryColor),
                   ),
                   subtitle: Text(
                     'صفحة ${bookmark.pageNumber}',

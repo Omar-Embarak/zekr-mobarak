@@ -4,10 +4,9 @@ import 'package:azkar_app/pages/quran_pages/surah_page.dart';
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:quran/quran.dart' as quran;
+// import 'package:quran/quran_text.dart';
 
 import '../../quran_text_no_diacritics.dart';
-
-// import '../../quran_text_no_diacritics.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -29,7 +28,8 @@ class SearchPageState extends State<SearchPage> {
     // Normalize variations of 'ا'
     String normalized = withoutTashkeel
         .replaceAll(
-            RegExp(r'[أإٱآ]'), 'ا') // Replace all forms of 'ا' with plain 'ا'
+            RegExp(r'[أإٱآٰ]'), 'ا') // Replace all forms of 'ا' with plain 'ا'
+
         .replaceAll('ى', 'ي') // Replace 'ى' with 'ي'
         .replaceAll('ة', 'ه'); // Replace 'ة' with 'ه'
 
@@ -60,14 +60,13 @@ class SearchPageState extends State<SearchPage> {
         searchResults = results;
       });
     } catch (e) {
-      showMessage("حدث خطا اثناء البحث: $e");
+      showMessage("حدث خطأ أثناء البحث: $e");
       setState(() {
         searchResults = [];
       });
     }
   }
 
-  @override
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -128,33 +127,49 @@ class SearchPageState extends State<SearchPage> {
                     spans.add(TextSpan(text: verseContent));
                   }
 
-                  return ListTile(
-                    title: RichText(
-                      text: TextSpan(
-                        style: AppStyles.styleAmiriMedium30(context),
-                        children: spans,
-                      ),
-                    ),
-                    subtitle: Text(
-                      'سورة: ${quran.getSurahNameArabic(result['surah'])}, آية: ${result['verse']}',
-                    ),
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => SurahPage(
-                          pageNumber: quran.getPageNumber(
-                            result['surah'],
-                            result['verse'],
-                          ),
-                        ),
-                      ));
-                    },
-                  );
+                  return SearchItem(spans: spans, result: result);
                 },
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class SearchItem extends StatelessWidget {
+  const SearchItem({
+    super.key,
+    required this.spans,
+    required this.result,
+  });
+
+  final List<TextSpan> spans;
+  final Map<String, dynamic> result;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: RichText(
+        text: TextSpan(
+          style: AppStyles.styleAmiriMedium30(context),
+          children: spans,
+        ),
+      ),
+      subtitle: Text(
+        'سورة: ${quran.getSurahNameArabic(result['surah'])}, آية: ${result['verse']}',
+      ),
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => SurahPage(
+            pageNumber: quran.getPageNumber(
+              result['surah'],
+              result['verse'],
+            ),
+          ),
+        ));
+      },
     );
   }
 }

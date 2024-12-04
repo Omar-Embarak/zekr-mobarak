@@ -28,14 +28,14 @@ Widget buildPrayerDetails(
               children: [
                 Text(
                   "صلاة ${state.nextPrayerName}",
-                  style: const TextStyle(
+                  style:  TextStyle(
                     fontSize: 20,
                     color: AppColors.kSecondaryColor,
                   ),
                 ),
                 Text(
                   state.nextPraying,
-                  style: const TextStyle(
+                  style:  TextStyle(
                     fontSize: 17,
                     color: AppColors.kSecondaryColor,
                   ),

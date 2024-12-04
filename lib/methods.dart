@@ -105,9 +105,9 @@ void showTafseer({
           height: MediaQuery.of(context).size.height / 2,
           width: double.infinity,
           padding: const EdgeInsets.all(16),
-          decoration: const BoxDecoration(
+          decoration:  BoxDecoration(
               color: AppColors.kSecondaryColor,
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(20), topRight: Radius.circular(20))),
           child: SingleChildScrollView(
             child: Text(
