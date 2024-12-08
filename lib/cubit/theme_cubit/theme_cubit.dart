@@ -4,20 +4,14 @@ import '../../database_helper.dart';
 import '../../utils/app_style.dart';
 
 class ThemeCubit extends Cubit<String> {
-  ThemeCubit() : super(defaultTheme) {
-    _loadTheme(); // Load theme from database when cubit is initialized
-  }
+  ThemeCubit() : super(defaultTheme);
 
   final DatabaseHelper _dbHelper = DatabaseHelper();
 
   // Load the theme from database
-  void _loadTheme() async {
+  Future<void> loadInitialTheme() async {
     final themeMode = await _dbHelper.fetchTheme();
-    if (themeMode == lightTheme || themeMode == darkTheme) {
-      _updateTheme(themeMode!); // Emit the saved theme
-    } else {
-      _updateTheme(defaultTheme); // Default theme if no saved theme exists
-    }
+    _updateTheme(themeMode);
   }
 
   // Save and emit new theme
@@ -26,17 +20,8 @@ class ThemeCubit extends Cubit<String> {
     await _dbHelper.saveTheme(themeMode); // Save to database
   }
 
-  // Toggle between light and dark themes
-  void toggleTheme() {
-    if (state == lightTheme) {
-      setTheme(darkTheme);
-    } else {
-      setTheme(lightTheme);
-    }
-  }
-
   // Private helper to update theme and notify AppStyles
-  void _updateTheme( themeMode) {
+  void _updateTheme(themeMode) {
     AppStyles.themeNotifier.value = themeMode; // Notify the theme change
     emit(themeMode); // Emit new state
   }

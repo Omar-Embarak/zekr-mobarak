@@ -21,12 +21,12 @@ class DatabaseHelper {
 
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'favorites.db');
-    await deleteDatabase(path);
+    // await deleteDatabase(path);
 
     // Create a new database
     return await openDatabase(
       path,
-      version: 5, // Ensure this matches your new schema version
+      version: 1, // Ensure this matches your new schema version
       onCreate: (db, version) async {
         await db.execute('''
         CREATE TABLE favorites(

@@ -16,6 +16,9 @@ import 'pages/quran_pages/quran_data_provider.dart';
 import 'pages/quran_pages/quran_font_size_provider.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await ThemeCubit().loadInitialTheme();
   Bloc.observer = SimpleBlocObserver();
   runApp(const MyApp());
 }

@@ -525,25 +525,15 @@ class _MurattalPageState extends State<MurattalPage> {
         backgroundColor: AppColors.kSecondaryColor,
         title: _isSearching
             ? TextField(
-                style: AppStyles.styleCairoMedium15white(context),
                 controller: _searchController,
-                decoration: InputDecoration(
-                  focusColor: Colors.blueGrey, // Focus color for other parts
-                  suffixIcon: Icon(
-                    Icons.search,
-                    color: AppStyles.styleRajdhaniBold20(context).color,
-                  ),
-                  labelText: "البحث",
-                  border: const OutlineInputBorder(), // Default border
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors
-                          .blueGrey, // Blue-grey color for the focused state
-                      width: 1.0, // Optional: Adjust the border thickness
-                    ),
-                  ),
-                ),
                 onChanged: _filterReciter,
+                style: AppStyles.styleCairoMedium15white(context),
+                decoration: InputDecoration(
+                  hintText: 'إبحث عن قاريء ...',
+                  hintStyle: AppStyles.styleCairoMedium15white(context),
+                  border: InputBorder.none,
+                ),
+                autofocus: true,
               )
             : Text(
                 'القران المرتل',

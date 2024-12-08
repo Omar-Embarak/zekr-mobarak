@@ -61,27 +61,16 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
       appBar: AppBar(
           centerTitle: true,
           title: _isSearching
-              ?TextField(
-                style: AppStyles.styleCairoMedium15white(context),
-                controller: _searchController,
-                decoration: InputDecoration(
-                  focusColor: Colors.blueGrey, // Focus color for other parts
-                  suffixIcon: Icon(
-                    Icons.search,
-                    color: AppStyles.styleRajdhaniBold20(context).color,
+              ? TextField(
+                  style: AppStyles.styleCairoMedium15white(context),
+                  controller: _searchController,
+                  onChanged: _filterSurahs,
+                  decoration: const InputDecoration(
+                    hintText: 'إبحث عن سورة ...',
+                    border: InputBorder.none,
                   ),
-                  labelText: "البحث",
-                  border: const OutlineInputBorder(), // Default border
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors
-                          .blueGrey, // Blue-grey color for the focused state
-                      width: 1.0, // Optional: Adjust the border thickness
-                    ),
-                  ),
-                ),
-                onChanged: _filterSurahs,
-              )
+                  autofocus: true, // Focus automatically when search is toggled
+                )
               : Text('استماع القران الكريم',
                   style: AppStyles.styleCairoMedium15white(context)),
           backgroundColor: AppColors.kPrimaryColor,
@@ -102,8 +91,7 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
       body: BlocConsumer<AddFavSurahItemCubit, AddFavSurahItemState>(
         listener: (context, state) {
           if (state is AddFavSurahItemFailure) {
-            showMessage(
-                'حدث خطأ ما: ${state.errorMessage}');
+            showMessage('حدث خطأ ما: ${state.errorMessage}');
           }
           if (state is AddFavSurahItemSuccess) {
             showMessage('تمت اضافة السورة الي المفضلة');
