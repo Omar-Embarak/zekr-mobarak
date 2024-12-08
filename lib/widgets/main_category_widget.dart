@@ -1,4 +1,5 @@
 import 'package:azkar_app/constants.dart';
+import 'package:azkar_app/utils/app_style.dart';
 import 'package:flutter/material.dart';
 
 class MainCategoryWidget extends StatelessWidget {
@@ -17,21 +18,14 @@ class MainCategoryWidget extends StatelessWidget {
       width: width,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        color: AppColors.kSecondaryColor, 
+        color: AppColors.kSecondaryColor,
       ),
       padding: const EdgeInsets.all(8),
       child: Center(
         child: Column(
           children: [
             Image.asset(categoryImg),
-            Text(
-              categoryTitle,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
+            Text(categoryTitle, style: AppStyles.styleCairoBold20(context)),
           ],
         ),
       ),

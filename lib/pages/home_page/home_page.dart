@@ -55,21 +55,24 @@ class _HomePagesState extends State<HomePages> {
               ),
               items: [
                 PopupMenuItem(
-                  onTap: () => themeCubit.setTheme(lightTheme),
+                  onTap: () =>
+                      {themeCubit.setTheme(lightTheme), setState(() {})},
                   child: Text(
                     'الوضع الفاتح',
                     style: AppStyles.styleCairoMedium15white(context),
                   ),
                 ),
                 PopupMenuItem(
-                  onTap: () => themeCubit.setTheme(darkTheme),
+                  onTap: () =>
+                      {themeCubit.setTheme(darkTheme), setState(() {})},
                   child: Text(
                     'الوضع المظلم',
                     style: AppStyles.styleCairoMedium15white(context),
                   ),
                 ),
                 PopupMenuItem(
-                  onTap: () => themeCubit.setTheme(defaultTheme),
+                  onTap: () =>
+                      {themeCubit.setTheme(defaultTheme), setState(() {})},
                   child: Text(
                     'الوضع الافتراضي',
                     style: AppStyles.styleCairoMedium15white(context),
@@ -91,11 +94,7 @@ class _HomePagesState extends State<HomePages> {
             Center(
               child: Text(
                 "${jHijri.day} ${jHijri.monthName} ${jHijri.year}",
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 21,
-                  fontWeight: FontWeight.w800,
-                ),
+                style: AppStyles.styleRajdhaniMedium20(context),
               ),
             ),
             const SizedBox(height: 20),

@@ -40,7 +40,8 @@ class RecitursItem extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: AppStyles.styleRajdhaniMedium15(context),
+                  style: AppStyles.styleRajdhaniMedium15(context)
+                      .copyWith(color: Colors.black),
                   maxLines: 2, // Limit text to 2 lines to prevent overflow
                   overflow:
                       TextOverflow.ellipsis, // Add ellipsis for truncated text

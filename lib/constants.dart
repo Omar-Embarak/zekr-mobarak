@@ -1,31 +1,31 @@
+import 'package:azkar_app/utils/app_style.dart';
 import 'package:flutter/material.dart';
-class AppColors {
-  static final ValueNotifier<String> themeNotifier = ValueNotifier<String>(defaultTheme);
 
+class AppColors {
   static Color get kPrimaryColor {
-    final themeMode = themeNotifier.value;
+    final themeMode = AppStyles.themeNotifier
+        .value; // Assuming themeNotifier is correctly initialized and accessible
     if (themeMode == defaultTheme) {
       return const Color(0xffcfad65);
     } else if (themeMode == lightTheme) {
-      return Colors.white;
+      return Colors.white; // Use predefined white color
     } else {
-      return Colors.black;
+      return const Color(0xff0f0f0f); // Correct way to define a custom color
     }
   }
 
   static Color get kSecondaryColor {
-    final themeMode = themeNotifier.value;
+    final themeMode = AppStyles.themeNotifier
+        .value; // Assuming themeNotifier is correctly initialized and accessible
     if (themeMode == defaultTheme) {
       return const Color(0xff6a564f);
     } else if (themeMode == lightTheme) {
-      return Colors.black;
+      return Colors.white; // Use predefined white color
     } else {
-      return Colors.white;
+      return const Color(0xff0f0f0f); // Correct way to define a custom color
     }
   }
 }
-
-
 
 const String darkTheme = "Dark";
 const String lightTheme = "light";

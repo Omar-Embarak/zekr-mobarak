@@ -1,6 +1,7 @@
 import 'package:azkar_app/constants.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../database_helper.dart';
+import '../../utils/app_style.dart';
 
 class ThemeCubit extends Cubit<String> {
   ThemeCubit() : super(defaultTheme) {
@@ -36,7 +37,7 @@ class ThemeCubit extends Cubit<String> {
 
   // Private helper to update theme and notify AppStyles
   void _updateTheme( themeMode) {
-    AppColors.themeNotifier.value = themeMode; // Notify the theme change
+    AppStyles.themeNotifier.value = themeMode; // Notify the theme change
     emit(themeMode); // Emit new state
   }
 }

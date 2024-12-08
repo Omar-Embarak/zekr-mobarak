@@ -149,7 +149,8 @@ class _SurahPageState extends State<SurahPage> {
               alignment: Alignment.center,
               child: RichText(
                 text: TextSpan(
-                  style: AppStyles.styleAmiriMedium30(context).copyWith(fontSize:fontSizeProvider.fontSize),
+                  style: AppStyles.styleAmiriMedium30(context)
+                      .copyWith(fontSize: fontSizeProvider.fontSize),
                   children: pageContent.entries.expand((entry) {
                     int surahNumber = entry.key;
                     return entry.value.map((verseEntry) {

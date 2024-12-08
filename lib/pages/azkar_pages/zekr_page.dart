@@ -70,27 +70,15 @@ class ZekrPage extends StatelessWidget {
                       const SizedBox(
                         height: 10,
                       ),
-                      Text(
-                        zekerList[index].text,
-                        textAlign: TextAlign.justify,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          height: 2,
-                          fontSize: 20,
-                        ),
-                      ),
-                       Divider(
+                      Text(zekerList[index].text,
+                          textAlign: TextAlign.justify,
+                          style: AppStyles.styleCairoBold20(context)),
+                      Divider(
                         color: AppColors.kPrimaryColor,
                       ),
-                      Text(
-                        "التكرار : ${zekerList[index].count}",
-                        textAlign: TextAlign.justify,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          height: 2,
-                          fontSize: 20,
-                        ),
-                      ),
+                      Text("التكرار : ${zekerList[index].count}",
+                          textAlign: TextAlign.justify,
+                          style: AppStyles.styleCairoBold20(context)),
                     ],
                   ),
                 ),

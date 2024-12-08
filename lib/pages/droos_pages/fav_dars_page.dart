@@ -21,10 +21,10 @@ class FavDarsPage extends StatelessWidget {
       backgroundColor: AppColors.kPrimaryColor,
       body: Consumer<FavDarsProvider>(builder: (context, provider, body) {
         if (provider.favsDars.isEmpty) {
-          return  Center(
+          return Center(
             child: Text(
               'لا يوجد دروس محفوظة',
-              style: TextStyle(color: AppColors.kSecondaryColor),
+              style: AppStyles.styleCairoBold20(context),
             ),
           );
         } else {

@@ -20,7 +20,8 @@ class SurahListeningItem extends StatefulWidget {
   final void Function(int surahIndex)? onSurahTap;
   final RecitersModel reciter;
 
-  const SurahListeningItem({super.key, 
+  const SurahListeningItem({
+    super.key,
     required this.surahIndex,
     required this.audioUrl,
     this.onSurahTap,
@@ -176,7 +177,8 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
               const SizedBox(width: 10),
               Text(
                 'سورة ${quran.getSurahNameArabic(widget.surahIndex + 1)}',
-                style: AppStyles.styleRajdhaniMedium18(context),
+                style: AppStyles.styleRajdhaniMedium18(context)
+                    .copyWith(color: Colors.black),
               ),
               const Spacer(),
               buildActionButtons(),

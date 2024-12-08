@@ -45,7 +45,7 @@ class SearchPageState extends State<SearchPage> {
       // Iterate over quranText to find matches
       for (var verse in quranText) {
         String verseContent = _normalizeArabic(verse['content']);
-        if (verseContent.contains(processedQuery)) {
+        if (verseContent.startsWith(processedQuery)) {
           // Use contains instead of startsWith
           results.add({
             "surah": verse['surah_number'],
@@ -77,10 +77,23 @@ class SearchPageState extends State<SearchPage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
+                style: AppStyles.styleCairoMedium15white(context),
                 controller: _searchController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
+                  focusColor: Colors.blueGrey, // Focus color for other parts
+                  suffixIcon: Icon(
+                    Icons.search,
+                    color: AppStyles.styleRajdhaniBold20(context).color,
+                  ),
                   labelText: "البحث",
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(), // Default border
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors
+                          .blueGrey, // Blue-grey color for the focused state
+                      width: 1.0, // Optional: Adjust the border thickness
+                    ),
+                  ),
                 ),
                 onChanged: _search,
               ),
