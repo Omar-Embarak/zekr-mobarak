@@ -3,7 +3,6 @@ import 'package:quran/quran.dart' as quran;
 import '../utils/app_style.dart';
 import '../constants.dart';
 import '../pages/quran_pages/surah_page.dart';
-import '../../methods.dart';
 
 class SurahListWidget extends StatefulWidget {
   const SurahListWidget({super.key});
@@ -13,32 +12,18 @@ class SurahListWidget extends StatefulWidget {
 }
 
 class _SurahListWidgetState extends State<SurahListWidget> {
-  List<dynamic> surahsAyat = [];
-
   @override
   void initState() {
     super.initState();
-    _loadData();
   }
 
-  Future<void> _loadData() async {
-    try {
-      final data = await loadJSONDataList('assets/quranjson/surah.json');
-      setState(() {
-        surahsAyat = data;
-      });
-    } catch (e) {
-      debugPrint('Error loading data: $e');
-    }
-  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.kPrimaryColor,
-      body: surahsAyat.isEmpty
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
+      body: ListView.builder(
               itemCount: quran.totalJuzCount,
               itemBuilder: (context, index) {
                 final surahsInJuz = quran.getSurahAndVersesFromJuz(index + 1);

@@ -42,13 +42,14 @@ class QuranReadingMainPage extends StatelessWidget {
                     : (AppStyles.themeNotifier.value == lightTheme
                         ? Colors.black
                         : Colors.white),
-                unselectedLabelColor:
-                    AppStyles.styleCairoBold20(context).color!.withOpacity(0.5),
+                unselectedLabelColor: AppStyles.styleRajdhaniBold20(context)
+                    .color!
+                    .withOpacity(0.6),
                 labelStyle: AppStyles.styleRajdhaniBold20(context),
                 tabs: const [
                   Tab(text: 'سورة'),
                   Tab(text: 'جزء'),
-                  Tab(text: 'المراجعيات'),
+                  Tab(text: 'العلامات'),
                 ],
               ),
               const Expanded(

@@ -9,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'audio_manager.dart';
 import 'constants.dart';
 
 Future<Map<String, dynamic>> loadJSONDataMap(String path) async {
@@ -56,20 +57,28 @@ void initializeAudioPlayer(
 }
 
 Future<void> togglePlayPause(
-    AudioPlayer audioPlayer,
-    bool isPlaying,
     String audioUrl,
     Function(bool) setIsPlaying,
     void Function()? onSurahTap) async {
-  if (isPlaying) {
-    await audioPlayer.pause();
+  if (AudioState.currentPlayingAudio.value == audioUrl) {
+    await AudioState.audioPlayer.pause();
+    setIsPlaying(false);
+    AudioState.currentPlayingAudio.value = null;
   } else {
-    await audioPlayer.play(UrlSource(audioUrl));
+        // Stop any other playing audio
+    if (AudioState.currentPlayingAudio.value != null &&
+        AudioState.currentPlayingAudio.value != audioUrl) {
+      await AudioState.audioPlayer.stop();
+    }
     if (onSurahTap != null) {
       onSurahTap();
     }
+       // Start playing the current audio
+    await AudioState.audioPlayer.play(UrlSource(audioUrl));
+    setIsPlaying(true);
+    AudioState.currentPlayingAudio.value = audioUrl;
+
   }
-  setIsPlaying(!isPlaying);
 }
 
 

@@ -9,6 +9,7 @@ import '../../constants.dart';
 import '../../methods.dart';
 import '../../utils/app_images.dart';
 import '../../widgets/icon_constrain_widget.dart';
+import '../audio_manager.dart';
 
 class DarsListeningItem extends StatefulWidget {
   final String audioUrl;
@@ -50,36 +51,46 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
   Future<void> _checkInternetConnection() async {
     final List<ConnectivityResult> connectivityResults =
         await Connectivity().checkConnectivity();
-    setState(() {
-      _connectivityStatus =
-          connectivityResults.contains(ConnectivityResult.none)
-              ? ConnectivityResult.none
-              : connectivityResults.first;
-    });
+    if (mounted) {
+      setState(() {
+        _connectivityStatus =
+            connectivityResults.contains(ConnectivityResult.none)
+                ? ConnectivityResult.none
+                : connectivityResults.first;
+      });
+    }
   }
 
   void setTotalDuration(Duration duration) {
-    setState(() {
-      totalDuration = duration;
-    });
+    if (mounted) {
+      setState(() {
+        totalDuration = duration;
+      });
+    }
   }
 
   void setCurrentDuration(Duration duration) {
-    setState(() {
-      currentDuration = duration;
-    });
+    if (mounted) {
+      setState(() {
+        currentDuration = duration;
+      });
+    }
   }
 
   void setIsPlaying(bool playing) {
-    setState(() {
-      isPlaying = playing;
-    });
+    if (mounted) {
+      setState(() {
+        isPlaying = playing;
+      });
+    }
   }
 
   void toggleExpanded() {
-    setState(() {
-      isExpanded = !isExpanded;
-    });
+    if (mounted) {
+      setState(() {
+        isExpanded = !isExpanded;
+      });
+    }
   }
 
   void _showOfflineMessage() {
@@ -159,9 +170,10 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
               // Ensure async call is awaited
               await favDarsProvider.addFavDars(newFavDars);
             }
-
-            // Update the UI after the favorite status changes
-            setState(() {});
+            if (mounted) {
+              // Update the UI after the favorite status changes
+              setState(() {});
+            }
           },
           child: isFavorite
               ? const Icon(
@@ -249,9 +261,12 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
       value: currentDuration.inSeconds.toDouble(),
       max: totalDuration.inSeconds.toDouble(),
       onChanged: (value) {
-        setState(() {
-          currentDuration = Duration(seconds: value.toInt());
-        });
+        if (mounted) {
+          setState(() {
+            currentDuration = Duration(seconds: value.toInt());
+          });
+        }
+
         _audioPlayer.seek(currentDuration);
       },
     );
@@ -262,23 +277,32 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         GestureDetector(
-          onTap: () => forward(_audioPlayer),
+          onTap: () => backward(AudioState.audioPlayer),
           child:
               const IconConstrain(height: 24, imagePath: Assets.imagesForward),
         ),
-        IconButton(
-          onPressed: () => _handleAudioAction(() {
-            togglePlayPause(
-                _audioPlayer, isPlaying, widget.audioUrl, setIsPlaying, null);
-          }),
-          icon: Icon(
-            isPlaying ? Icons.pause_circle : Icons.play_circle,
-            color: AppColors.kSecondaryColor,
-            size: 45,
-          ),
+        ValueListenableBuilder<String?>(
+          valueListenable: AudioState.currentPlayingAudio,
+          builder: (context, currentPlaying, child) {
+            final isCurrentlyPlaying = currentPlaying == widget.audioUrl;
+            return IconButton(
+              onPressed: () {
+                togglePlayPause(widget.audioUrl, (isPlaying) {
+                  if (mounted) {
+                    setState(() => this.isPlaying = isPlaying);
+                  }
+                }, null);
+              },
+              icon: Icon(
+                isCurrentlyPlaying ? Icons.pause_circle : Icons.play_circle,
+                color: AppColors.kSecondaryColor,
+                size: 45,
+              ),
+            );
+          },
         ),
         GestureDetector(
-          onTap: () => backward(_audioPlayer),
+          onTap: () => forward(AudioState.audioPlayer),
           child:
               const IconConstrain(height: 24, imagePath: Assets.imagesBackward),
         ),

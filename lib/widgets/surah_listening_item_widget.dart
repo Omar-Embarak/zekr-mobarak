@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran/quran.dart' as quran;
+import '../audio_manager.dart';
 import '../cubit/add_fav_surahcubit/add_fav_surah_item_cubit.dart';
 import '../database_helper.dart';
 import '../model/quran_models/fav_model.dart';
@@ -62,31 +63,39 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
   Future<void> _initializeAudioPlayer() async {
     _playerStateSubscription =
         _audioPlayer.onPlayerStateChanged.listen((state) {
-      setState(() {
-        isPlaying = state == PlayerState.playing;
-      });
+      if (mounted) {
+        setState(() {
+          isPlaying = state == PlayerState.playing;
+        });
+      }
     });
     _audioPlayer.onDurationChanged.listen((duration) {
-      setState(() {
-        totalDuration = duration;
-      });
+      if (mounted) {
+        setState(() {
+          totalDuration = duration;
+        });
+      }
     });
     _audioPlayer.onPositionChanged.listen((position) {
-      setState(() {
-        currentDuration = position;
-      });
+      if (mounted) {
+        setState(() {
+          currentDuration = position;
+        });
+      }
     });
   }
 
   Future<void> _checkInternetConnection() async {
     final List<ConnectivityResult> connectivityResults =
         await Connectivity().checkConnectivity();
-    setState(() {
-      _connectivityStatus =
-          connectivityResults.contains(ConnectivityResult.none)
-              ? ConnectivityResult.none
-              : connectivityResults.first;
-    });
+    if (mounted) {
+      setState(() {
+        _connectivityStatus =
+            connectivityResults.contains(ConnectivityResult.none)
+                ? ConnectivityResult.none
+                : connectivityResults.first;
+      });
+    }
   }
 
   void _showOfflineMessage() {
@@ -263,54 +272,65 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       max: totalDuration.inSeconds > 0 ? totalDuration.inSeconds.toDouble() : 1,
       onChanged: totalDuration.inSeconds > 0
           ? (value) {
-              setState(() {
-                currentDuration = Duration(seconds: value.toInt());
-              });
+              if (mounted) {
+                setState(() {
+                  currentDuration = Duration(seconds: value.toInt());
+                });
+              }
+
               _audioPlayer.seek(currentDuration);
             }
           : null,
     );
   }
 
-  Widget buildControlButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        GestureDetector(
-          onTap: () => backward(_audioPlayer),
-          child:
-              const IconConstrain(height: 24, imagePath: Assets.imagesForward),
-        ),
-        IconButton(
-          onPressed: () => _handleAudioAction(() {
-            togglePlayPause(
-              _audioPlayer,
-              isPlaying,
-              widget.audioUrl,
-              setIsPlaying,
-              widget.onSurahTap != null
-                  ? () => widget.onSurahTap!(widget.surahIndex)
-                  : null,
-            );
-          }),
-          icon: Icon(
-            isPlaying ? Icons.pause_circle : Icons.play_circle,
-            color: AppColors.kSecondaryColor,
-            size: 45,
-          ),
-        ),
-        GestureDetector(
-          onTap: () => forward(_audioPlayer),
-          child:
-              const IconConstrain(height: 24, imagePath: Assets.imagesBackward),
-        ),
-      ],
-    );
-  }
+  
+Widget buildControlButtons() {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children: [
+      GestureDetector(
+        onTap: () => backward(AudioState.audioPlayer),
+        child: const IconConstrain(height: 24, imagePath: Assets.imagesForward),
+      ),
+      ValueListenableBuilder<String?>(
+        valueListenable: AudioState.currentPlayingAudio,
+        builder: (context, currentPlaying, child) {
+          final isCurrentlyPlaying = currentPlaying == widget.audioUrl;
+          return IconButton(
+            onPressed: () {
+              togglePlayPause(
+                widget.audioUrl,
+                (isPlaying) {
+                  if (mounted) {
+                    setState(() => this.isPlaying = isPlaying);
+                  }
+                },     widget.onSurahTap != null
+                      ? () => widget.onSurahTap!(widget.surahIndex)
+                      : null,
+              );
+            },
+            icon: Icon(
+              isCurrentlyPlaying ? Icons.pause_circle : Icons.play_circle,
+              color: AppColors.kSecondaryColor,
+              size: 45,
+            ),
+          );
+        },
+      ),
+      GestureDetector(
+        onTap: () => forward(AudioState.audioPlayer),
+        child: const IconConstrain(height: 24, imagePath: Assets.imagesBackward),
+      ),
+    ],
+  );
+}
 
   void setIsPlaying(bool value) {
-    setState(() {
-      isPlaying = value;
-    });
+    if (mounted) {
+      setState(() {
+        isPlaying = value;
+      });
+    }
   }
 }
