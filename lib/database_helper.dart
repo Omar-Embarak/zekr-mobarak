@@ -28,7 +28,7 @@ class DatabaseHelper {
 
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'favorites.db');
-    await deleteDatabase(path);
+    // await deleteDatabase(path);
 
     // Create a new database
     return await openDatabase(

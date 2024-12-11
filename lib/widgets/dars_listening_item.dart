@@ -25,7 +25,7 @@ class DarsListeningItem extends StatefulWidget {
 }
 
 class _SurahListeningItemState extends State<DarsListeningItem> {
-  final ConnectivityResult _connectivityStatus = ConnectivityResult.none;
+  late ConnectivityResult _connectivityStatus;
   bool isExpanded = false; // Control if the item is expanded
   bool isPlaying = false;
   Duration totalDuration = Duration.zero;
@@ -35,6 +35,8 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
   @override
   void initState() {
     super.initState();
+    _checkInternetConnection();
+
     initializeAudioPlayer(
         _audioPlayer, setTotalDuration, setCurrentDuration, setIsPlaying);
   }
@@ -43,6 +45,17 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
   void dispose() {
     _audioPlayer.dispose();
     super.dispose();
+  }
+
+  Future<void> _checkInternetConnection() async {
+    final List<ConnectivityResult> connectivityResults =
+        await Connectivity().checkConnectivity();
+    setState(() {
+      _connectivityStatus =
+          connectivityResults.contains(ConnectivityResult.none)
+              ? ConnectivityResult.none
+              : connectivityResults.first;
+    });
   }
 
   void setTotalDuration(Duration duration) {
@@ -256,7 +269,7 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
         IconButton(
           onPressed: () => _handleAudioAction(() {
             togglePlayPause(
-                _audioPlayer, isPlaying, widget.audioUrl, setIsPlaying,null);
+                _audioPlayer, isPlaying, widget.audioUrl, setIsPlaying, null);
           }),
           icon: Icon(
             isPlaying ? Icons.pause_circle : Icons.play_circle,
