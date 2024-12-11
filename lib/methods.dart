@@ -55,15 +55,23 @@ void initializeAudioPlayer(
   });
 }
 
-Future<void> togglePlayPause(AudioPlayer audioPlayer, bool isPlaying,
-    String audioUrl, Function(bool) setIsPlaying) async {
+Future<void> togglePlayPause(
+    AudioPlayer audioPlayer,
+    bool isPlaying,
+    String audioUrl,
+    Function(bool) setIsPlaying,
+    void Function()? onSurahTap) async {
   if (isPlaying) {
     await audioPlayer.pause();
   } else {
     await audioPlayer.play(UrlSource(audioUrl));
+    if (onSurahTap != null) {
+      onSurahTap();
+    }
   }
   setIsPlaying(!isPlaying);
 }
+
 
 void adjustSpeed(AudioPlayer audioPlayer, double speed) async {
   await audioPlayer.setPlaybackRate(speed);

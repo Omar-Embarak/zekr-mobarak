@@ -256,7 +256,7 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
         IconButton(
           onPressed: () => _handleAudioAction(() {
             togglePlayPause(
-                _audioPlayer, isPlaying, widget.audioUrl, setIsPlaying);
+                _audioPlayer, isPlaying, widget.audioUrl, setIsPlaying,null);
           }),
           icon: Icon(
             isPlaying ? Icons.pause_circle : Icons.play_circle,

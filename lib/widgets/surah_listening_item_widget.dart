@@ -128,9 +128,6 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
             setState(() {
               isExpanded = !isExpanded;
             });
-            if (widget.onSurahTap != null) {
-              widget.onSurahTap!(widget.surahIndex);
-            }
           },
           child: buildSurahItem(),
         ),
@@ -287,7 +284,14 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
         IconButton(
           onPressed: () => _handleAudioAction(() {
             togglePlayPause(
-                _audioPlayer, isPlaying, widget.audioUrl, setIsPlaying);
+              _audioPlayer,
+              isPlaying,
+              widget.audioUrl,
+              setIsPlaying,
+              widget.onSurahTap != null
+                  ? () => widget.onSurahTap!(widget.surahIndex)
+                  : null,
+            );
           }),
           icon: Icon(
             isPlaying ? Icons.pause_circle : Icons.play_circle,
