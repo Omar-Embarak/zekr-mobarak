@@ -12,6 +12,7 @@ import 'package:azkar_app/pages/quran_pages/listening_page/urdu_page.dart';
 import 'package:azkar_app/pages/quran_pages/listening_page/warsh_page.dart';
 import 'package:flutter/material.dart';
 
+import '../../../utils/app_style.dart';
 import '../../../widgets/listening_button.dart';
 import 'favorite_page.dart';
 import 'murattal_page.dart';
@@ -39,9 +40,10 @@ class ListeningPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        centerTitle: true,
+        title: Text(
           'القران المسموع',
-          style: TextStyle(color: Color(0xffffffff)),
+          style: AppStyles.styleCairoBold20(context),
         ),
         backgroundColor: AppColors.kSecondaryColor,
       ),

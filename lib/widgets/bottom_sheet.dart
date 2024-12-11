@@ -17,7 +17,7 @@ Future<dynamic> modalBottomSheet(BuildContext context) {
       final screenWidth = MediaQuery.of(context).size.width;
 
       return Container(
-        decoration:  BoxDecoration(color: AppColors.kSecondaryColor),
+        decoration: BoxDecoration(color: AppColors.kSecondaryColor),
         height: screenHeight * 0.35, // Make height proportional to screen size
         child: Center(
           child: Column(
@@ -87,6 +87,9 @@ Future<dynamic> modalBottomSheet(BuildContext context) {
                                   ),
                                 ],
                               ),
+                              const SizedBox(
+                                height: 10,
+                              )
                             ],
                           ),
                         ),
@@ -142,6 +145,9 @@ Future<dynamic> modalBottomSheet(BuildContext context) {
                                   ),
                                 ],
                               ),
+                              const SizedBox(
+                                height: 10,
+                              )
                             ],
                           ),
                         ),

@@ -21,8 +21,8 @@ class FontSlider extends StatelessWidget {
           child: Consumer<QuranFontSizeProvider>(
             builder: (context, fontSizeProvider, child) {
               return Slider(
-                activeColor: AppColors.kSecondaryColor,
-                inactiveColor: AppColors.kPrimaryColor,
+                activeColor: AppColors.kPrimaryColor,
+                inactiveColor: AppColors.kSecondaryColor,
                 value: fontSizeProvider.fontSize,
                 min: 15,
                 max: 60,
@@ -41,4 +41,3 @@ class FontSlider extends StatelessWidget {
     );
   }
 }
-    

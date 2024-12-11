@@ -20,40 +20,38 @@ class FavDarsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-Future<void> addFavDars(FavDarsModel favDars) async {
-  final db = await _dbHelper.database;
+  Future<void> addFavDars(FavDarsModel favDars) async {
+    final db = await _dbHelper.database;
 
-  // Insert and retrieve the auto-generated ID
-  int id = await db.insert(
-    'favDars',
-    favDars.toMap(),
-    conflictAlgorithm: ConflictAlgorithm.replace,
-  );
+    // Insert and retrieve the auto-generated ID
+    int id = await db.insert(
+      'favDars',
+      favDars.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
 
-  // Add the FavDars with the generated ID
-  final newFavDars = FavDarsModel(
-    id: id,
-    name: favDars.name,
-    url: favDars.url,
-  );
+    // Add the FavDars with the generated ID
+    final newFavDars = FavDarsModel(
+      id: id,
+      name: favDars.name,
+      url: favDars.url,
+    );
 
-  _favsDars.add(newFavDars);
-  notifyListeners();
-}
-
-
- Future<void> removeFavDars(int index) async {
-  final favDars = _favsDars[index];
-
-  // Validate ID
-  if (favDars.id == null) {
-    showMessage("Cannot delete this dars. ID is null.");
-    return;
+    _favsDars.add(newFavDars);
+    notifyListeners();
   }
 
-  await _dbHelper.deleteFavDars(favDars.id);
-  _favsDars.removeAt(index);
-  notifyListeners();
-}
+  Future<void> removeFavDars(int index) async {
+    final favDars = _favsDars[index];
 
+    // Validate ID
+    if (favDars.id == null) {
+      showMessage("Cannot delete this dars. ID is null.");
+      return;
+    }
+
+    await _dbHelper.deleteFavDars(favDars.id);
+    _favsDars.removeAt(index);
+    notifyListeners();
+  }
 }

@@ -61,10 +61,8 @@ class QuranContainerUP extends StatelessWidget {
                           fit: BoxFit.scaleDown,
                           child: Text(
                             'سورة ${quran.getSurahNameArabic(surahIndex)} (${isMakkia == 'Makkah' ? 'مكية' : 'مدنية'} ،اياتها $surahsAyat)',
-                            style: AppStyles.styleRajdhaniMedium13(context)
-                                .copyWith(
-                              color: Colors.white,
-                            ),
+                            style:
+                                AppStyles.styleDiodrumArabicMedium11(context),
                           ),
                         ),
                       ],
@@ -88,8 +86,7 @@ class QuranContainerUP extends StatelessWidget {
                     FittedBox(
                       child: Text(
                         'الربع $quarter الحزب $hizbNumber',
-                        style: AppStyles.styleDiodrumArabicMedium15(context)
-                            .copyWith(color: Colors.white),
+                        style: AppStyles.styleDiodrumArabicMedium15(context),
                       ),
                     ),
                   ],
@@ -104,8 +101,7 @@ class QuranContainerUP extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 'الجزء $juzNumber  ',
-                style: AppStyles.styleDiodrumArabicMedium15(context)
-             ,
+                style: AppStyles.styleDiodrumArabicMedium15(context),
               ),
             ],
           ),

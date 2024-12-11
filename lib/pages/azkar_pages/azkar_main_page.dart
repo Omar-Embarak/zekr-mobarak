@@ -1,5 +1,7 @@
 import 'package:azkar_app/cubit/azkar_cubit/azkar_cubit.dart';
 import 'package:azkar_app/cubit/azkar_cubit/azkar_state.dart';
+import 'package:azkar_app/model/azkar_model/azkar_model/zekr_model.dart';
+import 'package:azkar_app/pages/azkar_pages/fav_azkar_page.dart';
 import 'package:azkar_app/widgets/reciturs_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,7 +29,6 @@ class _AzkarPageState extends State<AzkarPage> {
     super.initState();
     final azkarCubit = context.read<AzkarCubit>();
     azkarCubit.loadAzkar();
-    // Initially, the filteredAzkar will display all Azkar
     filteredAzkar = [];
   }
 
@@ -103,34 +104,41 @@ class _AzkarPageState extends State<AzkarPage> {
               child: CircularProgressIndicator(color: Colors.white),
             );
           } else if (state is AzkarLoaded) {
-            // If not searching, display all Azkar, else display filtered Azkar
             final azkarToDisplay = _isSearching ? filteredAzkar : state.azkar;
 
-            if (azkarToDisplay.isEmpty) {
-              return Center(
-                child: Text(
-                  'الذكر غير موجود',
-                  style: AppStyles.styleCairoBold20(context),
-                ),
-              );
-            }
-
             return ListView.builder(
-              itemCount: azkarToDisplay.length,
+              itemCount: azkarToDisplay.length + 1, // +1 for extra item
               itemBuilder: (context, index) {
+                if (index == 0) {
+                  // Add the extra item
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>  FavAzkarPage(),
+                        ),
+                      );
+                    },
+                    child: const RecitursItem(
+                      title: "أذكاري المفضلة",
+                    ),
+                  );
+                }
+
+                final actualIndex = index - 1; // Adjust index for azkar list
                 return GestureDetector(
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => ZekrPage(
-                          zekerCategory: azkarToDisplay[index].category!,
-                          zekerList: azkarToDisplay[index].array!,
+                          zekerCategory: azkarToDisplay[actualIndex].category!,
+                          zekerList: azkarToDisplay[actualIndex].array! ,
                         ),
                       ),
                     );
                   },
                   child: RecitursItem(
-                    title: "${azkarToDisplay[index].category}",
+                    title: "${azkarToDisplay[actualIndex].category}",
                   ),
                 );
               },

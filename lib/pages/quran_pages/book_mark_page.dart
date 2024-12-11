@@ -1,5 +1,6 @@
 import 'package:azkar_app/pages/quran_pages/surah_page.dart';
 import 'package:azkar_app/utils/app_images.dart';
+import 'package:azkar_app/utils/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../constants.dart';
@@ -14,10 +15,10 @@ class BookmarksPage extends StatelessWidget {
       builder: (context, provider, child) {
         // Check if bookmarks are empty
         if (provider.bookmarks.isEmpty) {
-          return  Center(
+          return Center(
             child: Text(
               'لا يوجد صفحات محفوظة',
-              style: TextStyle(color: AppColors.kSecondaryColor),
+              style: AppStyles.styleDiodrumArabicMedium15(context),
             ),
           );
         }
@@ -45,7 +46,7 @@ class BookmarksPage extends StatelessWidget {
                   ),
                   title: Text(
                     'سورة ${bookmark.surahName}',
-                    style:  TextStyle(color: AppColors.kSecondaryColor),
+                    style: TextStyle(color: AppColors.kSecondaryColor),
                   ),
                   subtitle: Text(
                     'صفحة ${bookmark.pageNumber}',

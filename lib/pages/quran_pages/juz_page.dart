@@ -45,7 +45,7 @@ class _JuzListPageState extends State<JuzListPage> {
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(10),
-                      decoration:  BoxDecoration(
+                      decoration: BoxDecoration(
                         color: AppColors.kSecondaryColor,
                         border: const Border(
                           bottom: BorderSide(color: Colors.grey),
@@ -54,8 +54,7 @@ class _JuzListPageState extends State<JuzListPage> {
                       child: Text(
                         'الجزء ${arabicOrdinals[index]}',
                         textAlign: TextAlign.center,
-                        style: AppStyles.styleRajdhaniBold13(context)
-                            .copyWith(color: Colors.white),
+                        style: AppStyles.styleDiodrumArabicMedium15(context),
                       ),
                     ),
                     if (juz["arbaa"] != null)
@@ -115,7 +114,7 @@ class _JuzListPageState extends State<JuzListPage> {
                     children: [
                       Text(
                         "${getVerse(surahNumber, verseNumber).length > 30 ? getVerse(surahNumber, verseNumber).substring(0, 30) : getVerse(surahNumber, verseNumber)}...",
-                        style: AppStyles.styleAmiriMedium30(context),
+                        style: AppStyles.styleRajdhaniMedium20(context),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),

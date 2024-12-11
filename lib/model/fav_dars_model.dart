@@ -3,8 +3,8 @@ class FavDarsModel {
   final String name;
   final String url;
 
-  FavDarsModel({ this.id, required this.name, required this.url});
-    factory FavDarsModel.fromMap(Map<String, dynamic> map) {
+  FavDarsModel({this.id, required this.name, required this.url});
+  factory FavDarsModel.fromMap(Map<String, dynamic> map) {
     return FavDarsModel(
       id: map['id'], // Ensure this maps correctly
       name: map['name'],
@@ -19,6 +19,4 @@ class FavDarsModel {
       'url': url,
     };
   }
-
 }
-

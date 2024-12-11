@@ -63,8 +63,6 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
     });
   }
 
-
-
   void toggleExpanded() {
     setState(() {
       isExpanded = !isExpanded;
@@ -85,7 +83,6 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
 
   @override
   Widget build(BuildContext context) {
- 
     return Column(
       children: [
         GestureDetector(
@@ -116,55 +113,55 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
   }
 
   Widget buildSurahRow() {
-         final favDarsProvider = Provider.of<FavDarsProvider>(context);
+    final favDarsProvider = Provider.of<FavDarsProvider>(context);
 
     // Check if the current page is bookmarked
     final isFavorite = favDarsProvider.favsDars
-        .any((favsDars) => favsDars.url== widget.audioUrl);
+        .any((favsDars) => favsDars.url == widget.audioUrl);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start, // Align for long text
       children: [
         const SizedBox(width: 10),
-      GestureDetector(
-  onTap: () async {
-    // Check if the item is already a favorite
-    final isFavorite = favDarsProvider.favsDars
-        .any((favDars) => favDars.url == widget.audioUrl);
+        GestureDetector(
+          onTap: () async {
+            // Check if the item is already a favorite
+            final isFavorite = favDarsProvider.favsDars
+                .any((favDars) => favDars.url == widget.audioUrl);
 
-    if (isFavorite) {
-      // Remove from favorites
-      final index = favDarsProvider.favsDars.indexWhere(
-        (favDars) => favDars.url == widget.audioUrl,
-      );
+            if (isFavorite) {
+              // Remove from favorites
+              final index = favDarsProvider.favsDars.indexWhere(
+                (favDars) => favDars.url == widget.audioUrl,
+              );
 
-      // Ensure async call is awaited
-      await favDarsProvider.removeFavDars(index);
-    } else {
-      // Add to favorites
-      final newFavDars = FavDarsModel(
-        name: widget.title,
-        url: widget.audioUrl,
-      );
+              // Ensure async call is awaited
+              await favDarsProvider.removeFavDars(index);
+            } else {
+              // Add to favorites
+              final newFavDars = FavDarsModel(
+                name: widget.title,
+                url: widget.audioUrl,
+              );
 
-      // Ensure async call is awaited
-      await favDarsProvider.addFavDars(newFavDars);
-    }
+              // Ensure async call is awaited
+              await favDarsProvider.addFavDars(newFavDars);
+            }
 
-    // Update the UI after the favorite status changes
-    setState(() {});
-  },
-  child: isFavorite
-      ? const Icon(
-          Icons.favorite,
-          color: Colors.red,
-          size: 30,
-        )
-      : const IconConstrain(
-          height: 30,
-          imagePath: Assets.imagesHeart,
+            // Update the UI after the favorite status changes
+            setState(() {});
+          },
+          child: isFavorite
+              ? const Icon(
+                  Icons.favorite,
+                  color: Colors.red,
+                  size: 30,
+                )
+              : const IconConstrain(
+                  height: 30,
+                  imagePath: Assets.imagesHeart,
+                ),
         ),
-),
-   const SizedBox(width: 10),
+        const SizedBox(width: 10),
         // Expanded text to allow full view of long titles
         Expanded(
           child: Text(

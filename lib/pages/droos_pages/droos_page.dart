@@ -162,10 +162,10 @@ class DroosListeningPage extends StatelessWidget {
       ),
       backgroundColor: AppColors.kPrimaryColor,
       body: audios.isEmpty
-          ? const Center(
+          ? Center(
               child: Text(
                 'لا توجد ملفات صوتية متاحة',
-                style: TextStyle(color: Colors.white, fontSize: 18),
+                style: AppStyles.styleDiodrumArabicMedium11(context),
               ),
             )
           : ListView.builder(

@@ -20,7 +20,8 @@ class AppColors {
     if (themeMode == defaultTheme) {
       return const Color(0xff6a564f);
     } else if (themeMode == lightTheme) {
-      return Colors.white; // Use predefined white color
+      return const Color.fromARGB(
+          255, 227, 227, 227); // Use predefined white color
     } else {
       return const Color(0xff0f0f0f); // Correct way to define a custom color
     }

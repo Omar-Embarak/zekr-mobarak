@@ -1,4 +1,5 @@
 import 'package:azkar_app/cubit/praying_cubit/praying_cubit.dart';
+import 'package:azkar_app/utils/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
@@ -24,7 +25,6 @@ class _ParyPageState extends State<ParyPage> {
   void initState() {
     super.initState();
     _initializeLocation();
- 
   }
 
   /// Requests location permission and fetches the user's location.
@@ -75,9 +75,9 @@ class _ParyPageState extends State<ParyPage> {
       appBar: AppBar(
         backgroundColor: AppColors.kSecondaryColor,
         centerTitle: true,
-        title: const Text(
+        title: Text(
           "الصلاة",
-          style: TextStyle(color: Colors.white),
+          style: AppStyles.styleCairoBold20(context),
         ),
       ),
       body: SingleChildScrollView(
@@ -98,50 +98,50 @@ class _ParyPageState extends State<ParyPage> {
   }
 
   /// Builds the prayer information card.
-Widget _buildPrayerInfoCard(BuildContext context) {
-  return Container(
-    width: MediaQuery.of(context).size.width,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(12),
-      color: AppColors.kSecondaryColor,
-    ),
-    padding: const EdgeInsets.all(10),
-    child: BlocBuilder<PrayingCubit, PrayingState>(
-      builder: (context, state) {
-        if (state is PrayingLoading) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (state is PrayingLoaded) {
-          // استدعاء `buildPrayerDetails`
-          final detailsWidget = buildPrayerDetails(context, state, scrollController);
+  Widget _buildPrayerInfoCard(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: AppStyles.styleRajdhaniBold18(context).color,
+      ),
+      padding: const EdgeInsets.all(10),
+      child: BlocBuilder<PrayingCubit, PrayingState>(
+        builder: (context, state) {
+          if (state is PrayingLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is PrayingLoaded) {
+            // استدعاء `buildPrayerDetails`
+            final detailsWidget =
+                buildPrayerDetails(context, state, scrollController);
 
-          // إضافة PostFrameCallback لتنفيذ التمرير بعد بناء الواجهة
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (scrollController.hasClients) {
-              scrollController.animateTo(
-                50.0, // التمرير إلى 50 بكسل
-                duration: const Duration(seconds: 3),
-                curve: Curves.easeInOut,
-              );
-            }
-          });
+            // إضافة PostFrameCallback لتنفيذ التمرير بعد بناء الواجهة
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (scrollController.hasClients) {
+                scrollController.animateTo(
+                  50.0, // التمرير إلى 50 بكسل
+                  duration: const Duration(seconds: 3),
+                  curve: Curves.easeInOut,
+                );
+              }
+            });
 
-          return detailsWidget;
-        } else if (state is PrayingError) {
-          return Text(
-            state.error,
-            style: const TextStyle(color: Colors.white),
-            textAlign: TextAlign.center,
-          );
-        } else {
-          return const Text(
-            "لا يوجد داتا متاحة",
-            style: TextStyle(color: Colors.white),
-            textAlign: TextAlign.center,
-          );
-        }
-      },
-    ),
-  );
+            return detailsWidget;
+          } else if (state is PrayingError) {
+            return Text(
+              state.error,
+              style: AppStyles.styleCairoMedium15white(context),
+              textAlign: TextAlign.center,
+            );
+          } else {
+            return Text(
+              "لا يوجد داتا متاحة",
+              style: AppStyles.styleCairoMedium15white(context),
+              textAlign: TextAlign.center,
+            );
+          }
+        },
+      ),
+    );
+  }
 }
- }
- 

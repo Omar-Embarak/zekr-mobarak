@@ -114,7 +114,7 @@ abstract class AppStyles {
   static TextStyle styleDiodrumArabicMedium15(context) {
     return TextStyle(
       color: AppStyles.themeNotifier.value == defaultTheme
-          ? Colors.white
+          ? const Color(0xffFFFFFF)
           : (AppStyles.themeNotifier.value == lightTheme
               ? Colors.black
               : Colors.white),
@@ -220,7 +220,7 @@ double getScaleFactor(context) {
   // var devicePixelRatio = dispatcher.views.first.devicePixelRatio;
   // double width = physicalWidth / devicePixelRatio;
 
-  double width = MediaQuery.sizeOf(context).width;
+  double width = MediaQuery.sizeOf( context).width;
   if (width < SizeConfig.tablet) {
     return width / 450;
   } else if (width < SizeConfig.desktop) {
@@ -229,3 +229,6 @@ double getScaleFactor(context) {
     return width / 1920;
   }
 }
+
+
+

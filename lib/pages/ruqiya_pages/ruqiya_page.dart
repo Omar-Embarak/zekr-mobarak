@@ -1,4 +1,5 @@
 import 'package:azkar_app/cubit/ruqiya_cubit/ruqiya_cubit.dart';
+import 'package:azkar_app/utils/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +21,6 @@ class _RuqiyaPageState extends State<RuqiyaPage> {
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => RuqiyaCubit()
@@ -30,9 +30,9 @@ class _RuqiyaPageState extends State<RuqiyaPage> {
         appBar: AppBar(
           backgroundColor: AppColors.kSecondaryColor,
           centerTitle: true,
-          title: const Text(
+          title: Text(
             "الرقية الشرعية",
-            style: TextStyle(color: Colors.white),
+            style: AppStyles.styleCairoBold20(context),
           ),
         ),
         body: BlocBuilder<RuqiyaCubit, RuqiyaState>(
@@ -60,16 +60,10 @@ class _RuqiyaPageState extends State<RuqiyaPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                state.ruqiya[index].text!,
-                                textAlign: TextAlign.justify,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  height: 2,
-                                  fontSize: 20,
-                                ),
-                              ),
-                               Divider(
+                              Text(state.ruqiya[index].text!,
+                                  textAlign: TextAlign.justify,
+                                  style: AppStyles.styleCairoBold20(context)),
+                              Divider(
                                 color: AppColors.kPrimaryColor,
                               ),
                               Row(
@@ -79,11 +73,7 @@ class _RuqiyaPageState extends State<RuqiyaPage> {
                                   Text(
                                     state.ruqiya[index].info!,
                                     textAlign: TextAlign.justify,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      height: 2,
-                                      fontSize: 20,
-                                    ),
+                                    style: AppStyles.styleCairoBold20(context),
                                   ),
                                   IconButton(
                                     onPressed: () {

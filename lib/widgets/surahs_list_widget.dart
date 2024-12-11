@@ -115,8 +115,7 @@ class _SurahListWidgetState extends State<SurahListWidget> {
           const SizedBox(width: 10),
           Text(
             'الجزء ${arabicOrdinals[index]}',
-            style: AppStyles.styleRajdhaniMedium18(context)
-                .copyWith(color: Colors.white),
+            style: AppStyles.styleDiodrumArabicMedium15(context),
           ),
           const Spacer(),
           Text(

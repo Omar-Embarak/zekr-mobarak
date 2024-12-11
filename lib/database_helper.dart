@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:azkar_app/constants.dart';
 import 'package:azkar_app/model/fav_dars_model.dart';
 import 'package:sqflite/sqflite.dart';
@@ -8,6 +10,11 @@ import 'model/book_mark_model.dart';
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
   static Database? _database;
+
+
+  static const columnId = 'id';
+  static const columnCategory = 'category';
+  static const columnZekerList = 'ZekerList';
 
   DatabaseHelper._internal();
 
@@ -21,12 +28,12 @@ class DatabaseHelper {
 
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'favorites.db');
-    // await deleteDatabase(path);
+    await deleteDatabase(path);
 
     // Create a new database
     return await openDatabase(
       path,
-      version: 1, // Ensure this matches your new schema version
+      version: 2, // Ensure this matches your new schema version
       onCreate: (db, version) async {
         await db.execute('''
         CREATE TABLE favorites(
@@ -52,13 +59,23 @@ class DatabaseHelper {
           name TEXT,
           url TEXT
         )
-      ''');     await db.execute('''
+      ''');
+        await db.execute('''
       CREATE TABLE fontSize(
           fontSize DOUBLE
         )
-      ''');   await db.execute(
+      ''');
+        await db.execute(
           'CREATE TABLE theme (id INTEGER PRIMARY KEY, themeMode TEXT)',
         );
+      db.execute('''
+  CREATE TABLE favAzkarPage (
+    $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
+    $columnCategory TEXT NOT NULL,
+    $columnZekerList TEXT NOT NULL
+  )
+''');
+
       },
     );
   }
@@ -167,34 +184,36 @@ class DatabaseHelper {
       whereArgs: [id],
     );
   }
-  
+
   Future<void> changeFontSize(double fontSize) async {
-  final db = await database;
+    final db = await database;
 
-  // Insert or update the font size
-  await db.insert(
-    'fontSize',
-    {'fontSize': fontSize},
-    conflictAlgorithm: ConflictAlgorithm.replace, // Replace the record if it exists
-  );
-}
-Future<double> getFontSize() async {
-  final db = await database;
-
-  final List<Map<String, dynamic>> results = await db.query(
-    'fontSize',
-    columns: ['fontSize'],
-    limit: 1,
-  );
-
-  // Return the fontSize if it exists, otherwise return a default value
-  if (results.isNotEmpty) {
-    return results.first['fontSize'] as double;
+    // Insert or update the font size
+    await db.insert(
+      'fontSize',
+      {'fontSize': fontSize},
+      conflictAlgorithm:
+          ConflictAlgorithm.replace, // Replace the record if it exists
+    );
   }
-  return 35.0; // Default font size
-}
 
-   Future<void> saveTheme(String themeMode) async {
+  Future<double> getFontSize() async {
+    final db = await database;
+
+    final List<Map<String, dynamic>> results = await db.query(
+      'fontSize',
+      columns: ['fontSize'],
+      limit: 1,
+    );
+
+    // Return the fontSize if it exists, otherwise return a default value
+    if (results.isNotEmpty) {
+      return results.first['fontSize'] as double;
+    }
+    return 35.0; // Default font size
+  }
+
+  Future<void> saveTheme(String themeMode) async {
     final db = await database;
     await db.insert(
       'theme',
@@ -203,7 +222,7 @@ Future<double> getFontSize() async {
     );
   }
 
-   Future<String?> fetchTheme() async {
+  Future<String?> fetchTheme() async {
     final db = await database;
     final result = await db.query('theme', where: 'id = ?', whereArgs: [1]);
     if (result.isNotEmpty) {
@@ -211,4 +230,42 @@ Future<double> getFontSize() async {
     }
     return defaultTheme;
   }
+
+
+Future<void> insertFavAzkar(String category, List zekerList) async {
+  final db = await database;
+  await db.insert('favAzkarPage', {
+    columnCategory: category,
+    columnZekerList: jsonEncode(zekerList), // Convert list to JSON string
+  });
+}
+
+
+   Future<void> deleteFavAzkar(String category) async {
+    final db = await database;
+    await db.delete('favAzkarPage', where: '$columnCategory = ?', whereArgs: [category]);
+  }
+
+   Future<bool> isFavZekrExit(String category) async {
+    final db = await database;
+    final result = await db.query(
+      'favAzkarPage',
+      where: '$columnCategory = ?',
+      whereArgs: [category],
+    );
+    return result.isNotEmpty;
+  }
+
+Future<List<Map<String, dynamic>>> getFavsAzkar() async {
+  final db = await database;
+  final results = await db.query('favAzkarPage');
+
+  return results.map((record) {
+    return {
+      'category': record[columnCategory] as String, // Ensure category is a String
+      'zekerList': jsonDecode(record[columnZekerList] as String), // Cast to String
+    };
+  }).toList();
+}
+
 }
