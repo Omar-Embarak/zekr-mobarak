@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'cubit/azkar_cubit/azkar_cubit.dart';
 import 'cubit/praying_cubit/praying_cubit.dart';
 import 'cubit/theme_cubit/theme_cubit.dart';
+import 'pages/azkar_pages/notification_service.dart';
 import 'pages/home_page/home_page.dart';
 import 'pages/quran_pages/book_mark_provider.dart';
 import 'pages/quran_pages/quran_data_provider.dart';
@@ -17,6 +18,11 @@ import 'pages/quran_pages/quran_font_size_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Initialize notification service
+  await NotificationService.init();
+
+  // Schedule the daily notification
+  await NotificationService.prayerNotification();
 
   await ThemeCubit().loadInitialTheme();
   Bloc.observer = SimpleBlocObserver();

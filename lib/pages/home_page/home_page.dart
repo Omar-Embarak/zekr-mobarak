@@ -8,6 +8,7 @@ import '../../cubit/theme_cubit/theme_cubit.dart';
 import '../../widgets/bottom_sheet.dart';
 import '../../widgets/main_category_widget.dart';
 import '../azkar_pages/azkar_main_page.dart';
+import '../azkar_pages/notification_service.dart';
 import '../droos_pages/droos_page.dart';
 import '../pray_page/pray_page.dart';
 import '../ruqiya_pages/ruqiya_page.dart';
@@ -107,14 +108,17 @@ class _HomePagesState extends State<HomePages> {
                     children: [
                       Expanded(
                         child: InkWell(
-                          onTap: () {
+                          onTap: () async{    await NotificationService.showTestNotification();
+
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => const AzkarPage()));
                           },
                           child: MainCategoryWidget(
                             categoryImg: "assets/images/azkar.png",
                             categoryTitle: "الأذكار",
-                            width: screenWidth / 2 - 20,
+                            width: screenWidth / 2 - 20 > 0
+                                ? screenWidth / 2 - 20
+                                : 0,
                           ),
                         ),
                       ),
@@ -128,7 +132,9 @@ class _HomePagesState extends State<HomePages> {
                           child: MainCategoryWidget(
                             categoryImg: "assets/images/ruqiya.png",
                             categoryTitle: "الرقية الشرعية",
-                            width: screenWidth / 2 - 20,
+                            width: screenWidth / 2 - 20 > 0
+                                ? screenWidth / 2 - 20
+                                : 0,
                           ),
                         ),
                       ),

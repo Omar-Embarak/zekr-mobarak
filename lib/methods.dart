@@ -38,7 +38,6 @@ Future<List<dynamic>> loadJSONDataList(String path) async {
     return []; // Return an empty list in case of error
   }
 }
-
 void initializeAudioPlayer(
     AudioPlayer audioPlayer,
     Function(Duration) setTotalDuration,
@@ -57,28 +56,20 @@ void initializeAudioPlayer(
 }
 
 Future<void> togglePlayPause(
+    AudioPlayer audioPlayer,
+    bool isPlaying,
     String audioUrl,
     Function(bool) setIsPlaying,
     void Function()? onSurahTap) async {
-  if (AudioState.currentPlayingAudio.value == audioUrl) {
-    await AudioState.audioPlayer.pause();
-    setIsPlaying(false);
-    AudioState.currentPlayingAudio.value = null;
+  if (isPlaying) {
+    await audioPlayer.pause();
   } else {
-        // Stop any other playing audio
-    if (AudioState.currentPlayingAudio.value != null &&
-        AudioState.currentPlayingAudio.value != audioUrl) {
-      await AudioState.audioPlayer.stop();
-    }
+    await audioPlayer.play(UrlSource(audioUrl));
     if (onSurahTap != null) {
       onSurahTap();
     }
-       // Start playing the current audio
-    await AudioState.audioPlayer.play(UrlSource(audioUrl));
-    setIsPlaying(true);
-    AudioState.currentPlayingAudio.value = audioUrl;
-
   }
+  setIsPlaying(!isPlaying);
 }
 
 

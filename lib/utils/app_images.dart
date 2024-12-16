@@ -58,6 +58,10 @@ class Assets {
   /// assets/images/hizp.png
   static const String imagesHizp = "assets/images/hizp.png";
 
+  /// Assets for imagesIcLauncher
+  /// assets/images/ic_launcher.png
+  static const String imagesIcLauncher = "assets/images/ic_launcher.png";
+
   /// Assets for imagesIndex
   /// assets/images/index.svg
   static const String imagesIndex = "assets/images/index.svg";
@@ -69,10 +73,6 @@ class Assets {
   /// Assets for imagesLeftPage
   /// assets/images/left_page.svg
   static const String imagesLeftPage = "assets/images/left_page.svg";
-
-  /// Assets for imagesLogo
-  /// assets/images/logo.jpg
-  static const String imagesLogo = "assets/images/logo.jpg";
 
   /// Assets for imagesMuslimPrayer
   /// assets/images/muslim_prayer.png
@@ -118,10 +118,6 @@ class Assets {
   /// assets/images/right_page.svg
   static const String imagesRightPage = "assets/images/right_page.svg";
 
-  /// Assets for imagesRightborder
-  /// assets/images/rightborder.jpeg
-  static const String imagesRightborder = "assets/images/rightborder.jpeg";
-
   /// Assets for imagesRightborderRemovebgPreview
   /// assets/images/rightborder-removebg-preview.png
   static const String imagesRightborderRemovebgPreview = "assets/images/rightborder-removebg-preview.png";
@@ -165,8 +161,5 @@ class Assets {
   /// Assets for imagesVector
   /// assets/images/Vector.svg
   static const String imagesVector = "assets/images/Vector.svg";
-
-  /// Assets for imagesWhatsApp Image 20241130 at 10727 PM
-  /// assets/images/WhatsApp Image 2024-11-30 at 1.07.27 PM.jpg
 }
 
