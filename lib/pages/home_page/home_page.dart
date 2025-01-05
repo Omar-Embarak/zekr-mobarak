@@ -108,7 +108,8 @@ class _HomePagesState extends State<HomePages> {
                     children: [
                       Expanded(
                         child: InkWell(
-                          onTap: () async{    await NotificationService.showTestNotification();
+                          onTap: () async {
+                            await NotificationService.showTestNotification();
 
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => const AzkarPage()));
@@ -148,7 +149,7 @@ class _HomePagesState extends State<HomePages> {
                         child: InkWell(
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const ParyPage()));
+                                builder: (context) => const PrayPage()));
                           },
                           child: MainCategoryWidget(
                             categoryImg: "assets/images/muslim_prayer.png",

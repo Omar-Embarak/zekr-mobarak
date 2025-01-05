@@ -1,30 +1,50 @@
 import 'package:azkar_app/cubit/praying_cubit/praying_cubit.dart';
+import 'package:azkar_app/database_helper.dart';
 import 'package:azkar_app/utils/app_style.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../constants.dart';
 import '../../methods.dart';
+import '../../model/praying_model/praying_model/timings.dart';
 import '../../widgets/build_prayer_details_widget.dart';
 import '../../widgets/qibla_compass_widget.dart';
 
-class ParyPage extends StatefulWidget {
-  const ParyPage({super.key});
+class PrayPage extends StatefulWidget {
+  const PrayPage({super.key});
 
   @override
-  State<ParyPage> createState() => _ParyPageState();
+  State<PrayPage> createState() => _PrayPageState();
 }
 
-class _ParyPageState extends State<ParyPage> {
+class _PrayPageState extends State<PrayPage> {
   double? latitude;
   double? longitude;
   final ScrollController scrollController = ScrollController();
+  ConnectivityResult? _connectivityStatus;
 
   @override
   void initState() {
     super.initState();
+    _checkInternetConnection();
+
     _initializeLocation();
+  }
+
+  Future<void> _checkInternetConnection() async {
+    final List<ConnectivityResult> connectivityResults =
+        await Connectivity().checkConnectivity();
+
+    if (mounted) {
+      setState(() {
+        _connectivityStatus =
+            connectivityResults.contains(ConnectivityResult.none)
+                ? ConnectivityResult.none
+                : connectivityResults.first;
+      });
+    }
   }
 
   /// Requests location permission and fetches the user's location.
@@ -39,13 +59,14 @@ class _ParyPageState extends State<ParyPage> {
 
         // Fetch prayer times using cubit
         context.read<PrayingCubit>().getPrayerTimesByAddress(
+              day: DateTime.now().day,
               year: "${DateTime.now().year}",
               month: "${DateTime.now().month}",
               latitude: latitude!,
               longitude: longitude!,
             );
       } catch (e) {
-        showMessage('فشل الحصول علي الموقع: $e');
+        showMessage('فشل الحصول علي الموقع');
       }
     } else {
       showMessage('رجاءا اسمح بالوصول للموقع');
@@ -98,6 +119,7 @@ class _ParyPageState extends State<ParyPage> {
   }
 
   /// Builds the prayer information card.
+  @override
   Widget _buildPrayerInfoCard(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -108,36 +130,82 @@ class _ParyPageState extends State<ParyPage> {
       padding: const EdgeInsets.all(10),
       child: BlocBuilder<PrayingCubit, PrayingState>(
         builder: (context, state) {
-          if (state is PrayingLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is PrayingLoaded) {
-            // استدعاء `buildPrayerDetails`
+          /// Builds a details widget for prayer times.
+          Widget _buildDetailsWidget(
+            BuildContext context,
+            Timings timings,
+            ScrollController scrollController,
+          ) {
             final detailsWidget =
-                buildPrayerDetails(context, state.timings, scrollController);
-
-            // إضافة PostFrameCallback لتنفيذ التمرير بعد بناء الواجهة
+                buildPrayerDetails(context, timings, scrollController);
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (scrollController.hasClients) {
                 scrollController.animateTo(
-                  50.0, // التمرير إلى 50 بكسل
+                  50.0,
                   duration: const Duration(seconds: 3),
                   curve: Curves.easeInOut,
                 );
               }
             });
-
             return detailsWidget;
-          } else if (state is PrayingError) {
+          }
+
+          /// Builds an error message widget.
+          Widget _buildErrorWidget(BuildContext context, String message) {
             return Text(
-              state.error,
+              message,
               style: AppStyles.styleCairoMedium15white(context),
               textAlign: TextAlign.center,
             );
+          }
+
+          if (state is PrayingLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is PrayingLoaded) {
+            return _buildDetailsWidget(
+              context,
+              state.timings,
+              scrollController,
+            );
+          } else if (_connectivityStatus == ConnectivityResult.none) {
+            return FutureBuilder<Map<String, String>?>(
+              future: DatabaseHelper().getTimings(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return _buildErrorWidget(
+                    context,
+                    'حدث خطأ أثناء جلب بيانات الصلاة المحفوظة.',
+                  );
+                } else if (snapshot.hasData && snapshot.data != null) {
+                  final timings = Timings(
+                    fajr: snapshot.data!['fajr'],
+                    sunrise: snapshot.data!['sunrise'],
+                    dhuhr: snapshot.data!['dhuhr'],
+                    asr: snapshot.data!['asr'],
+                    maghrib: snapshot.data!['maghrib'],
+                    isha: snapshot.data!['isha'],
+                  );
+                  return _buildDetailsWidget(
+                    context,
+                    timings,
+                    scrollController,
+                  );
+                } else {
+                  return _buildErrorWidget(
+                    context,
+                    'لم يتم العثور على بيانات صلاة محفوظة.',
+                  );
+                }
+              },
+            );
+          } else if (state is PrayingError) {
+            return _buildErrorWidget(context, state.error);
           } else {
-            return Text(
-              "لا يوجد داتا متاحة",
-              style: AppStyles.styleCairoMedium15white(context),
-              textAlign: TextAlign.center,
+            return _buildErrorWidget(
+              context,
+              'لا يوجد بيانات متاحة للصلاة.',
             );
           }
         },

@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
+import '../../database_helper.dart';
 import '../../model/praying_model/praying_model/praying_model.dart';
 import '../../model/praying_model/praying_model/timings.dart';
 
@@ -21,7 +22,7 @@ class PrayingCubit extends Cubit<PrayingState> {
 
   String? nextPrayerTitle;
   Future<void> getPrayerTimesByAddress({
-    // required int day,
+    required int day,
     required String year,
     required String month,
     required double latitude,
@@ -35,16 +36,8 @@ class PrayingCubit extends Cubit<PrayingState> {
         final jsonResponse = json.decode(response.body);
         final prayerTimesData = PrayingModel.fromJson(jsonResponse);
         var nextPrayer =
-            calculateTimeUntilNextPrayer(prayerTimesData.data![0].timings!);
-        // DatabaseHelper databaseHelper = DatabaseHelper();
-        // databaseHelper.insertTimings(Timings(
-        //     fajr: convertTo12HourFormat(timings.fajr!),
-        // sunrise: convertTo12HourFormat(timings.sunrise!),
-        // dhuhr: convertTo12HourFormat(timings.dhuhr!),
-        // asr: convertTo12HourFormat(timings.asr!),
-        // maghrib: convertTo12HourFormat(timings.maghrib!),
-        // isha: convertTo12HourFormat(timings.isha!),
-        // ));
+            calculateTimeUntilNextPrayer(prayerTimesData.data![day-1].timings!);
+
         Timings convertTimingsTo12HourFormat(Timings timings) {
           return Timings(
             fajr: convertTo12HourFormat(timings.fajr!),
@@ -57,11 +50,16 @@ class PrayingCubit extends Cubit<PrayingState> {
           );
         }
 
+        final timings =
+            convertTimingsTo12HourFormat(prayerTimesData.data![day-1].timings!);
+        // Save timings to the database
+        await DatabaseHelper().insertTimings(timings);
+        
         emit(PrayingLoaded(
           prayerTimesData,
           nextPrayer,
           nextPrayerTitle!,
-          convertTimingsTo12HourFormat(prayerTimesData.data![0].timings!),
+          convertTimingsTo12HourFormat(prayerTimesData.data![day-1].timings!),
         ));
       }
     } catch (e) {

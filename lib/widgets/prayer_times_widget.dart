@@ -1,3 +1,4 @@
+import 'package:azkar_app/utils/app_style.dart';
 import 'package:flutter/material.dart';
 import '../model/praying_model/praying_model/timings.dart';
 
@@ -17,20 +18,9 @@ List<Widget> buildPrayerTimes(BuildContext context, Timings timings) {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              Text(
-                prayer["name"]!,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                prayer["time"] ?? "غير متوفر",
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
-                ),
-              ),
+              Text(prayer["name"]!, style: AppStyles.styleCairoBold20(context)),
+              Text(prayer["time"] ?? "غير متوفر",
+                  style: AppStyles.styleCairoBold20(context)),
             ],
           ),
         ),

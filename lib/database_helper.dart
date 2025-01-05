@@ -6,11 +6,11 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../model/quran_models/fav_model.dart';
 import 'model/book_mark_model.dart';
+import 'model/praying_model/praying_model/timings.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
   static Database? _database;
-
 
   static const columnId = 'id';
   static const columnCategory = 'category';
@@ -33,7 +33,7 @@ class DatabaseHelper {
     // Create a new database
     return await openDatabase(
       path,
-      version: 2, // Ensure this matches your new schema version
+      version: 3, // Ensure this matches your new schema version
       onCreate: (db, version) async {
         await db.execute('''
         CREATE TABLE favorites(
@@ -68,14 +68,26 @@ class DatabaseHelper {
         await db.execute(
           'CREATE TABLE theme (id INTEGER PRIMARY KEY, themeMode TEXT)',
         );
-      db.execute('''
-  CREATE TABLE favAzkarPage (
-    $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
-    $columnCategory TEXT NOT NULL,
-    $columnZekerList TEXT NOT NULL
-  )
-''');
+        await db.execute('''
+        CREATE TABLE favAzkarPage (
+          $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
+          $columnCategory TEXT NOT NULL,
+          $columnZekerList TEXT NOT NULL
+        )
+      ''');
+        await db.execute('''
+            CREATE TABLE timings (
+              id INTEGER PRIMARY KEY,
+              fajr TEXT,
+              sunrise TEXT,
+              dhuhr TEXT,
+              asr TEXT,
+              maghrib TEXT,
+              isha TEXT,
+              storedAt TEXT
 
+            )
+          ''');
       },
     );
   }
@@ -231,22 +243,21 @@ class DatabaseHelper {
     return defaultTheme;
   }
 
-
-Future<void> insertFavAzkar(String category, List zekerList) async {
-  final db = await database;
-  await db.insert('favAzkarPage', {
-    columnCategory: category,
-    columnZekerList: jsonEncode(zekerList), // Convert list to JSON string
-  });
-}
-
-
-   Future<void> deleteFavAzkar(String category) async {
+  Future<void> insertFavAzkar(String category, List zekerList) async {
     final db = await database;
-    await db.delete('favAzkarPage', where: '$columnCategory = ?', whereArgs: [category]);
+    await db.insert('favAzkarPage', {
+      columnCategory: category,
+      columnZekerList: jsonEncode(zekerList), // Convert list to JSON string
+    });
   }
 
-   Future<bool> isFavZekrExit(String category) async {
+  Future<void> deleteFavAzkar(String category) async {
+    final db = await database;
+    await db.delete('favAzkarPage',
+        where: '$columnCategory = ?', whereArgs: [category]);
+  }
+
+  Future<bool> isFavZekrExit(String category) async {
     final db = await database;
     final result = await db.query(
       'favAzkarPage',
@@ -256,16 +267,52 @@ Future<void> insertFavAzkar(String category, List zekerList) async {
     return result.isNotEmpty;
   }
 
-Future<List<Map<String, dynamic>>> getFavsAzkar() async {
-  final db = await database;
-  final results = await db.query('favAzkarPage');
+  Future<List<Map<String, dynamic>>> getFavsAzkar() async {
+    final db = await database;
+    final results = await db.query('favAzkarPage');
 
-  return results.map((record) {
-    return {
-      'category': record[columnCategory] as String, // Ensure category is a String
-      'zekerList': jsonDecode(record[columnZekerList] as String), // Cast to String
-    };
-  }).toList();
-}
+    return results.map((record) {
+      return {
+        'category':
+            record[columnCategory] as String, // Ensure category is a String
+        'zekerList':
+            jsonDecode(record[columnZekerList] as String), // Cast to String
+      };
+    }).toList();
+  }
 
+  Future<void> insertTimings(Timings timings) async {
+    final db = await database;
+    await db.insert(
+      'timings',
+      {
+        'fajr': timings.fajr,
+        'sunrise': timings.sunrise,
+        'dhuhr': timings.dhuhr,
+        'asr': timings.asr,
+        'maghrib': timings.maghrib,
+        'isha': timings.isha,
+        'storedAt': DateTime.now().toIso8601String(),
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<Map<String, String>?> getTimings() async {
+    final db = await database;
+    final result = await db.query('timings', orderBy: 'id DESC', limit: 1);
+    if (result.isNotEmpty) {
+      final data = result.first;
+      return {
+        'fajr': data['fajr'] as String,
+        'sunrise': data['sunrise'] as String,
+        'dhuhr': data['dhuhr'] as String,
+        'asr': data['asr'] as String,
+        'maghrib': data['maghrib'] as String,
+        'isha': data['isha'] as String,
+        'storedAt': data['storedAt'] as String,
+      };
+    }
+    return null;
+  }
 }

@@ -38,6 +38,22 @@ Widget buildPrayerDetails(
       }
     }
 
+    // Handle transition to the next day's Fajr if no prayers are left today
+    if (nextPrayerTime == null) {
+      final fajrTime = prayerTimes["الفجر"];
+      if (fajrTime != null) {
+        final parsedFajrTime = format.parse(fajrTime);
+        nextPrayerTime = DateTime(
+          now.year,
+          now.month,
+          now.day + 1,
+          parsedFajrTime.hour,
+          parsedFajrTime.minute,
+        );
+        nextPrayerName = "الفجر";
+      }
+    }
+
     if (nextPrayerTime != null && nextPrayerName != null) {
       final remainingTime = nextPrayerTime.difference(now);
       final hours = remainingTime.inHours.toString().padLeft(2, '0');
@@ -75,7 +91,7 @@ Widget buildPrayerDetails(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "صلاة ${nextPrayer['name']}",
+                  "${nextPrayer['name']}",
                   style: const TextStyle(
                     fontSize: 20,
                     color: Color(0xff6a564f),
