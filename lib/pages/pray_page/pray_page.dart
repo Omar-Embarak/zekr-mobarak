@@ -113,7 +113,7 @@ class _ParyPageState extends State<ParyPage> {
           } else if (state is PrayingLoaded) {
             // استدعاء `buildPrayerDetails`
             final detailsWidget =
-                buildPrayerDetails(context, state, scrollController);
+                buildPrayerDetails(context, state.timings, scrollController);
 
             // إضافة PostFrameCallback لتنفيذ التمرير بعد بناء الواجهة
             WidgetsBinding.instance.addPostFrameCallback((_) {
