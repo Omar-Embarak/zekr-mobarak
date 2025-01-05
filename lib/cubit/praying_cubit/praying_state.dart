@@ -11,7 +11,7 @@ class PrayingLoaded extends PrayingState {
 
   final Timings timings;
 
-  final String nextPraying;
+  final String? nextPraying;
   final String nextPrayerName;
   PrayingLoaded(
       this.prayerTimes, this.nextPraying, this.nextPrayerName, this.timings);

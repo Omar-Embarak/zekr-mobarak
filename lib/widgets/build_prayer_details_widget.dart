@@ -33,7 +33,7 @@ Widget buildPrayerDetails(
                   ),
                 ),
                 Text(
-                  state.nextPraying,
+                  "${state.nextPraying}",
                   style: const TextStyle(
                     fontSize: 17,
                     color: Color(0xff6a564f),
