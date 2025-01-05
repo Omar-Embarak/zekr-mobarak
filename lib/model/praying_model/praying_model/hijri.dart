@@ -24,20 +24,9 @@ class Hijri {
   });
 
   factory Hijri.fromJson(Map<String, dynamic> json) => Hijri(
-        date: json['date'] as String?,
-        format: json['format'] as String?,
-        day: json['day'] as String?,
-        weekday: json['weekday'] == null
-            ? null
-            : Weekday.fromJson(json['weekday'] as Map<String, dynamic>),
-        month: json['month'] == null
-            ? null
-            : Month.fromJson(json['month'] as Map<String, dynamic>),
-        year: json['year'] as String?,
-        designation: json['designation'] == null
-            ? null
-            : Designation.fromJson(json['designation'] as Map<String, dynamic>),
-        holidays: json['holidays'] as List<dynamic>?,
+        date: "${json['date']}",
+        format: "${json['format']}",
+        day: "${json['day']}",
       );
 
   Map<String, dynamic> toJson() => {

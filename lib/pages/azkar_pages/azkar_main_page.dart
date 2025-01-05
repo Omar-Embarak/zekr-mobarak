@@ -1,6 +1,5 @@
 import 'package:azkar_app/cubit/azkar_cubit/azkar_cubit.dart';
 import 'package:azkar_app/cubit/azkar_cubit/azkar_state.dart';
-import 'package:azkar_app/model/azkar_model/azkar_model/zekr_model.dart';
 import 'package:azkar_app/pages/azkar_pages/fav_azkar_page.dart';
 import 'package:azkar_app/widgets/reciturs_item.dart';
 import 'package:flutter/material.dart';

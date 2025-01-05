@@ -12,7 +12,8 @@ class PrayingCubit extends Cubit<PrayingState> {
   PrayingCubit() : super(PrayingInitial());
   final List<String> prayerNames = [
     "الفجر",
-    "الظهر",
+    "الشروق"
+        "الظهر",
     "العصر",
     "المغرب",
     "العشاء"
@@ -20,6 +21,7 @@ class PrayingCubit extends Cubit<PrayingState> {
 
   String? nextPrayerTitle;
   Future<void> getPrayerTimesByAddress({
+    // required int day,
     required String year,
     required String month,
     required double latitude,
@@ -34,11 +36,19 @@ class PrayingCubit extends Cubit<PrayingState> {
         final prayerTimesData = PrayingModel.fromJson(jsonResponse);
         var nextPrayer =
             calculateTimeUntilNextPrayer(prayerTimesData.data![0].timings!);
-
-        print(nextPrayer);
+  // DatabaseHelper databaseHelper = DatabaseHelper();
+  // databaseHelper.insertTimings(Timings(
+  //     fajr: convertTo12HourFormat(timings.fajr!),
+            // sunrise: convertTo12HourFormat(timings.sunrise!),
+            // dhuhr: convertTo12HourFormat(timings.dhuhr!),
+            // asr: convertTo12HourFormat(timings.asr!),
+            // maghrib: convertTo12HourFormat(timings.maghrib!),
+            // isha: convertTo12HourFormat(timings.isha!),
+  // ));
         Timings convertTimingsTo12HourFormat(Timings timings) {
           return Timings(
             fajr: convertTo12HourFormat(timings.fajr!),
+            sunrise: convertTo12HourFormat(timings.sunrise!),
             dhuhr: convertTo12HourFormat(timings.dhuhr!),
             asr: convertTo12HourFormat(timings.asr!),
             maghrib: convertTo12HourFormat(timings.maghrib!),
@@ -82,6 +92,7 @@ class PrayingCubit extends Cubit<PrayingState> {
 
     List<String?> prayerTimes = [
       timings.fajr,
+      timings.sunrise,
       timings.dhuhr,
       timings.asr,
       timings.maghrib,

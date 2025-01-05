@@ -16,6 +16,26 @@ class SearchPage extends StatefulWidget {
 }
 
 class SearchPageState extends State<SearchPage> {
+  final FocusNode _searchFocusNode = FocusNode(); // FocusNode for the TextField
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Request focus when the page is loaded
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _searchFocusNode.requestFocus();
+    });
+  }
+
+  @override
+  void dispose() {
+    // Dispose of the FocusNode to avoid memory leaks
+    _searchFocusNode.dispose();
+    _searchController.dispose();
+    super.dispose();
+  }
+
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> searchResults = [];
 
@@ -79,6 +99,7 @@ class SearchPageState extends State<SearchPage> {
               child: TextField(
                 style: AppStyles.styleCairoMedium15white(context),
                 controller: _searchController,
+                focusNode: _searchFocusNode,
                 decoration: InputDecoration(
                   focusColor: Colors.blueGrey, // Focus color for other parts
                   suffixIcon: Icon(

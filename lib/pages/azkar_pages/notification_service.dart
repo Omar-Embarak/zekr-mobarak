@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -40,9 +38,6 @@ class NotificationService {
     final tz.TZDateTime scheduleFor = scheduledTime.isBefore(now)
         ? scheduledTime.add(const Duration(days: 1))
         : scheduledTime;
-
-    log('Current Time: $now');
-    log('Scheduled Time: $scheduleFor');
 
     const AndroidNotificationDetails androidDetails =
         AndroidNotificationDetails(

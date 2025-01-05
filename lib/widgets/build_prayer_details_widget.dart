@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../constants.dart';
 import '../cubit/praying_cubit/praying_cubit.dart';
 import 'prayer_times_widget.dart';
 
@@ -55,7 +54,7 @@ Widget buildPrayerDetails(
           controller: scrollController,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: buildPrayerTimes(state),
+            children: buildPrayerTimes(context, state),
           ),
         ),
       ),
