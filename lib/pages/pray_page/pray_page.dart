@@ -24,7 +24,7 @@ class _PrayPageState extends State<PrayPage> {
   double? longitude;
   final ScrollController scrollController = ScrollController();
   ConnectivityResult? _connectivityStatus;
-
+  String? lastUpdate;
   @override
   void initState() {
     super.initState();
@@ -119,7 +119,6 @@ class _PrayPageState extends State<PrayPage> {
   }
 
   /// Builds the prayer information card.
-  @override
   Widget _buildPrayerInfoCard(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -131,13 +130,13 @@ class _PrayPageState extends State<PrayPage> {
       child: BlocBuilder<PrayingCubit, PrayingState>(
         builder: (context, state) {
           /// Builds a details widget for prayer times.
-          Widget _buildDetailsWidget(
+          Widget buildDetailsWidget(
             BuildContext context,
             Timings timings,
             ScrollController scrollController,
           ) {
-            final detailsWidget =
-                buildPrayerDetails(context, timings, scrollController);
+            final detailsWidget = buildPrayerDetails(
+                context, timings, scrollController, lastUpdate);
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (scrollController.hasClients) {
                 scrollController.animateTo(
@@ -151,7 +150,7 @@ class _PrayPageState extends State<PrayPage> {
           }
 
           /// Builds an error message widget.
-          Widget _buildErrorWidget(BuildContext context, String message) {
+          Widget buildErrorWidget(BuildContext context, String message) {
             return Text(
               message,
               style: AppStyles.styleCairoMedium15white(context),
@@ -162,7 +161,9 @@ class _PrayPageState extends State<PrayPage> {
           if (state is PrayingLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is PrayingLoaded) {
-            return _buildDetailsWidget(
+            lastUpdate = 'الان';
+
+            return buildDetailsWidget(
               context,
               state.timings,
               scrollController,
@@ -174,11 +175,13 @@ class _PrayPageState extends State<PrayPage> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
-                  return _buildErrorWidget(
+                  return buildErrorWidget(
                     context,
                     'حدث خطأ أثناء جلب بيانات الصلاة المحفوظة.',
                   );
                 } else if (snapshot.hasData && snapshot.data != null) {
+                  lastUpdate = snapshot.data!['storedAt'];
+
                   final timings = Timings(
                     fajr: snapshot.data!['fajr'],
                     sunrise: snapshot.data!['sunrise'],
@@ -187,13 +190,13 @@ class _PrayPageState extends State<PrayPage> {
                     maghrib: snapshot.data!['maghrib'],
                     isha: snapshot.data!['isha'],
                   );
-                  return _buildDetailsWidget(
+                  return buildDetailsWidget(
                     context,
                     timings,
                     scrollController,
                   );
                 } else {
-                  return _buildErrorWidget(
+                  return buildErrorWidget(
                     context,
                     'لم يتم العثور على بيانات صلاة محفوظة.',
                   );
@@ -201,9 +204,9 @@ class _PrayPageState extends State<PrayPage> {
               },
             );
           } else if (state is PrayingError) {
-            return _buildErrorWidget(context, state.error);
+            return buildErrorWidget(context, state.error);
           } else {
-            return _buildErrorWidget(
+            return buildErrorWidget(
               context,
               'لا يوجد بيانات متاحة للصلاة.',
             );

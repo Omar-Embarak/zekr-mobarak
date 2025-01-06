@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../model/praying_model/praying_model/timings.dart';
+import '../utils/app_style.dart';
 import 'prayer_times_widget.dart';
 
 Widget buildPrayerDetails(
-    BuildContext context, Timings timings, ScrollController scrollController) {
+    BuildContext context, Timings timings, ScrollController scrollController,lastUpdate) {
   // Helper function to calculate the next prayer
   Map<String, String> calculateNextPrayer(Timings timings) {
     DateTime now = DateTime.now();
@@ -124,6 +125,11 @@ Widget buildPrayerDetails(
           ),
         ),
       ),
+      Text(
+                      "اخر تحديث: $lastUpdate",
+                      style: AppStyles.styleCairoMedium15white(context),
+                    )
+                  ,
     ],
   );
 }

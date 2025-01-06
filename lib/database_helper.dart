@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:intl/intl.dart';
 import 'package:azkar_app/constants.dart';
 import 'package:azkar_app/model/fav_dars_model.dart';
 import 'package:sqflite/sqflite.dart';
@@ -292,7 +292,7 @@ class DatabaseHelper {
         'asr': timings.asr,
         'maghrib': timings.maghrib,
         'isha': timings.isha,
-        'storedAt': DateTime.now().toIso8601String(),
+        'storedAt': DateFormat('dd-MM-yyyy').format(DateTime.now()),
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
