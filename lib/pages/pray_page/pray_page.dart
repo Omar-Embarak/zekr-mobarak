@@ -25,6 +25,7 @@ class _PrayPageState extends State<PrayPage> {
   final ScrollController scrollController = ScrollController();
   ConnectivityResult? _connectivityStatus;
   String? lastUpdate;
+  String? timezoneName;
   @override
   void initState() {
     super.initState();
@@ -47,6 +48,24 @@ class _PrayPageState extends State<PrayPage> {
     }
   }
 
+// Future<String?> getTimeZoneName(double latitude, double longitude) async {
+//   try {
+//     final String apiKey = 'YOUR_GOOGLE_MAPS_API_KEY'; // Replace with your API key
+//     final String url = 'https://maps.googleapis.com/maps/api/timezone/json?location=$latitude,$longitude&timestamp=${DateTime.now().millisecondsSinceEpoch ~/ 1000}&key=$apiKey';
+//     final response = await http.get(Uri.parse(url));
+
+//     if (response.statusCode == 200) {
+//       final data = json.decode(response.body);
+//       if (data['status'] == 'OK') {
+//         return data['timeZoneId']; // Returns the timezone ID (like "Africa/Cairo")
+//       }
+//     }
+//   } catch (e) {
+//     print('Error fetching timezone: $e');
+//   }
+//   return null; // Return null if there's an error
+// }
+
   /// Requests location permission and fetches the user's location.
   Future<void> _initializeLocation() async {
     if (await requestPermission(Permission.location)) {
@@ -56,6 +75,7 @@ class _PrayPageState extends State<PrayPage> {
         );
         latitude = position.latitude;
         longitude = position.longitude;
+        // timezoneName = await getTimeZoneName(latitude!, longitude!);
 
         // Fetch prayer times using cubit
         context.read<PrayingCubit>().getPrayerTimesByAddress(

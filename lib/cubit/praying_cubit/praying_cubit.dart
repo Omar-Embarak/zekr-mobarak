@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-
 import '../../database_helper.dart';
 import '../../model/praying_model/praying_model/praying_model.dart';
 import '../../model/praying_model/praying_model/timings.dart';
+import '../../pages/azkar_pages/notification_service.dart';
 
 part 'praying_state.dart';
 
@@ -35,9 +35,15 @@ class PrayingCubit extends Cubit<PrayingState> {
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
         final prayerTimesData = PrayingModel.fromJson(jsonResponse);
-        var nextPrayer =
-            calculateTimeUntilNextPrayer(prayerTimesData.data![day-1].timings!);
+        var nextPrayer = calculateTimeUntilNextPrayer(
+            prayerTimesData.data![day - 1].timings!);
 
+
+            
+        NotificationService.schedulePrayerNotifications(
+            prayerTimesData.data![day - 1].timings!
+            
+            );
         Timings convertTimingsTo12HourFormat(Timings timings) {
           return Timings(
             fajr: convertTo12HourFormat(timings.fajr!),
@@ -50,16 +56,16 @@ class PrayingCubit extends Cubit<PrayingState> {
           );
         }
 
-        final timings =
-            convertTimingsTo12HourFormat(prayerTimesData.data![day-1].timings!);
+        final timings = convertTimingsTo12HourFormat(
+            prayerTimesData.data![day - 1].timings!);
         // Save timings to the database
         await DatabaseHelper().insertTimings(timings);
-        
+
         emit(PrayingLoaded(
           prayerTimesData,
           nextPrayer,
           nextPrayerTitle!,
-          convertTimingsTo12HourFormat(prayerTimesData.data![day-1].timings!),
+          convertTimingsTo12HourFormat(prayerTimesData.data![day - 1].timings!),
         ));
       }
     } catch (e) {

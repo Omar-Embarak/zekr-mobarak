@@ -1,3 +1,4 @@
+import 'package:azkar_app/pages/azkar_pages/notification_service.dart';
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,6 @@ import '../../cubit/theme_cubit/theme_cubit.dart';
 import '../../widgets/bottom_sheet.dart';
 import '../../widgets/main_category_widget.dart';
 import '../azkar_pages/azkar_main_page.dart';
-import '../azkar_pages/notification_service.dart';
 import '../droos_pages/droos_page.dart';
 import '../pray_page/pray_page.dart';
 import '../ruqiya_pages/ruqiya_page.dart';
@@ -109,7 +109,7 @@ class _HomePagesState extends State<HomePages> {
                       Expanded(
                         child: InkWell(
                           onTap: () async {
-                            await NotificationService.showTestNotification();
+                            // NotificationService.testNotificationSound();
 
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => const AzkarPage()));

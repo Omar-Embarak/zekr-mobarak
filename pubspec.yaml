@@ -31,6 +31,7 @@ dependencies:
   flutter_tts: ^4.0.2
   fluttertoast: ^8.2.4
   font_awesome_flutter: ^10.7.0
+  geocoding: ^3.0.0
   geolocator: ^11.1.0
   google_fonts: ^6.2.1
   hive: ^2.2.3
@@ -79,6 +80,7 @@ flutter:
     - assets/quranjson/juz.json
     - assets/quranjson/surah/
     - assets/quranjson/translation/ar/
+
   fonts:
     - family: Cairo
       fonts:
