@@ -83,78 +83,81 @@ class _VerseButtonsState extends State<VerseButtons> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        color: Colors.lightGreenAccent.withOpacity(0.6),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            onPressed: () {
-              _checkInternetConnection();
-              if (_connectivityStatus == ConnectivityResult.none) {
-                showMessage('لا يتوفر اتصال بالانترنت');
-              } else {
-                togglePlayPause(quran.getAudioURLByVerse(
+    return SafeArea(
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          color: Colors.lightGreenAccent.withOpacity(0.6),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              onPressed: () {
+                _checkInternetConnection();
+                if (_connectivityStatus == ConnectivityResult.none) {
+                  showMessage('لا يتوفر اتصال بالانترنت');
+                } else {
+                  togglePlayPause(quran.getAudioURLByVerse(
+                    widget.currentSurahIndex,
+                    widget.highlightedVerse,
+                  ));
+                }
+              },
+              icon:
+                  Icon(isSoundPlaying ? Icons.pause_rounded : Icons.play_arrow),
+              color: Colors.green,
+              iconSize: 28,
+              tooltip: 'تشغيل الاية',
+            ),
+            IconButton(
+              onPressed: () {
+                showTafseer(
+                  surahNumber: widget.currentSurahIndex,
+                  verseNumber: widget.highlightedVerse,
+                  context: context,
+                );
+              },
+              icon: const Icon(Icons.tips_and_updates_rounded),
+              color: Colors.green,
+              iconSize: 28,
+              tooltip: 'تفسير الاية',
+            ),
+            IconButton(
+              onPressed: () {
+                shareAudio(quran.getAudioURLByVerse(
                   widget.currentSurahIndex,
                   widget.highlightedVerse,
                 ));
-              }
-            },
-            icon: Icon(isSoundPlaying ? Icons.pause_rounded : Icons.play_arrow),
-            color: Colors.green,
-            iconSize: 28,
-            tooltip: 'تشغيل الاية',
-          ),
-          IconButton(
-            onPressed: () {
-              showTafseer(
-                surahNumber: widget.currentSurahIndex,
-                verseNumber: widget.highlightedVerse,
-                context: context,
-              );
-            },
-            icon: const Icon(Icons.tips_and_updates_rounded),
-            color: Colors.green,
-            iconSize: 28,
-            tooltip: 'تفسير الاية',
-          ),
-          IconButton(
-            onPressed: () {
-              shareAudio(quran.getAudioURLByVerse(
-                widget.currentSurahIndex,
-                widget.highlightedVerse,
-              ));
-            },
-            icon: const Icon(Icons.share),
-            color: Colors.green,
-            iconSize: 28,
-            tooltip: 'مشاركة',
-          ),
-          IconButton(
-            onPressed: () {
-              _checkInternetConnection();
-              if (_connectivityStatus == ConnectivityResult.none) {
-                showMessage('لا يتوفر اتصال بالانترنت.');
-              } else {
-                downloadAudio(
-                  quran.getAudioURLByVerse(
-                    widget.currentSurahIndex,
-                    widget.highlightedVerse,
-                  ),
-                  quran.getSurahNameArabic(widget.currentSurahIndex),
-                  context,
-                );
-              }
-            },
-            icon: const Icon(Icons.download_rounded),
-            color: Colors.green,
-            iconSize: 28,
-            tooltip: 'تحميل',
-          ),
-        ],
+              },
+              icon: const Icon(Icons.share),
+              color: Colors.green,
+              iconSize: 28,
+              tooltip: 'مشاركة',
+            ),
+            IconButton(
+              onPressed: () {
+                _checkInternetConnection();
+                if (_connectivityStatus == ConnectivityResult.none) {
+                  showMessage('لا يتوفر اتصال بالانترنت.');
+                } else {
+                  downloadAudio(
+                    quran.getAudioURLByVerse(
+                      widget.currentSurahIndex,
+                      widget.highlightedVerse,
+                    ),
+                    quran.getSurahNameArabic(widget.currentSurahIndex),
+                    context,
+                  );
+                }
+              },
+              icon: const Icon(Icons.download_rounded),
+              color: Colors.green,
+              iconSize: 28,
+              tooltip: 'تحميل',
+            ),
+          ],
+        ),
       ),
     );
   }

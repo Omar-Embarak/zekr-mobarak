@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:quran/page_data.dart';
 import 'package:quran/quran.dart' as quran;
 import 'package:audioplayers/audioplayers.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import '../../constants.dart';
 import '../../utils/app_style.dart';
 import '../../widgets/quran_container_down.dart';
@@ -81,53 +80,70 @@ class _SurahPageState extends State<SurahPage> {
           quran.getAudioURLByVerse(currentSurahIndex, highlightedVerse ?? 1);
       await _audioPlayer.setSourceUrl(audioUrl);
     } catch (e) {
-      log("Error preloading audio: $e");
+      debugPrint("Error preloading audio: $e");
     }
   }
 
-  void _selectVerse(Offset globalPosition, [int? verseNumber]) {
+  void _selectVerse(Offset globalPosition, int verseNumber) {
     setState(() {
-      highlightedVerse = verseNumber ?? 1;
+      highlightedVerse = verseNumber;
       buttonPosition = globalPosition;
+    });
+  }
+
+  void _clearSelection() {
+    setState(() {
+      highlightedVerse = null;
+      buttonPosition = null;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.kPrimaryColor,
-      body: Stack(
-        children: [
-          GestureDetector(
-            onTap: () => setState(() {
-              isVisible = !isVisible;
-              highlightedVerse = null;
-            }),
-            onLongPressStart: (details) => _selectVerse(details.globalPosition),
-            child: SafeArea(
-              child: PageView.builder(
-                controller: _pageController,
-                onPageChanged: (newPageIndex) {
-                  setState(() {
-                    pageNumber = newPageIndex + 1;
-                    highlightedVerse = null;
-                  });
-                  _loadPageContent(pageNumber);
+    return PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (bool didPop, Object? result) async {
+          // Navigate to QuranReadingMainPage
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const QuranReadingMainPage()),
+            (route) => false, // Clear all previous routes
+          );
+        },
+        child: Scaffold(
+          backgroundColor: AppColors.kPrimaryColor,
+          body: Stack(
+            children: [
+              GestureDetector(
+                onTapDown: (details) {
+                  final RenderBox renderBox =
+                      context.findRenderObject() as RenderBox;
+                  final Offset localPosition =
+                      renderBox.globalToLocal(details.globalPosition);
+                  _clearSelection();
                 },
-                itemBuilder: (context, index) {
-                  return _buildPageContent();
-                },
+                child: SafeArea(
+                  child: PageView.builder(
+                    controller: _pageController,
+                    onPageChanged: (newPageIndex) {
+                      setState(() {
+                        pageNumber = newPageIndex + 1;
+                        highlightedVerse = null;
+                      });
+                      _loadPageContent(pageNumber);
+                    },
+                    itemBuilder: (context, index) {
+                      return _buildPageContent();
+                    },
+                  ),
+                ),
               ),
-            ),
+              if (highlightedVerse != null && buttonPosition != null)
+                _buildActionButtons(),
+            ],
           ),
-          if (isVisible) _buildTopHeader(),
-          if (isVisible) _buildBottomFooter(),
-          if (highlightedVerse != null && buttonPosition != null)
-            _buildActionButtons(),
-          if (isBuffering) const Center(child: CircularProgressIndicator()),
-        ],
-      ),
-    );
+        ));
   }
 
   Widget _buildPageContent() {
@@ -167,9 +183,13 @@ class _SurahPageState extends State<SurahPage> {
                                 color: isHighlighted ? Colors.red : null,
                               ),
                               recognizer: TapGestureRecognizer()
-                                ..onTap = () => setState(() {
-                                      highlightedVerse = verseIndex;
-                                    }),
+                                ..onTapDown = (details) {
+                                  RenderBox renderBox =
+                                      context.findRenderObject() as RenderBox;
+                                  Offset globalPosition = renderBox
+                                      .localToGlobal(details.localPosition);
+                                  _selectVerse(globalPosition, verseIndex);
+                                },
                             ),
                           ],
                         );
@@ -218,10 +238,22 @@ class _SurahPageState extends State<SurahPage> {
   }
 
   Widget _buildActionButtons() {
+    // Screen dimensions
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    // Button dimensions (approximated; adjust as needed based on your button size)
+    const buttonWidth = 200.0;
+    const buttonHeight = 50.0;
+
+    // Clamp the button position to ensure it stays within screen bounds
+    final leftPosition = buttonPosition!.dx.clamp(0, screenWidth - buttonWidth);
+    final topPosition =
+        buttonPosition!.dy.clamp(0, screenHeight - buttonHeight);
+
     return Positioned(
-      left:
-          buttonPosition!.dx.clamp(0, MediaQuery.of(context).size.width - 150),
-      top: buttonPosition!.dy.clamp(0, MediaQuery.of(context).size.height - 50),
+      left: leftPosition.toDouble(),
+      top: topPosition.toDouble(),
       child: VerseButtons(
         currentSurahIndex: currentSurahIndex,
         highlightedVerse: highlightedVerse!,
