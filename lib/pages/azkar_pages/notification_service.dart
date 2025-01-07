@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import '../../main.dart';
 import '../../model/praying_model/praying_model/timings.dart';
 import 'package:intl/intl.dart';
+import '../pray_page/pray_page.dart';
+import 'azkar_main_page.dart';
 
 class NotificationService {
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
@@ -18,16 +21,32 @@ class NotificationService {
     const InitializationSettings initSettings =
         InitializationSettings(android: androidSettings);
 
-    await _notificationsPlugin.initialize(initSettings);
+    await _notificationsPlugin.initialize(
+      initSettings,
+      onDidReceiveNotificationResponse: (details) {
+        if (details.payload != null) {
+          final context = globalNavigatorKey.currentContext!;
+          if (details.payload == 'اذكار') {
+            // Navigate to AzkarPage
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => const AzkarPage(),
+            ));
+          } else {
+            // Navigate to PrayPage
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => const PrayPage(),
+            ));
+          }
+        }
+      },
+    );
   }
 
   static Future<void> schedulePrayerNotifications(Timings timings) async {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
 
-    // Set local time zone
     tz.setLocalLocation(tz.getLocation('Africa/Cairo'));
 
-    // Prayer times and corresponding sounds
     Map<String, String?> prayers = {
       "الفجر": timings.fajr,
       "الظهر": timings.dhuhr,
@@ -36,7 +55,7 @@ class NotificationService {
       "العشاء": timings.isha,
     };
 
-    Map<String, String> soonSounds = {
+    Map<String, String> prayerSounds = {
       "الفجر": "fajr_soon.mp3",
       "الظهر": "dhuhr_soon.mp3",
       "العصر": "asr_soon.mp3",
@@ -51,51 +70,97 @@ class NotificationService {
         final tz.TZDateTime prayerTime =
             _convertToTZDateTime(entry.value!, now);
 
-        // Notification for "soon" time (5 minutes before)
-        await _scheduleNotification(
+        // Daily notifications for prayer times
+        await _scheduleDailyNotification(
           notificationId++,
           entry.key,
           'اقتربت صلاة ${entry.key}',
           prayerTime.subtract(const Duration(minutes: 5)),
-          soonSounds[entry.key]!.split('.').first,
+          prayerSounds[entry.key]!.split('.').first,
+          payload: 'صلاة',
         );
 
-        // Notification for "now" time
-        await _scheduleNotification(
+        await _scheduleDailyNotification(
           notificationId++,
           entry.key,
           'حان الآن وقت صلاة ${entry.key}',
           prayerTime,
-          'call', // "call.mp3" for the Adhan
+          'call',
+          payload: 'صلاة',
         );
 
-        // Notification for "Iqamah" time (15 minutes after)
-        await _scheduleNotification(
+        await _scheduleDailyNotification(
           notificationId++,
           entry.key,
           'اقامت صلاة ${entry.key}',
           prayerTime.add(const Duration(minutes: 15)),
-          'establish', // "establish.mp3" for Iqamah
+          'establish',
+          payload: 'صلاة',
         );
       }
     }
+
+    // Add custom Zekr notifications
+    if (timings.asr != null) {
+      await _scheduleDailyNotification(
+        notificationId++,
+        'أذكار المساء',
+        'وقت قراءة أذكار المساء',
+        _convertToTZDateTime(timings.asr!, now).add(const Duration(hours: 1)),
+        'default',
+        payload: 'اذكار',
+      );
+    }
+
+    if (timings.sunrise != null) {
+      await _scheduleDailyNotification(
+        notificationId++,
+        'أذكار الصباح',
+        'وقت قراءة أذكار الصباح',
+        _convertToTZDateTime(timings.sunrise!, now)
+            .add(const Duration(hours: 1)),
+        'default',
+        payload: 'اذكار',
+      );
+    }
+
+    await _scheduleDailyNotification(
+      notificationId++,
+      'أذكار النوم',
+      'وقت قراءة أذكار النوم',
+      tz.TZDateTime(tz.local, now.year, now.month, now.day, 0, 0),
+      'default',
+      payload: 'اذكار',
+    );
+
+    await _scheduleDailyNotification(
+      notificationId++,
+      'أذكار الاستيقاظ',
+      'وقت قراءة أذكار الاستيقاظ',
+      tz.TZDateTime(tz.local, now.year, now.month, now.day, 8, 0),
+      'default',
+      payload: 'اذكار',
+    );
   }
 
-  static Future<void> _scheduleNotification(
+  static Future<void> _scheduleDailyNotification(
     int id,
     String title,
     String body,
     tz.TZDateTime scheduledTime,
-    String sound,
-  ) async {
+    String sound, {
+    String? payload,
+  }) async {
     final AndroidNotificationDetails androidDetails =
         AndroidNotificationDetails(
-      'prayer_notification_channel_$id', // Unique channel ID
-      'Prayer Notifications $title',
-      channelDescription: 'Notifications for prayer times',
+      'notification_channel_$id',
+      'Notifications $title',
+      channelDescription: 'Notifications for $title',
       importance: Importance.max,
       priority: Priority.high,
-      sound: RawResourceAndroidNotificationSound(sound),
+      sound: sound == 'default'
+          ? null
+          : RawResourceAndroidNotificationSound(sound),
     );
 
     final NotificationDetails notificationDetails =
@@ -109,31 +174,17 @@ class NotificationService {
       notificationDetails,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.wallClockTime,
-      matchDateTimeComponents: DateTimeComponents.time,
+      matchDateTimeComponents: DateTimeComponents.time, // Repeat daily
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      payload: payload, // Pass payload for navigation
     );
   }
 
   static tz.TZDateTime _convertToTZDateTime(String time, tz.TZDateTime now) {
-    // Remove any text in parentheses (like (EET))
     String cleanedTime = time.replaceAll(RegExp(r'\s*\(.*\)'), '').trim();
-
-    // Check if the time includes AM/PM
-    bool hasAmPm =
-        cleanedTime.contains(RegExp(r'(AM|PM)$', caseSensitive: false));
-    DateFormat inputFormat;
-
-    // Select the appropriate format
-    if (hasAmPm) {
-      inputFormat = DateFormat("hh:mm a"); // 12-hour format with AM/PM
-    } else {
-      inputFormat = DateFormat("HH:mm"); // 24-hour format
-    }
-
-    // Parse the cleaned time
+    DateFormat inputFormat = DateFormat("HH:mm");
     DateTime dateTime = inputFormat.parse(cleanedTime);
 
-    // Create a TZDateTime with the parsed hour and minute
     final tz.TZDateTime scheduledTime = tz.TZDateTime(
       tz.local,
       now.year,
@@ -143,33 +194,8 @@ class NotificationService {
       dateTime.minute,
     );
 
-    // Adjust for past times to be scheduled for the next day
     return scheduledTime.isBefore(now)
         ? scheduledTime.add(const Duration(days: 1))
         : scheduledTime;
-  }
-
-  // Function to test notification sound immediately
-  static Future<void> testNotificationSound(String soundName) async {
-    debugPrint('Testing notification sound: $soundName');
-    final AndroidNotificationDetails androidDetails =
-        AndroidNotificationDetails(
-      'prayer_notification_channel',
-      'Prayer Notifications',
-      channelDescription: 'Notifications for prayer times',
-      importance: Importance.max,
-      priority: Priority.high,
-      sound: RawResourceAndroidNotificationSound(soundName),
-    );
-
-    final NotificationDetails notificationDetails =
-        NotificationDetails(android: androidDetails);
-
-    await _notificationsPlugin.show(
-      3, // Use a different ID for testing
-      'اختبار الإشعارات',
-      'هذا إشعار اختبار مع صوت مخصص.',
-      notificationDetails,
-    );
   }
 }

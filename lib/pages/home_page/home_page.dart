@@ -1,4 +1,3 @@
-import 'package:azkar_app/pages/azkar_pages/notification_service.dart';
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -109,9 +108,6 @@ class _HomePagesState extends State<HomePages> {
                       Expanded(
                         child: InkWell(
                           onTap: () async {
-                            NotificationService.testNotificationSound(
-                                'fajr_soon');
-
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => const AzkarPage()));
                           },
@@ -128,8 +124,6 @@ class _HomePagesState extends State<HomePages> {
                       Expanded(
                         child: InkWell(
                           onTap: () {
-                            NotificationService.testNotificationSound(
-                                'dhuhr_soon');
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => const RuqiyaPage()));
                           },

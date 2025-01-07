@@ -10,12 +10,12 @@ import 'package:provider/provider.dart';
 import 'cubit/azkar_cubit/azkar_cubit.dart';
 import 'cubit/praying_cubit/praying_cubit.dart';
 import 'cubit/theme_cubit/theme_cubit.dart';
-import 'database_helper.dart';
 import 'pages/azkar_pages/notification_service.dart';
 import 'pages/home_page/home_page.dart';
 import 'pages/quran_pages/book_mark_provider.dart';
 import 'pages/quran_pages/quran_data_provider.dart';
 import 'pages/quran_pages/quran_font_size_provider.dart';
+final GlobalKey<NavigatorState> globalNavigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -57,7 +57,8 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(create: (_) => BookmarkProvider()),
       ],
-      child: MaterialApp(
+      child: MaterialApp(      navigatorKey: globalNavigatorKey, // Attach the global navigator key
+
         locale: DevicePreview.locale(context),
         builder: DevicePreview.appBuilder,
         localizationsDelegates: const [
