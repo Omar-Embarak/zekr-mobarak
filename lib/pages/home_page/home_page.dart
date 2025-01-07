@@ -109,7 +109,8 @@ class _HomePagesState extends State<HomePages> {
                       Expanded(
                         child: InkWell(
                           onTap: () async {
-                            // NotificationService.testNotificationSound();
+                            NotificationService.testNotificationSound(
+                                'fajr_soon');
 
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => const AzkarPage()));
@@ -127,6 +128,8 @@ class _HomePagesState extends State<HomePages> {
                       Expanded(
                         child: InkWell(
                           onTap: () {
+                            NotificationService.testNotificationSound(
+                                'dhuhr_soon');
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => const RuqiyaPage()));
                           },

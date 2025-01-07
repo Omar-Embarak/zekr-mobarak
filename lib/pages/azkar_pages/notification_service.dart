@@ -3,6 +3,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import '../../model/praying_model/praying_model/timings.dart';
+import 'package:intl/intl.dart';
 
 class NotificationService {
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
@@ -89,8 +90,8 @@ class NotificationService {
   ) async {
     final AndroidNotificationDetails androidDetails =
         AndroidNotificationDetails(
-      'prayer_notification_channel',
-      'Prayer Notifications',
+      'prayer_notification_channel_$id', // Unique channel ID
+      'Prayer Notifications $title',
       channelDescription: 'Notifications for prayer times',
       importance: Importance.max,
       priority: Priority.high,
@@ -114,46 +115,61 @@ class NotificationService {
   }
 
   static tz.TZDateTime _convertToTZDateTime(String time, tz.TZDateTime now) {
-    final parts = time.split(':');
+    // Remove any text in parentheses (like (EET))
+    String cleanedTime = time.replaceAll(RegExp(r'\s*\(.*\)'), '').trim();
+
+    // Check if the time includes AM/PM
+    bool hasAmPm =
+        cleanedTime.contains(RegExp(r'(AM|PM)$', caseSensitive: false));
+    DateFormat inputFormat;
+
+    // Select the appropriate format
+    if (hasAmPm) {
+      inputFormat = DateFormat("hh:mm a"); // 12-hour format with AM/PM
+    } else {
+      inputFormat = DateFormat("HH:mm"); // 24-hour format
+    }
+
+    // Parse the cleaned time
+    DateTime dateTime = inputFormat.parse(cleanedTime);
+
+    // Create a TZDateTime with the parsed hour and minute
     final tz.TZDateTime scheduledTime = tz.TZDateTime(
       tz.local,
       now.year,
       now.month,
       now.day,
-      int.parse(parts[0]),
-      int.parse(parts[1]),
+      dateTime.hour,
+      dateTime.minute,
     );
 
+    // Adjust for past times to be scheduled for the next day
     return scheduledTime.isBefore(now)
         ? scheduledTime.add(const Duration(days: 1))
         : scheduledTime;
   }
 
   // Function to test notification sound immediately
-  static Future<void> testNotificationSound() async {
-    try {
-      const AndroidNotificationDetails androidDetails =
-          AndroidNotificationDetails(
-        'prayer_notification_channel',
-        'Prayer Notifications',
-        channelDescription: 'Notifications for prayer times',
-        importance: Importance.max,
-        priority: Priority.high,
-        sound: RawResourceAndroidNotificationSound('call'), // Use "call.mp3"
-      );
+  static Future<void> testNotificationSound(String soundName) async {
+    debugPrint('Testing notification sound: $soundName');
+    final AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
+      'prayer_notification_channel',
+      'Prayer Notifications',
+      channelDescription: 'Notifications for prayer times',
+      importance: Importance.max,
+      priority: Priority.high,
+      sound: RawResourceAndroidNotificationSound(soundName),
+    );
 
-      const NotificationDetails notificationDetails =
-          NotificationDetails(android: androidDetails);
+    final NotificationDetails notificationDetails =
+        NotificationDetails(android: androidDetails);
 
-      await _notificationsPlugin.show(
-        0,
-        'اختبار الإشعارات',
-        'هذا إشعار اختبار مع صوت مخصص.',
-        notificationDetails,
-      );
-      debugPrint('Notification triggered successfully!');
-    } catch (e) {
-      debugPrint('Error showing notification: $e');
-    }
+    await _notificationsPlugin.show(
+      3, // Use a different ID for testing
+      'اختبار الإشعارات',
+      'هذا إشعار اختبار مع صوت مخصص.',
+      notificationDetails,
+    );
   }
 }

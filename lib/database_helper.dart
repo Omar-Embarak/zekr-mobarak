@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:azkar_app/constants.dart';
 import 'package:azkar_app/model/fav_dars_model.dart';
@@ -283,19 +284,23 @@ class DatabaseHelper {
 
   Future<void> insertTimings(Timings timings) async {
     final db = await database;
-    await db.insert(
-      'timings',
-      {
-        'fajr': timings.fajr,
-        'sunrise': timings.sunrise,
-        'dhuhr': timings.dhuhr,
-        'asr': timings.asr,
-        'maghrib': timings.maghrib,
-        'isha': timings.isha,
-        'storedAt': DateFormat('dd-MM-yyyy').format(DateTime.now()),
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    try {
+      await db.insert(
+        'timings',
+        {
+          'fajr': timings.fajr,
+          'sunrise': timings.sunrise,
+          'dhuhr': timings.dhuhr,
+          'asr': timings.asr,
+          'maghrib': timings.maghrib,
+          'isha': timings.isha,
+          'storedAt': DateFormat('dd-MM-yyyy').format(DateTime.now()),
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   Future<Map<String, String>?> getTimings() async {

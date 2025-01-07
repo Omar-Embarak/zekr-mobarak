@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'cubit/azkar_cubit/azkar_cubit.dart';
 import 'cubit/praying_cubit/praying_cubit.dart';
 import 'cubit/theme_cubit/theme_cubit.dart';
+import 'database_helper.dart';
 import 'pages/azkar_pages/notification_service.dart';
 import 'pages/home_page/home_page.dart';
 import 'pages/quran_pages/book_mark_provider.dart';
@@ -18,8 +19,8 @@ import 'pages/quran_pages/quran_font_size_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-//   final db = await DatabaseHelper().database;
-// await db.close();
+  // final db = await DatabaseHelper().database;
+  // await db.close();
 
   // Initialize notification service
   await NotificationService.init();
