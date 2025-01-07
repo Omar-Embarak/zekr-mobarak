@@ -93,6 +93,7 @@ class _VerseButtonsState extends State<VerseButtons> {
         children: [
           IconButton(
             onPressed: () {
+              _checkInternetConnection();
               if (_connectivityStatus == ConnectivityResult.none) {
                 showMessage('لا يتوفر اتصال بالانترنت');
               } else {
@@ -134,6 +135,7 @@ class _VerseButtonsState extends State<VerseButtons> {
           ),
           IconButton(
             onPressed: () {
+              _checkInternetConnection();
               if (_connectivityStatus == ConnectivityResult.none) {
                 showMessage('لا يتوفر اتصال بالانترنت.');
               } else {
