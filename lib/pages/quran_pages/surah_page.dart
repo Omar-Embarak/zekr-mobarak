@@ -44,6 +44,39 @@ class _SurahPageState extends State<SurahPage> {
     _preloadAudio();
   }
 
+  double _getAdjustedFontSize(String text, double originalFontSize) {
+    final textSpan = TextSpan(
+      text: text,
+      style: TextStyle(fontSize: originalFontSize),
+    );
+    final textPainter = TextPainter(
+      text: textSpan,
+      textDirection: TextDirection.ltr,
+      maxLines: 1,
+    );
+    textPainter.layout(minWidth: 0, maxWidth: double.infinity);
+
+    double width = textPainter.width;
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    // Adjust scaling factors for wider scaling
+    double scaleFactor = 1.0;
+
+    // Wider scaling down if the text is much larger than the screen width
+    if (width > screenWidth) {
+      scaleFactor = (screenWidth / width) * 0.1; // Increased reduction
+    }
+    // Wider scaling up if the text is much smaller than the screen width
+    else if (width < screenWidth * 0.1) {
+      scaleFactor = (screenWidth / width) * 3; // Increased increment
+    }
+
+    // Adjust the font size and clamp it within reasonable bounds
+    double adjustedFontSize = originalFontSize * scaleFactor;
+    return adjustedFontSize.clamp(
+        originalFontSize - 6, originalFontSize + 6); // Wider range
+  }
+
   Future<void> _loadPageContent(int pageNumber) async {
     try {
       pageContent.clear();
@@ -98,6 +131,10 @@ class _SurahPageState extends State<SurahPage> {
     });
   }
 
+  void _containersVisability() {
+    isVisible = !isVisible;
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -122,6 +159,7 @@ class _SurahPageState extends State<SurahPage> {
                   final Offset localPosition =
                       renderBox.globalToLocal(details.globalPosition);
                   _clearSelection();
+                  _containersVisability();
                 },
                 child: SafeArea(
                   child: PageView.builder(
@@ -141,6 +179,8 @@ class _SurahPageState extends State<SurahPage> {
               ),
               if (highlightedVerse != null && buttonPosition != null)
                 _buildActionButtons(),
+              if (isVisible) _buildTopHeader(),
+              if (isVisible) _buildBottomFooter(),
             ],
           ),
         ));
@@ -157,14 +197,55 @@ class _SurahPageState extends State<SurahPage> {
                 alignment: Alignment.center,
                 child: RichText(
                   text: TextSpan(
-                    style: AppStyles.styleAmiriMedium30(context)
-                        .copyWith(fontSize: fontSizeProvider.fontSize),
+                    style: AppStyles.styleAmiriMedium30(context).copyWith(
+                      fontSize: fontSizeProvider.fontSize,
+                    ),
                     children: pageContent.entries.expand((entry) {
                       int surahNumber = entry.key;
                       return entry.value.map((verseEntry) {
                         int verseIndex = verseEntry['verseNumber'];
                         String verseText = verseEntry['verseText'];
                         bool isHighlighted = highlightedVerse == verseIndex;
+
+                        // Split the verse text into words
+                        List<String> words = verseText.split(' ');
+
+                        // Create spans for each word with adjusted font sizes
+                        List<InlineSpan> wordSpans = words.map((word) {
+                          double adjustedFontSize = _getAdjustedFontSize(
+                              word, fontSizeProvider.fontSize);
+
+                          return TextSpan(
+                            text: '$word ', // Add a space after each word
+                            style: TextStyle(
+                              fontSize: adjustedFontSize,
+                              backgroundColor: isHighlighted
+                                  ? Colors.yellow.withOpacity(0.4)
+                                  : Colors.transparent,
+                              color: isHighlighted ? Colors.red : null,
+                            ),
+                            recognizer: LongPressGestureRecognizer()
+                              ..onLongPressStart = (details) {
+                                // Get the global position of the long press
+                                RenderBox renderBox =
+                                    context.findRenderObject() as RenderBox;
+                                Offset globalPosition = renderBox
+                                    .localToGlobal(details.globalPosition);
+
+                                // Trigger _selectVerse
+                                _selectVerse(globalPosition, verseIndex);
+                              },
+                          );
+                        }).toList();
+
+                        // Add the verse end symbol
+                        wordSpans.add(TextSpan(
+                          text:
+                              '${quran.getVerseEndSymbol(verseIndex, arabicNumeral: true)} ',
+                          style: TextStyle(
+                            fontSize: fontSizeProvider.fontSize,
+                          ),
+                        ));
 
                         return TextSpan(
                           children: [
@@ -173,24 +254,7 @@ class _SurahPageState extends State<SurahPage> {
                                 alignment: PlaceholderAlignment.middle,
                                 child: SurahBorder(surahNumber: surahNumber),
                               ),
-                            TextSpan(
-                              text:
-                                  ' $verseText${quran.getVerseEndSymbol(verseIndex, arabicNumeral: true)} ',
-                              style: TextStyle(
-                                backgroundColor: isHighlighted
-                                    ? Colors.yellow.withOpacity(0.4)
-                                    : Colors.transparent,
-                                color: isHighlighted ? Colors.red : null,
-                              ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTapDown = (details) {
-                                  RenderBox renderBox =
-                                      context.findRenderObject() as RenderBox;
-                                  Offset globalPosition = renderBox
-                                      .localToGlobal(details.localPosition);
-                                  _selectVerse(globalPosition, verseIndex);
-                                },
-                            ),
+                            ...wordSpans,
                           ],
                         );
                       });
