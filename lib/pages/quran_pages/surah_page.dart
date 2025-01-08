@@ -215,10 +215,10 @@ class _SurahPageState extends State<SurahPage> {
         ));
   }
 
-  Widget _buildPageContent() {
-    return Consumer<QuranFontSizeProvider>(
-      builder: (context, fontSizeProvider, child) {
-        return CustomScrollView(
+    Widget _buildPageContent() {
+      return Consumer<QuranFontSizeProvider>(
+        builder: (context, fontSizeProvider, child) {
+ return CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
               child: Container(
@@ -297,9 +297,9 @@ class _SurahPageState extends State<SurahPage> {
             ),
           ],
         );
-      },
-    );
-  }
+    },
+      );
+    }
 
   Widget _buildTopHeader() {
     return Positioned(

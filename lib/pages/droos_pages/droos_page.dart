@@ -32,9 +32,11 @@ class _DroosPageState extends State<DroosPage> {
     if (_connectivityStatus != ConnectivityResult.none) {
       await fetchAudios();
     }
-    setState(() {
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   Future<void> _checkInternetConnection() async {

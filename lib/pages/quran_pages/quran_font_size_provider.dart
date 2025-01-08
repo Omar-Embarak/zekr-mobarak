@@ -1,22 +1,34 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-
 import '../../database_helper.dart';
 
 class QuranFontSizeProvider with ChangeNotifier {
-  double _fontSize = 35;
+  double _fontSize = 35; // Default font size
   final DatabaseHelper _dbHelper = DatabaseHelper();
+  Timer? _debounce;
 
   double get fontSize => _fontSize;
 
   set fontSize(double newSize) {
     _fontSize = newSize;
-   _dbHelper.changeFontSize(newSize);
+    notifyListeners();
 
-    notifyListeners(); 
+    // Debounce the database update
+    _debounce?.cancel(); // Cancel any previous timer
+    _debounce = Timer(const Duration(milliseconds: 100), () {
+      _dbHelper.changeFontSize(newSize); // Save to database after 300ms
+    });
   }
 
-  Future<void> _loadFontSize() async {
-    _fontSize = await _dbHelper.getFontSize(); // Load the font size from the database
-    notifyListeners();
+  Future<void> loadFontSize() async {
+    try {
+      _fontSize =
+          await _dbHelper.getFontSize(); // Load font size from the database
+      debugPrint('Loaded font size: $_fontSize');
+    } catch (e) {
+      _fontSize = 35.0; // Default value in case of an error
+      debugPrint('Error loading font size: $e');
+    }
+    notifyListeners(); // Notify widgets after loading
   }
 }

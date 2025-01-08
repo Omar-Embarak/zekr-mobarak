@@ -197,34 +197,39 @@ class DatabaseHelper {
       whereArgs: [id],
     );
   }
+// Save font size to database
+Future<void> changeFontSize(double fontSize) async {
+  final db = await database;
 
-  Future<void> changeFontSize(double fontSize) async {
-    final db = await database;
+  // Check if a font size already exists
+  final result = await db.query('fontSize');
 
-    // Insert or update the font size
-    await db.insert(
+  if (result.isNotEmpty) {
+    // Update existing font size
+    await db.update(
       'fontSize',
       {'fontSize': fontSize},
-      conflictAlgorithm:
-          ConflictAlgorithm.replace, // Replace the record if it exists
+      where: '1', // Always update the single entry
     );
+  } else {
+    // Insert a new font size if it doesn't exist
+    await db.insert('fontSize', {'fontSize': fontSize});
   }
+}
 
-  Future<double> getFontSize() async {
-    final db = await database;
+// Retrieve font size from database
+Future<double> getFontSize() async {
+  final db = await database;
 
-    final List<Map<String, dynamic>> results = await db.query(
-      'fontSize',
-      columns: ['fontSize'],
-      limit: 1,
-    );
+  final List<Map<String, dynamic>> result = await db.query('fontSize');
 
-    // Return the fontSize if it exists, otherwise return a default value
-    if (results.isNotEmpty) {
-      return results.first['fontSize'] as double;
-    }
-    return 35.0; // Default font size
+  if (result.isNotEmpty) {
+    return result.first['fontSize'] as double;
+  } else {
+    // Return default font size if no value exists
+    return 35.0;
   }
+}
 
   Future<void> saveTheme(String themeMode) async {
     final db = await database;

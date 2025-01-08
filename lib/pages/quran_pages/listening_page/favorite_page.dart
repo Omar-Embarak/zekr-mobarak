@@ -138,7 +138,7 @@ class _FavoritePageState extends State<FavoritePage> {
                           );
                         },
                         child: Text(
-                          favModel.reciter.name,
+                          '> ${favModel.reciter.name} ',
                           style: AppStyles.styleCairoBold20(context).copyWith(
                             color: AppColors.kSecondaryColor,
                             decoration: TextDecoration.underline,

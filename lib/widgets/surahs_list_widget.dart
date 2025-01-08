@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quran/quran.dart' as quran;
 import '../utils/app_style.dart';
-import '../constants.dart';
+import '../constants.dart'; 
 import '../pages/quran_pages/surah_page.dart';
 
 class SurahListWidget extends StatefulWidget {
@@ -11,25 +11,26 @@ class SurahListWidget extends StatefulWidget {
   State<SurahListWidget> createState() => _SurahListWidgetState();
 }
 
-class _SurahListWidgetState extends State<SurahListWidget> {
-  @override
-  void initState() {
-    super.initState();
-  }
+class _SurahListWidgetState extends State<SurahListWidget>
+    with AutomaticKeepAliveClientMixin {
 
-
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Call this to ensure keep-alive works
+
     return Scaffold(
       backgroundColor: AppColors.kPrimaryColor,
       body: ListView.builder(
-              itemCount: quran.totalJuzCount,
-              itemBuilder: (context, index) {
-                final surahsInJuz = quran.getSurahAndVersesFromJuz(index + 1);
-                return _buildJuzSection(context, index, surahsInJuz);
-              },
-            ),
+        key: const PageStorageKey('surahList'), // Retains scroll position
+
+        itemCount: quran.totalJuzCount,
+        itemBuilder: (context, index) {
+          final surahsInJuz = quran.getSurahAndVersesFromJuz(index + 1);
+          return _buildJuzSection(context, index, surahsInJuz);
+        },
+      ),
     );
   }
 
@@ -79,8 +80,7 @@ class _SurahListWidgetState extends State<SurahListWidget> {
                 ),
               ],
             ),
-            onTap: () => _navigateToSurahPage(
-                context, entry.key, juzIndex, surahType, firstVersePage),
+            onTap: () => _navigateToSurahPage(context, firstVersePage),
           ),
         ),
       ],
@@ -114,8 +114,7 @@ class _SurahListWidgetState extends State<SurahListWidget> {
     );
   }
 
-  void _navigateToSurahPage(BuildContext context, int surahIndex, int juzNumber,
-      String surahType, int firstVersePage) {
+  void _navigateToSurahPage(BuildContext context, int firstVersePage) {
     Navigator.push(
       context,
       MaterialPageRoute(

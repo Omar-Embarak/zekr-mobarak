@@ -1,16 +1,21 @@
 import 'package:azkar_app/pages/home_page/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../utils/app_style.dart';
 import '../../widgets/surahs_list_widget.dart';
 import '../../constants.dart';
 import 'book_mark_page.dart';
 import 'juz_page.dart';
+import 'quran_font_size_provider.dart';
 
 class QuranReadingMainPage extends StatelessWidget {
   const QuranReadingMainPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final fontSizeProvider =
+        Provider.of<QuranFontSizeProvider>(context, listen: true);
+    fontSizeProvider.loadFontSize();
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (bool didPop, Object? result) async {
