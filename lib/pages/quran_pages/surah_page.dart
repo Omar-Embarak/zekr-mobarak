@@ -126,14 +126,13 @@ class _SurahPageState extends State<SurahPage> {
 
   void _selectVerse(Offset globalPosition, int verseNumber, int surahNumber) {
     setState(() {
-      highlightedVerse = verseNumber; // Set the highlighted verse number
-      buttonPosition = globalPosition; // Set the button position
+      highlightedVerses.clear(); // Clear previous highlights
+      highlightedVerse = verseNumber;
+      buttonPosition = globalPosition;
 
-      if (!highlightedVerses.containsKey(surahNumber)) {
-        highlightedVerses[surahNumber] = {};
-      }
-      highlightedVerses[surahNumber]![verseNumber] =
-          true; // Highlight the selected verse
+      highlightedVerses[surahNumber] = {
+        verseNumber: true
+      }; // Highlight new verse
     });
   }
 
@@ -167,10 +166,6 @@ class _SurahPageState extends State<SurahPage> {
             children: [
               GestureDetector(
                 onTap: () {
-                  // final RenderBox renderBox =
-                  //     context.findRenderObject() as RenderBox;
-                  // final Offset localPosition =
-                  //     renderBox.globalToLocal(details.globalPosition);
                   _clearSelection();
                   _containersVisability();
                 },
@@ -332,15 +327,13 @@ class _SurahPageState extends State<SurahPage> {
   }
 
   Widget _buildActionButtons() {
-    // Screen dimensions
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    // Button dimensions (approximated; adjust as needed based on your button size)
     const buttonWidth = 200.0;
-    const buttonHeight = 50.0;
+    const buttonHeight = 100.0;
 
-    // Clamp the button position to ensure it stays within screen bounds
+    // Adjust button position to ensure it's fully visible
     final leftPosition = buttonPosition!.dx.clamp(0, screenWidth - buttonWidth);
     final topPosition =
         buttonPosition!.dy.clamp(0, screenHeight - buttonHeight);
