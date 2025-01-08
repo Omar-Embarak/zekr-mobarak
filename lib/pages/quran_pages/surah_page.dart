@@ -2,11 +2,13 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:quran/page_data.dart';
 import 'package:quran/quran.dart' as quran;
 import 'package:audioplayers/audioplayers.dart';
 import '../../constants.dart';
+import '../../cubit/theme_cubit/theme_cubit.dart';
 import '../../no_scroll_beyond_physics.dart';
 import '../../utils/app_style.dart';
 import '../../widgets/quran_container_down.dart';
@@ -156,69 +158,73 @@ class _SurahPageState extends State<SurahPage> {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-        canPop: false,
-        onPopInvokedWithResult: (bool didPop, Object? result) async {
-          // Navigate to QuranReadingMainPage
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const QuranReadingMainPage()),
-            (route) => false, // Clear all previous routes
-          );
-        },
-        child: Scaffold(
-          backgroundColor: AppColors.kPrimaryColor,
-          body: Stack(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  _clearSelection();
-                  _containersVisability();
-                },
-                child: SafeArea(
-                    child: PageView.builder(
-                  physics: const NoScrollBeyondPhysics(maxPage: 604),
-                  controller: _pageController,
-                  onPageChanged: (newPageIndex) {
-                    if (newPageIndex < 604) {
-                      setState(() {
-                        pageNumber = newPageIndex + 1;
-                        highlightedVerse = null;
-                        _loadPageContent(pageNumber);
-                      });
-                    } else {
-                      _pageController
-                          .jumpToPage(603); // Ensure it stays on the last page
-                    }
+    return BlocBuilder<ThemeCubit, String>(builder: (context, themeMode) {
+// Default theme color
+
+      return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (bool didPop, Object? result) async {
+            // Navigate to QuranReadingMainPage
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const QuranReadingMainPage()),
+              (route) => false, // Clear all previous routes
+            );
+          },
+          child: Scaffold(
+            backgroundColor: AppColors.kPrimaryColor,
+            body: Stack(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    _clearSelection();
+                    _containersVisability();
                   },
-                  itemBuilder: (context, index) {
-                    // Check if the index is within the valid range
-                    if (index >= 0 && index < 604) {
-                      return _buildPageContent();
-                    } else {
-                      // Return an empty widget for out-of-bounds pages
-                      return Container(
-                        color: AppColors
-                            .kPrimaryColor, // Match the background color
-                      );
-                    }
-                  },
-                )),
-              ),
-              if (highlightedVerse != null && buttonPosition != null)
-                _buildActionButtons(),
-              if (isVisible) _buildTopHeader(),
-              if (isVisible) _buildBottomFooter(),
-            ],
-          ),
-        ));
+                  child: SafeArea(
+                      child: PageView.builder(
+                    physics: const NoScrollBeyondPhysics(maxPage: 604),
+                    controller: _pageController,
+                    onPageChanged: (newPageIndex) {
+                      if (newPageIndex < 604) {
+                        setState(() {
+                          pageNumber = newPageIndex + 1;
+                          highlightedVerse = null;
+                          _loadPageContent(pageNumber);
+                        });
+                      } else {
+                        _pageController.jumpToPage(
+                            603); // Ensure it stays on the last page
+                      }
+                    },
+                    itemBuilder: (context, index) {
+                      // Check if the index is within the valid range
+                      if (index >= 0 && index < 604) {
+                        return _buildPageContent();
+                      } else {
+                        // Return an empty widget for out-of-bounds pages
+                        return Container(
+                          color: AppColors
+                              .kPrimaryColor, // Match the background color
+                        );
+                      }
+                    },
+                  )),
+                ),
+                if (highlightedVerse != null && buttonPosition != null)
+                  _buildActionButtons(),
+                if (isVisible) _buildTopHeader(),
+                if (isVisible) _buildBottomFooter(),
+              ],
+            ),
+          ));
+    });
   }
 
-    Widget _buildPageContent() {
-      return Consumer<QuranFontSizeProvider>(
-        builder: (context, fontSizeProvider, child) {
- return CustomScrollView(
+  Widget _buildPageContent() {
+    return Consumer<QuranFontSizeProvider>(
+      builder: (context, fontSizeProvider, child) {
+        return CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
               child: Container(
@@ -297,9 +303,9 @@ class _SurahPageState extends State<SurahPage> {
             ),
           ],
         );
-    },
-      );
-    }
+      },
+    );
+  }
 
   Widget _buildTopHeader() {
     return Positioned(

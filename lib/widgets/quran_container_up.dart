@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:quran/quran.dart' as quran;
 import '../../constants.dart';
 import '../../utils/app_style.dart';
 import '../../utils/app_images.dart';
 import '../../widgets/icon_constrain_widget.dart';
+import '../cubit/theme_cubit/theme_cubit.dart';
 
-class QuranContainerUP extends StatelessWidget {
+class QuranContainerUP extends StatefulWidget {
   final int surahIndex;
   final String isMakkia;
   final int juzNumber;
@@ -25,9 +27,15 @@ class QuranContainerUP extends StatelessWidget {
   });
 
   @override
+  State<QuranContainerUP> createState() => _QuranContainerUPState();
+}
+
+class _QuranContainerUPState extends State<QuranContainerUP> {
+  @override
   Widget build(BuildContext context) {
     // Get Hizb details
-    final hizbDetails = calculateHizbDetails(surahIndex, verseNumber);
+    final hizbDetails =
+        calculateHizbDetails(widget.surahIndex, widget.verseNumber);
     int hizbNumber = hizbDetails['hizb'];
     int quarter = hizbDetails['quarter'];
 
@@ -44,6 +52,60 @@ class QuranContainerUP extends StatelessWidget {
         children: [
           Row(
             children: [
+              IconButton(
+                onPressed: () {
+                  final RenderBox overlay = Overlay.of(context)
+                      .context
+                      .findRenderObject() as RenderBox;
+                  final themeCubit = context.read<ThemeCubit>();
+
+                  showMenu(
+                    color: AppColors.kSecondaryColor,
+                    context: context,
+                    position: RelativeRect.fromRect(
+                      Rect.fromLTWH(
+                        overlay.size.width - 50, // مكان ظهور القائمة
+                        50, // ارتفاع القائمة
+                        50,
+                        50,
+                      ),
+                      Offset.zero & overlay.size,
+                    ),
+                    items: [
+                      PopupMenuItem(
+                        onTap: () =>
+                            {themeCubit.setTheme(lightTheme), setState(() {})},
+                        child: Text(
+                          'الوضع الفاتح',
+                          style: AppStyles.styleCairoMedium15white(context),
+                        ),
+                      ),
+                      PopupMenuItem(
+                        onTap: () =>
+                            {themeCubit.setTheme(darkTheme), setState(() {})},
+                        child: Text(
+                          'الوضع المظلم',
+                          style: AppStyles.styleCairoMedium15white(context),
+                        ),
+                      ),
+                      PopupMenuItem(
+                        onTap: () => {
+                          themeCubit.setTheme(defaultTheme),
+                          setState(() {})
+                        },
+                        child: Text(
+                          'الوضع الافتراضي',
+                          style: AppStyles.styleCairoMedium15white(context),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+                icon: const Icon(
+                  Icons.light_mode,
+                  color: Colors.white,
+                ),
+              ),
               Flexible(
                 flex: 4,
                 child: Column(
@@ -60,7 +122,7 @@ class QuranContainerUP extends StatelessWidget {
                         FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
-                            'سورة ${quran.getSurahNameArabic(surahIndex)} (${isMakkia == 'Makkah' ? 'مكية' : 'مدنية'} ،اياتها $surahsAyat)',
+                            'سورة ${quran.getSurahNameArabic(widget.surahIndex)} (${widget.isMakkia == 'Makkah' ? 'مكية' : 'مدنية'} ،اياتها ${widget.surahsAyat})',
                             style:
                                 AppStyles.styleDiodrumArabicMedium11(context),
                           ),
@@ -78,7 +140,7 @@ class QuranContainerUP extends StatelessWidget {
                   children: [
                     Expanded(
                       child: SvgPicture.asset(
-                        isPageLeft
+                        widget.isPageLeft
                             ? Assets.imagesLeftPage
                             : Assets.imagesRightPage,
                       ),
@@ -100,7 +162,7 @@ class QuranContainerUP extends StatelessWidget {
               const IconConstrain(height: 30, imagePath: Assets.imagesVector),
               const SizedBox(width: 8),
               Text(
-                'الجزء $juzNumber  ',
+                'الجزء ${widget.juzNumber}  ',
                 style: AppStyles.styleDiodrumArabicMedium15(context),
               ),
             ],
