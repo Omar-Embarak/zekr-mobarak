@@ -93,7 +93,6 @@ class _SurahPageState extends State<SurahPage> {
         int startVerse = entry['start'];
         int endVerse = entry['end'];
 
-        currentSurahIndex = surahNumber;
         currentJuzNumber = quran.getJuzNumber(surahNumber, startVerse);
 
         List<Map<String, dynamic>> verses = [];
@@ -104,6 +103,11 @@ class _SurahPageState extends State<SurahPage> {
           });
         }
         pageContent[surahNumber] = verses;
+      }
+
+      // Determine the currentSurahIndex based on the first surah of the page
+      if (currentPageData.isNotEmpty) {
+        currentSurahIndex = currentPageData.first['surah'];
       }
       setState(() {});
     } catch (e) {
@@ -131,8 +135,11 @@ class _SurahPageState extends State<SurahPage> {
       buttonPosition = globalPosition;
 
       highlightedVerses[surahNumber] = {
-        verseNumber: true
+        verseNumber: true,
       }; // Highlight new verse
+
+      // Set the currentSurahIndex to the surah of the selected verse
+      currentSurahIndex = surahNumber;
     });
   }
 
@@ -342,7 +349,7 @@ class _SurahPageState extends State<SurahPage> {
       left: leftPosition.toDouble(),
       top: topPosition.toDouble(),
       child: VerseButtons(
-        currentSurahIndex: currentSurahIndex,
+        currentSurahIndex: currentSurahIndex, // Updated dynamically
         highlightedVerse: highlightedVerse!,
       ),
     );
