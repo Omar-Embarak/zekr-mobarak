@@ -32,15 +32,19 @@ class _SurahPageState extends State<SurahPage> {
   int? highlightedVerse;
   Offset? buttonPosition;
   late int pageNumber;
-  final PageController _pageController = PageController();
   final AudioPlayer _audioPlayer = AudioPlayer();
   bool isBuffering = false;
+  late final PageController _pageController;
 
   @override
   void initState() {
     super.initState();
     pageNumber = widget.pageNumber;
     _loadPageContent(pageNumber);
+    _pageController = PageController(
+      initialPage: pageNumber - 1,
+    );
+
     _preloadAudio();
   }
 
@@ -162,20 +166,34 @@ class _SurahPageState extends State<SurahPage> {
                   _containersVisability();
                 },
                 child: SafeArea(
-                  child: PageView.builder(
-                    controller: _pageController,
-                    onPageChanged: (newPageIndex) {
+                    child: PageView.builder(
+                  physics: const NoScrollBeyondPhysics(maxPage: 604),
+                  controller: _pageController,
+                  onPageChanged: (newPageIndex) {
+                    if (newPageIndex < 604) {
                       setState(() {
                         pageNumber = newPageIndex + 1;
                         highlightedVerse = null;
+                        _loadPageContent(pageNumber);
                       });
-                      _loadPageContent(pageNumber);
-                    },
-                    itemBuilder: (context, index) {
+                    } else {
+                      _pageController
+                          .jumpToPage(603); // Ensure it stays on the last page
+                    }
+                  },
+                  itemBuilder: (context, index) {
+                    // Check if the index is within the valid range
+                    if (index >= 0 && index < 604) {
                       return _buildPageContent();
-                    },
-                  ),
-                ),
+                    } else {
+                      // Return an empty widget for out-of-bounds pages
+                      return Container(
+                        color: AppColors
+                            .kPrimaryColor, // Match the background color
+                      );
+                    }
+                  },
+                )),
               ),
               if (highlightedVerse != null && buttonPosition != null)
                 _buildActionButtons(),
@@ -323,5 +341,37 @@ class _SurahPageState extends State<SurahPage> {
         highlightedVerse: highlightedVerse!,
       ),
     );
+  }
+}
+
+class NoScrollBeyondPhysics extends ScrollPhysics {
+  final int maxPage;
+
+  const NoScrollBeyondPhysics({super.parent, required this.maxPage});
+
+  @override
+  NoScrollBeyondPhysics applyTo(ScrollPhysics? ancestor) {
+    return NoScrollBeyondPhysics(
+      parent: buildParent(ancestor),
+      maxPage: maxPage,
+    );
+  }
+
+  @override
+  double applyBoundaryConditions(ScrollMetrics position, double value) {
+    if (value < 0 && position.pixels <= 0) {
+      // Prevents scrolling before the first page
+      return value - position.pixels;
+    } else if (value > position.maxScrollExtent &&
+        position.pixels >= position.maxScrollExtent) {
+      // Prevents scrolling after the last allowed page
+      return value - position.pixels;
+    }
+    return 0.0;
+  }
+
+  @override
+  bool shouldAcceptUserOffset(ScrollMetrics position) {
+    return true; // Allow user interaction for scrolling
   }
 }

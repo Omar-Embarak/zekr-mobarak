@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quran/quran.dart' as quran;
+import '../pages/quran_pages/quran_font_size_provider.dart';
 import '../utils/app_images.dart';
 import '../utils/app_style.dart';
 
@@ -10,7 +11,7 @@ class SurahBorder extends StatelessWidget {
   });
 
   final int surahNumber;
-
+// final double fontSize=QuranFontSizeProvider.fontSize;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -21,7 +22,7 @@ class SurahBorder extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Text(
             'سورة ${quran.getSurahNameArabic(surahNumber)}',
-            style: AppStyles.styleAmiriMedium30(context).copyWith(fontSize: 12),
+            style: AppStyles.styleAmiriMedium30(context).copyWith(fontSize: 22),
             textAlign: TextAlign.center,
           ),
         ),
