@@ -15,7 +15,7 @@ class SurahBorder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fontSize = context.watch<QuranFontSizeProvider>().fontSize;
+    final fontSize = context.watch<QuranFontSizeProvider>().fontSize - 10;
 
     return Stack(
       alignment: Alignment.center,

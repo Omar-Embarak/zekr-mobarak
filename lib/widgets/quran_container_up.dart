@@ -52,6 +52,59 @@ class _QuranContainerUPState extends State<QuranContainerUP> {
         children: [
           Row(
             children: [
+              Flexible(
+                flex: 4,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Spacer(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const SizedBox(width: 8),
+                        const IconConstrain(
+                            height: 30, imagePath: Assets.imagesBook),
+                        const SizedBox(width: 8),
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            'سورة ${quran.getSurahNameArabic(widget.surahIndex)} (${widget.isMakkia == 'Makkah' ? 'مكية' : 'مدنية'} ،اياتها ${widget.surahsAyat})',
+                            style:
+                                AppStyles.styleDiodrumArabicMedium11(context),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const Spacer(),
+              Flexible(
+                flex: 1,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: SvgPicture.asset(
+                        widget.isPageLeft
+                            ? Assets.imagesLeftPage
+                            : Assets.imagesRightPage,
+                      ),
+                    ),
+                    FittedBox(
+                      child: Text(
+                        'الربع $quarter الحزب $hizbNumber',
+                        style: AppStyles.styleDiodrumArabicMedium15(context),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
               IconButton(
                 onPressed: () {
                   final RenderBox overlay = Overlay.of(context)
@@ -106,59 +159,9 @@ class _QuranContainerUPState extends State<QuranContainerUP> {
                   color: Colors.white,
                 ),
               ),
-              Flexible(
-                flex: 4,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Spacer(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        const SizedBox(width: 8),
-                        const IconConstrain(
-                            height: 30, imagePath: Assets.imagesBook),
-                        const SizedBox(width: 8),
-                        FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(
-                            'سورة ${quran.getSurahNameArabic(widget.surahIndex)} (${widget.isMakkia == 'Makkah' ? 'مكية' : 'مدنية'} ،اياتها ${widget.surahsAyat})',
-                            style:
-                                AppStyles.styleDiodrumArabicMedium11(context),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width / 4 - 20,
               ),
-              const Spacer(),
-              Flexible(
-                flex: 1,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: SvgPicture.asset(
-                        widget.isPageLeft
-                            ? Assets.imagesLeftPage
-                            : Assets.imagesRightPage,
-                      ),
-                    ),
-                    FittedBox(
-                      child: Text(
-                        'الربع $quarter الحزب $hizbNumber',
-                        style: AppStyles.styleDiodrumArabicMedium15(context),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
               const IconConstrain(height: 30, imagePath: Assets.imagesVector),
               const SizedBox(width: 8),
               Text(
