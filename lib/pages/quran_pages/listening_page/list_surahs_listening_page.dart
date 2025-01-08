@@ -1,5 +1,4 @@
 import 'package:azkar_app/cubit/add_fav_surahcubit/add_fav_surah_item_cubit.dart';
-import 'package:azkar_app/methods.dart';
 import 'package:azkar_app/model/quran_models/reciters_model.dart';
 import 'package:azkar_app/utils/app_images.dart';
 import 'package:flutter/material.dart';
@@ -89,14 +88,7 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
             )
           ]),
       body: BlocConsumer<AddFavSurahItemCubit, AddFavSurahItemState>(
-        listener: (context, state) {
-          if (state is AddFavSurahItemFailure) {
-            showMessage('حدث خطأ ما: ${state.errorMessage}');
-          }
-          if (state is AddFavSurahItemSuccess) {
-            showMessage('تمت اضافة السورة الي المفضلة');
-          }
-        },
+        listener: (context, state) {},
         builder: (context, state) {
           return ModalProgressHUD(
             inAsyncCall: state is AddFavSurahItemLoading ? true : false,

@@ -112,6 +112,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
         );
         BlocProvider.of<AddFavSurahItemCubit>(context)
             .addFavSurahItem(favSurahModel);
+            
       } else {
         BlocProvider.of<AddFavSurahItemCubit>(context)
             .deleteFavSurah(widget.surahIndex, widget.reciter.name);

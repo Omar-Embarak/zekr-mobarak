@@ -32,6 +32,7 @@ class _JuzListPageState extends State<JuzListPage> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       backgroundColor: AppColors.kPrimaryColor,
       body: juzData.isEmpty

@@ -10,12 +10,12 @@ import 'package:provider/provider.dart';
 import 'cubit/azkar_cubit/azkar_cubit.dart';
 import 'cubit/praying_cubit/praying_cubit.dart';
 import 'cubit/theme_cubit/theme_cubit.dart';
-import 'database_helper.dart';
 import 'pages/azkar_pages/notification_service.dart';
 import 'pages/home_page/home_page.dart';
 import 'pages/quran_pages/book_mark_provider.dart';
 import 'pages/quran_pages/quran_data_provider.dart';
 import 'pages/quran_pages/quran_font_size_provider.dart';
+import 'pages/quran_pages/search_provider.dart';
 
 final GlobalKey<NavigatorState> globalNavigatorKey =
     GlobalKey<NavigatorState>();
@@ -43,6 +43,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => QuranDataProvider()),
         ChangeNotifierProvider(create: (_) => FavDarsProvider()),
         ChangeNotifierProvider(create: (_) => QuranFontSizeProvider()),
+        ChangeNotifierProvider(create: (_) => SearchProvider()),
         BlocProvider(
           create: (context) => ThemeCubit(),
         ),

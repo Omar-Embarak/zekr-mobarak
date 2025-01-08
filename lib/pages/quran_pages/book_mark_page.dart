@@ -11,6 +11,7 @@ class BookmarksPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Consumer<BookmarkProvider>(
       builder: (context, provider, child) {
         // Check if bookmarks are empty

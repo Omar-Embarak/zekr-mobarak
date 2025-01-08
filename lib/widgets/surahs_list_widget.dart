@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quran/quran.dart' as quran;
 import '../utils/app_style.dart';
-import '../constants.dart'; 
+import '../constants.dart';
 import '../pages/quran_pages/surah_page.dart';
 
 class SurahListWidget extends StatefulWidget {

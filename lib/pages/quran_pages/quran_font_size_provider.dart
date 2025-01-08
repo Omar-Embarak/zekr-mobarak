@@ -24,10 +24,8 @@ class QuranFontSizeProvider with ChangeNotifier {
     try {
       _fontSize =
           await _dbHelper.getFontSize(); // Load font size from the database
-      debugPrint('Loaded font size: $_fontSize');
     } catch (e) {
       _fontSize = 35.0; // Default value in case of an error
-      debugPrint('Error loading font size: $e');
     }
     notifyListeners(); // Notify widgets after loading
   }
