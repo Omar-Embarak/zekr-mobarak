@@ -7,6 +7,7 @@ import 'package:quran/page_data.dart';
 import 'package:quran/quran.dart' as quran;
 import 'package:audioplayers/audioplayers.dart';
 import '../../constants.dart';
+import '../../no_scroll_beyond_physics.dart';
 import '../../utils/app_style.dart';
 import '../../widgets/quran_container_down.dart';
 import '../../widgets/quran_container_up.dart';
@@ -35,6 +36,8 @@ class _SurahPageState extends State<SurahPage> {
   final AudioPlayer _audioPlayer = AudioPlayer();
   bool isBuffering = false;
   late final PageController _pageController;
+  Map<int, Map<int, bool>> highlightedVerses =
+      {}; // Map<SurahNumber, Map<VerseNumber, isHighlighted>>
 
   @override
   void initState() {
@@ -121,16 +124,22 @@ class _SurahPageState extends State<SurahPage> {
     }
   }
 
-  void _selectVerse(Offset globalPosition, int verseNumber) {
+  void _selectVerse(Offset globalPosition, int verseNumber, int surahNumber) {
     setState(() {
-      highlightedVerse = verseNumber;
-      buttonPosition = globalPosition;
+      highlightedVerse = verseNumber; // Set the highlighted verse number
+      buttonPosition = globalPosition; // Set the button position
+
+      if (!highlightedVerses.containsKey(surahNumber)) {
+        highlightedVerses[surahNumber] = {};
+      }
+      highlightedVerses[surahNumber]![verseNumber] =
+          true; // Highlight the selected verse
     });
   }
 
   void _clearSelection() {
     setState(() {
-      highlightedVerse = null;
+      highlightedVerses.clear();
       buttonPosition = null;
     });
   }
@@ -157,11 +166,11 @@ class _SurahPageState extends State<SurahPage> {
           body: Stack(
             children: [
               GestureDetector(
-                onTapDown: (details) {
-                  final RenderBox renderBox =
-                      context.findRenderObject() as RenderBox;
-                  final Offset localPosition =
-                      renderBox.globalToLocal(details.globalPosition);
+                onTap: () {
+                  // final RenderBox renderBox =
+                  //     context.findRenderObject() as RenderBox;
+                  // final Offset localPosition =
+                  //     renderBox.globalToLocal(details.globalPosition);
                   _clearSelection();
                   _containersVisability();
                 },
@@ -223,7 +232,9 @@ class _SurahPageState extends State<SurahPage> {
                       return entry.value.map((verseEntry) {
                         int verseIndex = verseEntry['verseNumber'];
                         String verseText = verseEntry['verseText'];
-                        bool isHighlighted = highlightedVerse == verseIndex;
+                        bool isHighlighted = highlightedVerses[surahNumber]
+                                ?[verseIndex] ??
+                            false;
 
                         // Split the verse text into words
                         List<String> words = verseText.split(' ');
@@ -251,7 +262,8 @@ class _SurahPageState extends State<SurahPage> {
                                     .localToGlobal(details.globalPosition);
 
                                 // Trigger _selectVerse
-                                _selectVerse(globalPosition, verseIndex);
+                                _selectVerse(
+                                    globalPosition, verseIndex, surahNumber);
                               },
                           );
                         }).toList();
@@ -341,37 +353,5 @@ class _SurahPageState extends State<SurahPage> {
         highlightedVerse: highlightedVerse!,
       ),
     );
-  }
-}
-
-class NoScrollBeyondPhysics extends ScrollPhysics {
-  final int maxPage;
-
-  const NoScrollBeyondPhysics({super.parent, required this.maxPage});
-
-  @override
-  NoScrollBeyondPhysics applyTo(ScrollPhysics? ancestor) {
-    return NoScrollBeyondPhysics(
-      parent: buildParent(ancestor),
-      maxPage: maxPage,
-    );
-  }
-
-  @override
-  double applyBoundaryConditions(ScrollMetrics position, double value) {
-    if (value < 0 && position.pixels <= 0) {
-      // Prevents scrolling before the first page
-      return value - position.pixels;
-    } else if (value > position.maxScrollExtent &&
-        position.pixels >= position.maxScrollExtent) {
-      // Prevents scrolling after the last allowed page
-      return value - position.pixels;
-    }
-    return 0.0;
-  }
-
-  @override
-  bool shouldAcceptUserOffset(ScrollMetrics position) {
-    return true; // Allow user interaction for scrolling
   }
 }
