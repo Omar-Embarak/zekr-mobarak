@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:quran/quran.dart' as quran;
+import '../pages/quran_pages/search_provider.dart';
 import '../utils/app_style.dart';
 import '../constants.dart';
 import '../pages/quran_pages/surah_page.dart';
@@ -13,35 +15,50 @@ class SurahListWidget extends StatefulWidget {
 
 class _SurahListWidgetState extends State<SurahListWidget>
     with AutomaticKeepAliveClientMixin {
-
+  @override
   bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
     super.build(context); // Call this to ensure keep-alive works
 
+    final searchProvider = Provider.of<SearchProvider>(context);
+    final query = searchProvider.query.trim().toLowerCase();
+
+    // Filter Surahs based on the query
+    final filteredSurahs =
+        List.generate(quran.totalSurahCount, (index) => index + 1)
+            .where((surahNumber) =>
+                query.isEmpty ||
+                quran.getSurahNameArabic(surahNumber).contains(query) ||
+                quran.getSurahName(surahNumber).toLowerCase().contains(query))
+            .toList();
+
     return Scaffold(
       backgroundColor: AppColors.kPrimaryColor,
       body: ListView.builder(
         key: const PageStorageKey('surahList'), // Retains scroll position
-
-        itemCount: quran.totalJuzCount,
+        itemCount: filteredSurahs.length,
         itemBuilder: (context, index) {
-          final surahsInJuz = quran.getSurahAndVersesFromJuz(index + 1);
-          return _buildJuzSection(context, index, surahsInJuz);
+          final surahNumber = filteredSurahs[index];
+          final surahsInJuz = quran.getSurahAndVersesFromJuz(
+            quran.getJuzNumber(surahNumber, 1),
+          );
+          return _buildJuzSection(context, quran.getJuzNumber(surahNumber, 1),
+              surahsInJuz, surahNumber);
         },
       ),
     );
   }
 
-  Widget _buildJuzSection(
-      BuildContext context, int index, Map<int, List<int>> surahsInJuz) {
+  Widget _buildJuzSection(BuildContext context, int juzIndex,
+      Map<int, List<int>> surahsInJuz, int surahNumber) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildJuzHeader(context, index),
-        ...surahsInJuz.entries
-            .map((entry) => _buildSurahRow(context, entry, index)),
+        _buildJuzHeader(context, juzIndex),
+        _buildSurahRow(context,
+            MapEntry(surahNumber, surahsInJuz[surahNumber] ?? []), juzIndex),
       ],
     );
   }
@@ -92,19 +109,21 @@ class _SurahListWidgetState extends State<SurahListWidget>
       height: 41,
       width: double.infinity,
       decoration: BoxDecoration(
-          color: AppColors.kSecondaryColor,
-          gradient: LinearGradient(
-              colors: [AppColors.kSecondaryColor, AppColors.kPrimaryColor])),
+        color: AppColors.kSecondaryColor,
+        gradient: LinearGradient(
+          colors: [AppColors.kSecondaryColor, AppColors.kPrimaryColor],
+        ),
+      ),
       child: Row(
         children: [
           const SizedBox(width: 10),
           Text(
-            'الجزء ${arabicOrdinals[index]}',
+            'الجزء ${arabicOrdinals[index - 1]}',
             style: AppStyles.styleDiodrumArabicMedium15(context),
           ),
           const Spacer(),
           Text(
-            '${quran.getSurahPages(index + 1).first}', // Page number where each Juz starts
+            '${quran.getSurahPages(index).first}', // Page number where each Juz starts
             style: AppStyles.styleRajdhaniMedium18(context)
                 .copyWith(color: Colors.white),
           ),

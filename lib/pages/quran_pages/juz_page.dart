@@ -3,8 +3,10 @@ import 'package:azkar_app/pages/quran_pages/surah_page.dart';
 import 'package:azkar_app/utils/app_images.dart';
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:quran/quran.dart';
 import '../../methods.dart';
+import 'search_provider.dart';
 
 // Show quarters' hizb with the first verse
 class JuzListPage extends StatefulWidget {
@@ -32,13 +34,24 @@ class _JuzListPageState extends State<JuzListPage> {
 
   @override
   Widget build(BuildContext context) {
-    
+    final searchProvider = Provider.of<SearchProvider>(context);
+    final query = searchProvider.query;
+
+    final filteredJuz = juzData.where((juz) {
+      return juz["arbaa"].any((quarter) {
+        final verse =
+            getVerse(quarter['surah_number'], quarter['verse_number']);
+        return verse.contains(query) ||
+            'الجزء ${arabicOrdinals[juz['index']]}'.contains(query);
+      });
+    }).toList();
+
     return Scaffold(
       backgroundColor: AppColors.kPrimaryColor,
       body: juzData.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
-              itemCount: juzData.length,
+      itemCount: filteredJuz.length,
               itemBuilder: (context, index) {
                 final juz = juzData[index];
                 return Column(
