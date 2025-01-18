@@ -131,8 +131,9 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
     // Check if the current page is bookmarked
     final isFavorite = favDarsProvider.favsDars
         .any((favsDars) => favsDars.url == widget.audioUrl);
+
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start, // Align for long text
+      crossAxisAlignment: CrossAxisAlignment.center, // Center items vertically
       children: [
         const SizedBox(width: 10),
         GestureDetector(

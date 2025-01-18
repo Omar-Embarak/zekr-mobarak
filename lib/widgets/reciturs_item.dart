@@ -16,7 +16,8 @@ class RecitursItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.only(top: 8, right: 8, left: 8),
+      margin: const EdgeInsets.only(top: 8, right: 8, left: 8, ),
+      
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(7),

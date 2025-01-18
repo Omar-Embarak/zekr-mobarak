@@ -114,6 +114,9 @@ class _PrayPageState extends State<PrayPage> {
     return Scaffold(
       backgroundColor: AppColors.kPrimaryColor,
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: AppStyles.styleCairoBold20(context).color,
+        ),
         backgroundColor: AppColors.kSecondaryColor,
         centerTitle: true,
         title: Text(

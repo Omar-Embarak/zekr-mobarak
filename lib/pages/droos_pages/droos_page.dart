@@ -77,6 +77,8 @@ class _DroosPageState extends State<DroosPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          iconTheme:
+              IconThemeData(color: AppStyles.styleCairoBold20(context).color),
           title: Text(
             'الدروس الدينية',
             style: AppStyles.styleCairoBold20(context),
@@ -156,6 +158,9 @@ class DroosListeningPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: AppStyles.styleCairoBold20(context).color,
+        ),
         title: Text(
           darsName,
           style: AppStyles.styleCairoBold20(context),

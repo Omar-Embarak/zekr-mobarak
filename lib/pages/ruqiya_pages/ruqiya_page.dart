@@ -82,9 +82,10 @@ class _RuqiyaPageState extends State<RuqiyaPage> {
                                       Fluttertoast.showToast(
                                           msg: "تم النسخ بنجاح للحافظة");
                                     },
-                                    icon: const Icon(
+                                    icon: Icon(
                                       Icons.copy,
-                                      color: Colors.white,
+                                      color: AppStyles.styleCairoBold20(context)
+                                          .color,
                                     ),
                                   ),
                                 ],

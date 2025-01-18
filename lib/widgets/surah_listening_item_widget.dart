@@ -162,7 +162,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           isFavorite = snapshot.data ?? false;
-          return Row(
+          return Row(crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(width: 10),
               GestureDetector(
