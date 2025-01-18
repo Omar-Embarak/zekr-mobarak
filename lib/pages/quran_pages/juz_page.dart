@@ -41,9 +41,16 @@ class _JuzListPageState extends State<JuzListPage> {
     final searchProvider = Provider.of<SearchProvider>(context);
     final query = normalizeArabic(searchProvider.query.trim().toLowerCase());
 
-    // Filter data and find matching quarter
-    final filteredJuz = juzData.where((juz) {
-      final arbaa = juz['arbaa'] as List<dynamic>?;
+    // Filter data and keep track of original index
+    final filteredJuz = juzData.asMap().entries.map((entry) {
+      final index = entry.key;
+      final juz = entry.value;
+      return {
+        'index': index, // Preserve original index
+        'juz': juz,
+      };
+    }).where((entry) {
+      final arbaa = entry['juz']['arbaa'] as List<dynamic>?;
       if (arbaa == null || query.isEmpty) return false;
 
       return arbaa.any((quarter) {
@@ -74,7 +81,8 @@ class _JuzListPageState extends State<JuzListPage> {
               : ListView.builder(
                   itemCount: filteredJuz.length,
                   itemBuilder: (context, index) {
-                    final juz = filteredJuz[index];
+                    final originalIndex = filteredJuz[index]['index'];
+                    final juz = filteredJuz[index]['juz'];
                     final matchingQuarters =
                         _filterMatchingQuarters(juz['arbaa'], query);
 
@@ -90,7 +98,7 @@ class _JuzListPageState extends State<JuzListPage> {
                             ),
                           ),
                           child: Text(
-                            'الجزء ${(index + 1).toString()}',
+                            'الجزء ${(originalIndex + 1).toString()}', // Display correct Juz number
                             textAlign: TextAlign.center,
                             style:
                                 AppStyles.styleDiodrumArabicMedium15(context),
@@ -113,7 +121,7 @@ class _JuzListPageState extends State<JuzListPage> {
       final index = entry.key;
       final quarter = entry.value;
       return {
-        'index': index, // Preserve original index
+        'index': index,
         'quarter': quarter,
       };
     }).where((entry) {
@@ -144,7 +152,7 @@ class _JuzListPageState extends State<JuzListPage> {
     ];
 
     for (var entry in quarters) {
-      final originalIndex = entry['index']; // Use original index
+      final originalIndex = entry['index'];
       final quarter = entry['quarter'];
       if (quarter != null) {
         final surahNumber = quarter['surah_number'];
@@ -175,7 +183,7 @@ class _JuzListPageState extends State<JuzListPage> {
                 children: [
                   HizbImage(
                     quarterImages: quarterImages,
-                    index: originalIndex, // Use original index for image
+                    index: originalIndex,
                   ),
                   const SizedBox(width: 10),
                   Column(
@@ -238,7 +246,7 @@ class HizbImage extends StatelessWidget {
           ),
           Center(
             child: Text(
-              '${index + 1}', // Display the correct quarter number
+              '${index + 1}',
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
