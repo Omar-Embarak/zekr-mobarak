@@ -147,7 +147,7 @@ class _PrayPageState extends State<PrayPage> {
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: AppStyles.styleRajdhaniBold18(context).color,
+        color: AppColors.kSecondaryColor,
       ),
       padding: const EdgeInsets.all(10),
       child: BlocBuilder<PrayingCubit, PrayingState>(

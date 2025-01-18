@@ -18,9 +18,12 @@ List<Widget> buildPrayerTimes(BuildContext context, Timings timings) {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              Text(prayer["name"]!, style: AppStyles.styleCairoBold20(context)),
-              Text(prayer["time"] ?? "غير متوفر",
-                  style: AppStyles.styleCairoBold20(context)),
+              Text(prayer["name"]!,
+                  style: AppStyles.styleDiodrumArabicMedium15(context)),
+              Text(
+                prayer["time"] ?? "غير متوفر",
+                style: AppStyles.styleDiodrumArabicMedium15(context),
+              ),
             ],
           ),
         ),
