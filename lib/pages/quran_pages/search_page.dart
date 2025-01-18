@@ -39,34 +39,17 @@ class SearchPageState extends State<SearchPage> {
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> searchResults = [];
 
-  // Function to remove diacritics (Tashkeel) from Arabic text
-// Function to remove diacritics (Tashkeel) from Arabic text and normalize it
-  String _normalizeArabic(String text) {
-    // Remove diacritics (Tashkeel)
-    String withoutTashkeel = text.replaceAll(RegExp(r'[ًٌٍَُِّْ]'), '');
-
-    // Normalize variations of 'ا'
-    String normalized = withoutTashkeel
-        .replaceAll(
-            RegExp(r'[أإٱآٰ]'), 'ا') // Replace all forms of 'ا' with plain 'ا'
-
-        .replaceAll('ى', 'ي') // Replace 'ى' with 'ي'
-        .replaceAll('ة', 'ه'); // Replace 'ة' with 'ه'
-
-    return normalized;
-  }
-
   void _search(String query) {
     try {
       // Normalize the query
-      String processedQuery = _normalizeArabic(query);
+      String processedQuery = normalizeArabic(query);
       List<Map<String, dynamic>> results = [];
 
       // Iterate over quranText to find matches
       for (var verse in quranText) {
-        String verseContent = _normalizeArabic(verse['content']);
-        if (verseContent.startsWith(processedQuery)) {
-          // Use contains instead of startsWith
+        String verseContent = normalizeArabic(verse['content']);
+        if (verseContent.contains(processedQuery)) {
+          // Use contains here
           results.add({
             "surah": verse['surah_number'],
             "verse": verse['verse_number'],
@@ -137,9 +120,9 @@ class SearchPageState extends State<SearchPage> {
                 itemBuilder: (context, index) {
                   final result = searchResults[index];
                   String verseContent = result['content'];
-                  String normalizedContent = _normalizeArabic(verseContent);
+                  String normalizedContent = normalizeArabic(verseContent);
                   String processedQuery =
-                      _normalizeArabic(_searchController.text);
+                      normalizeArabic(_searchController.text);
 
                   List<TextSpan> spans = [];
                   int startIndex = normalizedContent.indexOf(processedQuery);

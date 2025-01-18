@@ -44,6 +44,17 @@ abstract class AppStyles {
       fontFamily: 'Rajdhani',
       fontWeight: FontWeight.w500,
     );
+  }  static TextStyle styleRajdhaniMedium22(context) {
+    return TextStyle(
+      color: AppStyles.themeNotifier.value == defaultTheme
+          ? const Color(0xff575757)
+          : (AppStyles.themeNotifier.value == lightTheme
+              ? Colors.black
+              : Colors.white),
+      fontSize: getResponsiveFontSize(context, fontSize: 22),
+      fontFamily: 'Rajdhani',
+      fontWeight: FontWeight.w500,
+    );
   }
 
   static TextStyle styleRajdhaniBold20(context) {

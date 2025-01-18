@@ -71,6 +71,14 @@ class _SurahListWidgetState extends State<SurahListWidget>
     // Fetching the actual page where each Surah starts
     final firstVersePage = quran.getSurahPages(entry.key).first;
 
+    // Get the query from the search provider
+    final searchProvider = Provider.of<SearchProvider>(context, listen: false);
+    final query = searchProvider.query.trim();
+
+    // Get the Surah name and check for matches with the query
+    final surahName = 'سورة ${quran.getSurahNameArabic(entry.key)}';
+    final queryIndex = surahName.indexOf(query);
+
     return Row(
       children: [
         const SizedBox(width: 10),
@@ -84,9 +92,31 @@ class _SurahListWidgetState extends State<SurahListWidget>
               '$firstVersePage', // Display the first page of the Surah
               style: AppStyles.styleRajdhaniBold13(context),
             ),
-            title: Text(
-              'سورة ${quran.getSurahNameArabic(entry.key)}',
-              style: AppStyles.styleRajdhaniMedium18(context),
+            title: RichText(
+              text: TextSpan(
+                children: [
+                  if (queryIndex != -1) ...[
+                    TextSpan(
+                      text: surahName.substring(0, queryIndex),
+                      style: AppStyles.styleRajdhaniMedium22(context),
+                    ),
+                    TextSpan(
+                      text: query,
+                      style: AppStyles.styleRajdhaniMedium22(context)
+                          .copyWith(color: Colors.red),
+                    ),
+                    TextSpan(
+                      text: surahName.substring(queryIndex + query.length),
+                      style: AppStyles.styleRajdhaniMedium22(context),
+                    ),
+                  ] else ...[
+                    TextSpan(
+                      text: surahName,
+                      style: AppStyles.styleRajdhaniMedium22(context),
+                    ),
+                  ],
+                ],
+              ),
             ),
             subtitle: Row(
               children: [

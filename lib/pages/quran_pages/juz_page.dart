@@ -8,7 +8,6 @@ import 'package:quran/quran.dart';
 import '../../methods.dart';
 import 'search_provider.dart';
 
-// Show quarters' hizb with the first verse
 class JuzListPage extends StatefulWidget {
   const JuzListPage({super.key});
 
@@ -32,17 +31,37 @@ class _JuzListPageState extends State<JuzListPage> {
     });
   }
 
+  String removeTashkeel(String text) {
+    const tashkeelRegex = '[\u064B-\u065F\u06D6-\u06ED]';
+    return text.replaceAll(RegExp(tashkeelRegex), '');
+  }
+
   @override
   Widget build(BuildContext context) {
     final searchProvider = Provider.of<SearchProvider>(context);
-    final query = searchProvider.query;
+    final query = normalizeArabic(searchProvider.query.trim().toLowerCase());
 
+    // Filter data and find matching quarter
     final filteredJuz = juzData.where((juz) {
-      return juz["arbaa"].any((quarter) {
+      final arbaa = juz['arbaa'] as List<dynamic>?;
+      if (arbaa == null || query.isEmpty) return false;
+
+      return arbaa.any((quarter) {
+        final surahNumber = quarter['surah_number'];
+        final verseNumber = quarter['verse_number'];
+        if (surahNumber == null || verseNumber == null) return false;
+
         final verse =
-            getVerse(quarter['surah_number'], quarter['verse_number']);
-        return verse.contains(query) ||
-            'الجزء ${arabicOrdinals[juz['index']]}'.contains(query);
+            normalizeArabic(getVerse(surahNumber, verseNumber)).trim();
+        final surahName =
+            normalizeArabic(getSurahNameArabic(surahNumber)).trim();
+
+        final normalizedQuery = removeTashkeel(query);
+        final normalizedVerse = removeTashkeel(verse);
+        final normalizedSurahName = removeTashkeel(surahName);
+
+        return normalizedVerse.contains(normalizedQuery) ||
+            normalizedSurahName.contains(normalizedQuery);
       });
     }).toList();
 
@@ -50,37 +69,72 @@ class _JuzListPageState extends State<JuzListPage> {
       backgroundColor: AppColors.kPrimaryColor,
       body: juzData.isEmpty
           ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-      itemCount: filteredJuz.length,
-              itemBuilder: (context, index) {
-                final juz = juzData[index];
-                return Column(
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: AppColors.kSecondaryColor,
-                        border: const Border(
-                          bottom: BorderSide(color: Colors.grey),
+          : filteredJuz.isEmpty
+              ? const Center(child: Text("No results found"))
+              : ListView.builder(
+                  itemCount: filteredJuz.length,
+                  itemBuilder: (context, index) {
+                    final juz = filteredJuz[index];
+                    final matchingQuarters =
+                        _filterMatchingQuarters(juz['arbaa'], query);
+
+                    return Column(
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: AppColors.kSecondaryColor,
+                            border: const Border(
+                              bottom: BorderSide(color: Colors.grey),
+                            ),
+                          ),
+                          child: Text(
+                            'الجزء ${(index + 1).toString()}',
+                            textAlign: TextAlign.center,
+                            style:
+                                AppStyles.styleDiodrumArabicMedium15(context),
+                          ),
                         ),
-                      ),
-                      child: Text(
-                        'الجزء ${arabicOrdinals[index]}',
-                        textAlign: TextAlign.center,
-                        style: AppStyles.styleDiodrumArabicMedium15(context),
-                      ),
-                    ),
-                    if (juz["arbaa"] != null)
-                      ..._buildQuarterContainers(juz["arbaa"]),
-                  ],
-                );
-              },
-            ),
+                        if (matchingQuarters.isNotEmpty)
+                          ..._buildQuarterContainers(matchingQuarters),
+                      ],
+                    );
+                  },
+                ),
     );
   }
 
-  List<Widget> _buildQuarterContainers(List<dynamic> quarters) {
+  List<Map<String, dynamic>> _filterMatchingQuarters(
+      List<dynamic>? quarters, String query) {
+    if (quarters == null) return [];
+
+    return quarters.asMap().entries.map((entry) {
+      final index = entry.key;
+      final quarter = entry.value;
+      return {
+        'index': index, // Preserve original index
+        'quarter': quarter,
+      };
+    }).where((entry) {
+      final quarter = entry['quarter'];
+      final surahNumber = quarter['surah_number'];
+      final verseNumber = quarter['verse_number'];
+      if (surahNumber == null || verseNumber == null) return false;
+
+      final verse = normalizeArabic(getVerse(surahNumber, verseNumber)).trim();
+      final surahName = normalizeArabic(getSurahNameArabic(surahNumber)).trim();
+
+      final normalizedQuery = removeTashkeel(query);
+      final normalizedVerse = removeTashkeel(verse);
+      final normalizedSurahName = removeTashkeel(surahName);
+
+      return normalizedVerse.contains(normalizedQuery) ||
+          normalizedSurahName.contains(normalizedQuery);
+    }).toList();
+  }
+
+  List<Widget> _buildQuarterContainers(List<Map<String, dynamic>> quarters) {
     List<Widget> containers = [];
     List<String> quarterImages = [
       Assets.imagesHizp,
@@ -89,8 +143,9 @@ class _JuzListPageState extends State<JuzListPage> {
       Assets.images3rob3,
     ];
 
-    for (int i = 0; i < quarters.length; i++) {
-      final quarter = quarters[i];
+    for (var entry in quarters) {
+      final originalIndex = entry['index']; // Use original index
+      final quarter = entry['quarter'];
       if (quarter != null) {
         final surahNumber = quarter['surah_number'];
         final verseNumber = quarter['verse_number'];
@@ -120,7 +175,7 @@ class _JuzListPageState extends State<JuzListPage> {
                 children: [
                   HizbImage(
                     quarterImages: quarterImages,
-                    index: i,
+                    index: originalIndex, // Use original index for image
                   ),
                   const SizedBox(width: 10),
                   Column(
@@ -183,7 +238,7 @@ class HizbImage extends StatelessWidget {
           ),
           Center(
             child: Text(
-              '${index + 1}',
+              '${index + 1}', // Display the correct quarter number
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
@@ -195,13 +250,4 @@ class HizbImage extends StatelessWidget {
       ),
     );
   }
-}
-
-int getSurahNumberByName(String surahName) {
-  for (int i = 1; i <= 114; i++) {
-    if (getSurahNameArabic(i) == surahName) {
-      return i;
-    }
-  }
-  throw Exception('Surah not found: $surahName');
 }

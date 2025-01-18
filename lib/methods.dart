@@ -189,6 +189,15 @@ Future<bool> requestPermission(Permission permission) async {
     return result == PermissionStatus.granted;
   }
 }
+ String normalizeArabic(String text) {
+  String withoutTashkeel = text.replaceAll(RegExp(r'[ًٌٍَُِّْۡ]'), '');
+  String normalized = withoutTashkeel
+      .replaceAll(RegExp(r'[أإٱآٰ]'), 'ا')
+      .replaceAll('ى', 'ي')
+      .replaceAll('ة', 'ه')
+      .trim(); // Trim spaces
+  return normalized;
+}
 
 void playNextSurah(
     AudioPlayer audioPlayer,
