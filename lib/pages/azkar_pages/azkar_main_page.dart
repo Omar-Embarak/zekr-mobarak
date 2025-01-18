@@ -6,9 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../constants.dart';
 import '../../model/azkar_model/azkar_model/azkar_model.dart';
-import '../../utils/app_images.dart';
 import '../../utils/app_style.dart';
-import '../../widgets/icon_constrain_widget.dart';
 import 'zekr_page.dart';
 
 class AzkarPage extends StatefulWidget {
@@ -64,6 +62,8 @@ class _AzkarPageState extends State<AzkarPage> {
     return Scaffold(
       backgroundColor: AppColors.kPrimaryColor,
       appBar: AppBar(
+        iconTheme: IconThemeData(
+            color: AppStyles.styleCairoMedium15white(context).color),
         backgroundColor: AppColors.kSecondaryColor,
         title: _isSearching
             ? TextField(
@@ -85,14 +85,8 @@ class _AzkarPageState extends State<AzkarPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
-              onTap: _toggleSearch,
-              child: _isSearching
-                  ? const Icon(Icons.close)
-                  : const IconConstrain(
-                      height: 30,
-                      imagePath: Assets.imagesSearch,
-                    ),
-            ),
+                onTap: _toggleSearch,
+                child: Icon(_isSearching ? Icons.close : Icons.search)),
           )
         ],
       ),
@@ -114,7 +108,7 @@ class _AzkarPageState extends State<AzkarPage> {
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) =>  FavAzkarPage(),
+                          builder: (context) => FavAzkarPage(),
                         ),
                       );
                     },
@@ -131,7 +125,7 @@ class _AzkarPageState extends State<AzkarPage> {
                       MaterialPageRoute(
                         builder: (context) => ZekrPage(
                           zekerCategory: azkarToDisplay[actualIndex].category!,
-                          zekerList: azkarToDisplay[actualIndex].array! ,
+                          zekerList: azkarToDisplay[actualIndex].array!,
                         ),
                       ),
                     );

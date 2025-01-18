@@ -2,8 +2,6 @@ import 'package:azkar_app/model/quran_models/reciters_model.dart';
 import 'package:flutter/material.dart';
 import 'package:azkar_app/constants.dart';
 import 'package:azkar_app/utils/app_style.dart';
-import '../../../utils/app_images.dart';
-import '../../../widgets/icon_constrain_widget.dart';
 import '../../../widgets/reciturs_item.dart';
 import 'list_surahs_listening_page.dart';
 
@@ -521,7 +519,8 @@ class _MurattalPageState extends State<MurattalPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.kPrimaryColor,
-      appBar: AppBar(
+      appBar: AppBar(  iconTheme: IconThemeData(
+            color: AppStyles.styleCairoMedium15white(context).color),
         backgroundColor: AppColors.kSecondaryColor,
         title: _isSearching
             ? TextField(
@@ -544,12 +543,7 @@ class _MurattalPageState extends State<MurattalPage> {
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
               onTap: _toggleSearch,
-              child: _isSearching
-                  ? const Icon(Icons.close)
-                  : const IconConstrain(
-                      height: 30,
-                      imagePath: Assets.imagesSearch,
-                    ),
+          child: Icon(_isSearching ? Icons.close : Icons.search),
             ),
           )
         ],

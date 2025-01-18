@@ -61,7 +61,10 @@ class _ZekrPageState extends State<ZekrPage> {
         actions: [
           IconButton(
             onPressed: _toggleFavorite,
-            icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_border),
+            icon: Icon(
+              isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: Colors.red,
+            ),
           ),
         ],
       ),

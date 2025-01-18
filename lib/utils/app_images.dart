@@ -146,9 +146,6 @@ class Assets {
   /// assets/images/Search.svg
   static const String imagesSearch = "assets/images/Search.svg";
 
-  /// Assets for imagesSearchNormal
-  /// assets/images/search-normal.svg
-  static const String imagesSearchNormal = "assets/images/search-normal.svg";
 
   /// Assets for imagesShare
   /// assets/images/share.svg

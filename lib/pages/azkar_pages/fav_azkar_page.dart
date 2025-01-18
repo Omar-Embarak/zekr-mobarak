@@ -19,6 +19,7 @@ class FavAzkarPage extends StatelessWidget {
           style: AppStyles.styleCairoBold20(context),
         ),
         centerTitle: true,
+        backgroundColor: AppColors.kSecondaryColor,
       ),
       backgroundColor: AppColors.kPrimaryColor,
       body: FutureBuilder<List<Map<String, dynamic>>>(

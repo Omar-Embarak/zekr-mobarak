@@ -1,13 +1,11 @@
 import 'package:azkar_app/cubit/add_fav_surahcubit/add_fav_surah_item_cubit.dart';
 import 'package:azkar_app/model/quran_models/reciters_model.dart';
-import 'package:azkar_app/utils/app_images.dart';
 import 'package:flutter/material.dart';
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:quran/quran.dart' as quran;
 import '../../../constants.dart';
-import '../../../widgets/icon_constrain_widget.dart';
 import '../../../widgets/surah_listening_item_widget.dart';
 
 class ListSurahsListeningPage extends StatefulWidget {
@@ -57,7 +55,8 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.kSecondaryColor,
-      appBar: AppBar(
+      appBar: AppBar(  iconTheme: IconThemeData(
+            color: AppStyles.styleCairoMedium15white(context).color),
           centerTitle: true,
           title: _isSearching
               ? TextField(
@@ -78,12 +77,7 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
               padding: const EdgeInsets.all(8.0),
               child: GestureDetector(
                 onTap: _toggleSearch,
-                child: _isSearching
-                    ? const Icon(Icons.close) // Wrap IconData in an Icon widget
-                    : const IconConstrain(
-                        height: 30,
-                        imagePath: Assets.imagesSearch,
-                      ),
+            child: Icon(_isSearching ? Icons.close : Icons.search),
               ),
             )
           ]),

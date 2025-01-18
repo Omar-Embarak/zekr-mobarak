@@ -80,6 +80,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           fontFamily: "Cairo",
           useMaterial3: true,
+          iconTheme: const IconThemeData(color: Colors.white),
         ),
         home: const HomePages(),
       ),

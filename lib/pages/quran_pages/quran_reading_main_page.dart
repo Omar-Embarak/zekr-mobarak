@@ -1,9 +1,7 @@
 import 'package:azkar_app/pages/home_page/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../utils/app_images.dart';
 import '../../utils/app_style.dart';
-import '../../widgets/icon_constrain_widget.dart';
 import '../../widgets/surahs_list_widget.dart';
 import '../../constants.dart';
 import 'book_mark_page.dart';
@@ -61,7 +59,8 @@ class _QuranReadingMainPageState extends State<QuranReadingMainPage> {
         length: 3,
         child: Scaffold(
           backgroundColor: AppColors.kPrimaryColor,
-          appBar: AppBar(
+          appBar: AppBar(  iconTheme: IconThemeData(
+            color: AppStyles.styleCairoMedium15white(context).color),
             backgroundColor: AppColors.kSecondaryColor,
             centerTitle: true,
             title: _isSearching
@@ -87,12 +86,8 @@ class _QuranReadingMainPageState extends State<QuranReadingMainPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
                   onTap: _toggleSearch,
-                  child: _isSearching
-                      ? const Icon(Icons.close)
-                      : const IconConstrain(
-                          height: 30,
-                          imagePath: Assets.imagesSearch,
-                        ),
+                                child: Icon(_isSearching ? Icons.close : Icons.search),
+
                 ),
               )
             ],

@@ -147,6 +147,7 @@ class _HomePagesState extends State<HomePages> {
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => const PrayPage()));
+                                
                           },
                           child: MainCategoryWidget(
                             categoryImg: "assets/images/muslim_prayer.png",

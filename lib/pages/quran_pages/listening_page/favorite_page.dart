@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../constants.dart';
 import '../../../database_helper.dart';
 import '../../../model/quran_models/fav_model.dart';
-import '../../../utils/app_images.dart';
 import '../../../utils/app_style.dart';
-import '../../../widgets/icon_constrain_widget.dart';
 import '../../../widgets/surah_listening_item_widget.dart';
 import 'package:quran/quran.dart' as quran;
 
@@ -81,7 +79,8 @@ class _FavoritePageState extends State<FavoritePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.kPrimaryColor,
-      appBar: AppBar(
+      appBar: AppBar(  iconTheme: IconThemeData(
+            color: AppStyles.styleCairoMedium15white(context).color),
           backgroundColor: AppColors.kSecondaryColor,
           title: _isSearching
               ? TextField(
@@ -106,12 +105,7 @@ class _FavoritePageState extends State<FavoritePage> {
               padding: const EdgeInsets.all(8.0),
               child: GestureDetector(
                 onTap: _toggleSearch,
-                child: _isSearching
-                    ? const Icon(Icons.close)
-                    : const IconConstrain(
-                        height: 30,
-                        imagePath: Assets.imagesSearch,
-                      ),
+        child: Icon(_isSearching ? Icons.close : Icons.search),
               ),
             )
           ]),
