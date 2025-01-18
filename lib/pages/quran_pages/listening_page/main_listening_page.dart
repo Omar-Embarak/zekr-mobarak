@@ -40,6 +40,8 @@ class ListeningPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        iconTheme:
+            IconThemeData(color: AppStyles.styleCairoBold20(context).color),
         centerTitle: true,
         title: Text(
           'القران المسموع',

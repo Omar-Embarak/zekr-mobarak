@@ -5,11 +5,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:dio/dio.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'constants.dart';
+import 'dart:io';
 
 Future<Map<String, dynamic>> loadJSONDataMap(String path) async {
   try {
@@ -70,10 +70,6 @@ Future<void> togglePlayPause(
     }
   }
   setIsPlaying(!isPlaying);
-}
-
-void adjustSpeed(AudioPlayer audioPlayer, double speed) async {
-  await audioPlayer.setPlaybackRate(speed);
 }
 
 void showTafseer({
@@ -151,14 +147,31 @@ void showTafseer({
   }
 }
 
+double currentSpeed = 1.0; // Track the current speed of playback
+
+void adjustSpeed(AudioPlayer audioPlayer, double speed) async {
+  currentSpeed = speed; // Update the speed state
+  await audioPlayer.setPlaybackRate(currentSpeed);
+}
+
 void forward(AudioPlayer audioPlayer) {
-  adjustSpeed(audioPlayer, 1.25);
-  showMessage('الصوت علي سرعة 1.25');
+  if (currentSpeed == 1.0) {
+    currentSpeed = 1.25; // Increase speed to 1.25
+  } else if (currentSpeed == 0.75) {
+    currentSpeed = 1.0; // Reset to normal speed
+  }
+  adjustSpeed(audioPlayer, currentSpeed);
+  showMessage('الصوت علي سرعة ${currentSpeed.toStringAsFixed(2)}');
 }
 
 void backward(AudioPlayer audioPlayer) {
-  adjustSpeed(audioPlayer, 0.75);
-  showMessage('الصوت علي سرعة 0.75');
+  if (currentSpeed == 1.0) {
+    currentSpeed = 0.75; // Decrease speed to 0.75
+  } else if (currentSpeed == 1.25) {
+    currentSpeed = 1.0; // Reset to normal speed
+  }
+  adjustSpeed(audioPlayer, currentSpeed);
+  showMessage('الصوت علي سرعة ${currentSpeed.toStringAsFixed(2)}');
 }
 
 Future<void> shareAudio(String audioUrl) async {
@@ -168,15 +181,25 @@ Future<void> shareAudio(String audioUrl) async {
 Future<void> downloadAudio(
     String audioUrl, String title, BuildContext context) async {
   if (await requestPermission(Permission.storage)) {
-    final dir = await getExternalStorageDirectory();
-    if (dir != null) {
+    // Manually construct the path to the Downloads directory
+    Directory dir = Directory('/storage/emulated/0/Download');
+
+    if (await dir.exists()) {
       String fileName = "$title.mp3";
       String filePath = "${dir.path}/$fileName";
 
       Dio dio = Dio();
-      await dio.download(audioUrl, filePath);
+      await dio.download(audioUrl, filePath,
+          onReceiveProgress: (received, total) {
+        if (total != -1) {
+          print(
+              "Download progress: ${(received / total * 100).toStringAsFixed(0)}%");
+        }
+      });
 
       showMessage('$fileName Downloaded at $filePath');
+    } else {
+      showMessage('Download directory does not exist');
     }
   }
 }

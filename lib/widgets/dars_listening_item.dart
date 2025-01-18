@@ -50,36 +50,46 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
   Future<void> _checkInternetConnection() async {
     final List<ConnectivityResult> connectivityResults =
         await Connectivity().checkConnectivity();
-    setState(() {
+        if(mounted) {
+          setState(() {
       _connectivityStatus =
           connectivityResults.contains(ConnectivityResult.none)
               ? ConnectivityResult.none
               : connectivityResults.first;
     });
+        }
   }
 
   void setTotalDuration(Duration duration) {
-    setState(() {
+        if(mounted) {
+          setState(() {
       totalDuration = duration;
     });
+        }
   }
 
   void setCurrentDuration(Duration duration) {
-    setState(() {
+        if(mounted) {
+          setState(() {
       currentDuration = duration;
     });
+        }
   }
 
   void setIsPlaying(bool playing) {
-    setState(() {
+        if(mounted) {
+          setState(() {
       isPlaying = playing;
     });
+        }
   }
 
   void toggleExpanded() {
-    setState(() {
+        if(mounted) {
+          setState(() {
       isExpanded = !isExpanded;
     });
+        }
   }
 
   void _showOfflineMessage() {
@@ -162,7 +172,9 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
             }
 
             // Update the UI after the favorite status changes
-            setState(() {});
+        if(mounted) {
+          setState(() {});
+        }
           },
           child: isFavorite
               ? const Icon(
@@ -180,7 +192,7 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
         Expanded(
           child: Text(
             widget.title,
-            style: AppStyles.styleRajdhaniMedium18(context),
+            style: AppStyles.alwaysBlack18(context),
             textAlign: TextAlign.right, // Align the text to the right
           ),
         ),
@@ -201,6 +213,8 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
         const SizedBox(width: 10),
         GestureDetector(
           onTap: () => _handleAudioAction(() {
+            showMessage("جاري التحميل...");
+
             downloadAudio(widget.audioUrl, widget.title, context);
           }),
           child: const IconConstrain(
@@ -232,11 +246,11 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
         children: [
           Text(
             '${currentDuration.inMinutes}:${(currentDuration.inSeconds % 60).toString().padLeft(2, '0')}',
-            style: AppStyles.styleRajdhaniMedium18(context),
+            style: AppStyles.alwaysBlack18(context),
           ),
           Text(
             '${totalDuration.inMinutes}:${(totalDuration.inSeconds % 60).toString().padLeft(2, '0')}',
-            style: AppStyles.styleRajdhaniMedium18(context),
+            style: AppStyles.alwaysBlack18(context),
           ),
         ],
       ),
@@ -250,9 +264,11 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
       value: currentDuration.inSeconds.toDouble(),
       max: totalDuration.inSeconds.toDouble(),
       onChanged: (value) {
-        setState(() {
+        if(mounted) {
+          setState(() {
           currentDuration = Duration(seconds: value.toInt());
         });
+        }
         _audioPlayer.seek(currentDuration);
       },
     );

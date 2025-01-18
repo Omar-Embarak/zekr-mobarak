@@ -44,7 +44,22 @@ abstract class AppStyles {
       fontFamily: 'Rajdhani',
       fontWeight: FontWeight.w500,
     );
-  }  static TextStyle styleRajdhaniMedium22(context) {
+  }
+
+  static TextStyle alwaysBlack18(context) {
+    return TextStyle(
+      color: AppStyles.themeNotifier.value == defaultTheme
+          ? const Color(0xff575757)
+          : (AppStyles.themeNotifier.value == lightTheme
+              ? Colors.black
+              : Colors.black),
+      fontSize: getResponsiveFontSize(context, fontSize: 18),
+      fontFamily: 'Rajdhani',
+      fontWeight: FontWeight.w500,
+    );
+  }
+
+  static TextStyle styleRajdhaniMedium22(context) {
     return TextStyle(
       color: AppStyles.themeNotifier.value == defaultTheme
           ? const Color(0xff575757)
@@ -231,7 +246,7 @@ double getScaleFactor(BuildContext context) {
   // var devicePixelRatio = dispatcher.views.first.devicePixelRatio;
   // double width = physicalWidth / devicePixelRatio;
 
-  double width = MediaQuery.sizeOf( context).width;
+  double width = MediaQuery.sizeOf(context).width;
   if (width < SizeConfig.tablet) {
     return width / 450;
   } else if (width < SizeConfig.desktop) {
@@ -240,6 +255,3 @@ double getScaleFactor(BuildContext context) {
     return width / 1920;
   }
 }
-
-
-

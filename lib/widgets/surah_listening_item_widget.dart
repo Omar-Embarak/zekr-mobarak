@@ -62,31 +62,39 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
   Future<void> _initializeAudioPlayer() async {
     _playerStateSubscription =
         _audioPlayer.onPlayerStateChanged.listen((state) {
-      setState(() {
-        isPlaying = state == PlayerState.playing;
-      });
+      if (mounted) {
+        setState(() {
+          isPlaying = state == PlayerState.playing;
+        });
+      }
     });
     _audioPlayer.onDurationChanged.listen((duration) {
-      setState(() {
-        totalDuration = duration;
-      });
+      if (mounted) {
+        setState(() {
+          totalDuration = duration;
+        });
+      }
     });
     _audioPlayer.onPositionChanged.listen((position) {
-      setState(() {
-        currentDuration = position;
-      });
+      if (mounted) {
+        setState(() {
+          currentDuration = position;
+        });
+      }
     });
   }
 
   Future<void> _checkInternetConnection() async {
     final List<ConnectivityResult> connectivityResults =
         await Connectivity().checkConnectivity();
-    setState(() {
-      _connectivityStatus =
-          connectivityResults.contains(ConnectivityResult.none)
-              ? ConnectivityResult.none
-              : connectivityResults.first;
-    });
+    if (mounted) {
+      setState(() {
+        _connectivityStatus =
+            connectivityResults.contains(ConnectivityResult.none)
+                ? ConnectivityResult.none
+                : connectivityResults.first;
+      });
+    }
   }
 
   void _showOfflineMessage() {
@@ -102,22 +110,23 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
   }
 
   void toggleFavorite() {
-    setState(() {
-      isFavorite = !isFavorite;
-      if (isFavorite) {
-        var favSurahModel = FavModel(
-          url: widget.audioUrl,
-          reciter: widget.reciter,
-          surahIndex: widget.surahIndex,
-        );
-        BlocProvider.of<AddFavSurahItemCubit>(context)
-            .addFavSurahItem(favSurahModel);
-            
-      } else {
-        BlocProvider.of<AddFavSurahItemCubit>(context)
-            .deleteFavSurah(widget.surahIndex, widget.reciter.name);
-      }
-    });
+    if (mounted) {
+      setState(() {
+        isFavorite = !isFavorite;
+        if (isFavorite) {
+          var favSurahModel = FavModel(
+            url: widget.audioUrl,
+            reciter: widget.reciter,
+            surahIndex: widget.surahIndex,
+          );
+          BlocProvider.of<AddFavSurahItemCubit>(context)
+              .addFavSurahItem(favSurahModel);
+        } else {
+          BlocProvider.of<AddFavSurahItemCubit>(context)
+              .deleteFavSurah(widget.surahIndex, widget.reciter.name);
+        }
+      });
+    }
   }
 
   @override
@@ -126,9 +135,11 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       children: [
         GestureDetector(
           onTap: () {
-            setState(() {
-              isExpanded = !isExpanded;
-            });
+            if (mounted) {
+              setState(() {
+                isExpanded = !isExpanded;
+              });
+            }
           },
           child: buildSurahItem(),
         ),
@@ -162,7 +173,8 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           isFavorite = snapshot.data ?? false;
-          return Row(crossAxisAlignment: CrossAxisAlignment.center,
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(width: 10),
               GestureDetector(
@@ -192,10 +204,8 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                     height: 30, imagePath: Assets.imagesHeart),
               ),
               const SizedBox(width: 10),
-              Text(
-                'سورة ${quran.getSurahNameArabic(widget.surahIndex + 1)}',
-                style: AppStyles.styleRajdhaniMedium18(context),
-              ),
+              Text('سورة ${quran.getSurahNameArabic(widget.surahIndex + 1)}',
+                  style: AppStyles.alwaysBlack18(context)),
               const Spacer(),
               buildActionButtons(),
             ],
@@ -216,8 +226,9 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
         const SizedBox(width: 10),
         GestureDetector(
           onTap: () => _handleAudioAction(() {
+            showMessage("جاري التحميل...");
             downloadAudio(widget.audioUrl,
-                quran.getSurahNameArabic(widget.surahIndex), context);
+                quran.getSurahNameArabic(widget.surahIndex + 1), context);
           }),
           child: const IconConstrain(
               height: 30, imagePath: Assets.imagesDocumentDownload),
@@ -245,11 +256,11 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
         children: [
           Text(
             '${currentDuration.inMinutes}:${(currentDuration.inSeconds % 60).toString().padLeft(2, '0')}',
-            style: AppStyles.styleRajdhaniMedium18(context),
+            style: AppStyles.alwaysBlack18(context),
           ),
           Text(
             '${totalDuration.inMinutes}:${(totalDuration.inSeconds % 60).toString().padLeft(2, '0')}',
-            style: AppStyles.styleRajdhaniMedium18(context),
+            style: AppStyles.alwaysBlack18(context),
           ),
         ],
       ),
@@ -264,9 +275,11 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       max: totalDuration.inSeconds > 0 ? totalDuration.inSeconds.toDouble() : 1,
       onChanged: totalDuration.inSeconds > 0
           ? (value) {
-              setState(() {
-                currentDuration = Duration(seconds: value.toInt());
-              });
+              if (mounted) {
+                setState(() {
+                  currentDuration = Duration(seconds: value.toInt());
+                });
+              }
               _audioPlayer.seek(currentDuration);
             }
           : null,
@@ -310,8 +323,10 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
   }
 
   void setIsPlaying(bool value) {
-    setState(() {
-      isPlaying = value;
-    });
+    if (mounted) {
+      setState(() {
+        isPlaying = value;
+      });
+    }
   }
 }
