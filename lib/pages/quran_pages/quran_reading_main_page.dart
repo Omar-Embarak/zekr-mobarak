@@ -19,7 +19,6 @@ class QuranReadingMainPage extends StatefulWidget {
 }
 
 class _QuranReadingMainPageState extends State<QuranReadingMainPage> {
-  final TextEditingController _searchController = TextEditingController();
   bool _isSearching = false;
   void _filterPageContent(String query) {
     // Notify SurahListWidget about the query change
@@ -31,8 +30,13 @@ class _QuranReadingMainPageState extends State<QuranReadingMainPage> {
   void _toggleSearch() {
     setState(() {
       _isSearching = !_isSearching;
+      Provider.of<SearchProvider>(context, listen: false).toogleSearch(
+        _isSearching,
+      );
+
       if (!_isSearching) {
-        _searchController.clear();
+        Provider.of<SearchProvider>(context, listen: false)
+            .clearSearchController();
         _filterPageContent('');
       }
     });
@@ -62,7 +66,9 @@ class _QuranReadingMainPageState extends State<QuranReadingMainPage> {
             centerTitle: true,
             title: _isSearching
                 ? TextField(
-                    controller: _searchController,
+                    controller:
+                        Provider.of<SearchProvider>(context, listen: false)
+                            .searchController(),
                     onChanged: _filterPageContent,
                     style: AppStyles.styleCairoMedium15white(context),
                     decoration: InputDecoration(
@@ -112,6 +118,8 @@ class _QuranReadingMainPageState extends State<QuranReadingMainPage> {
               ),
               const Expanded(
                 child: TabBarView(
+                  physics: BouncingScrollPhysics(), // Smooth scrolling
+
                   children: [
                     SurahListWidget(),
                     JuzListPage(),

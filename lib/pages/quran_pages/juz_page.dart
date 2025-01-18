@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quran/quran.dart';
 import '../../methods.dart';
+import '../../widgets/hizp_image.dart';
 import 'search_provider.dart';
 
 class JuzListPage extends StatefulWidget {
@@ -15,7 +16,11 @@ class JuzListPage extends StatefulWidget {
   State<JuzListPage> createState() => _JuzListPageState();
 }
 
-class _JuzListPageState extends State<JuzListPage> {
+class _JuzListPageState extends State<JuzListPage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   List<dynamic> juzData = [];
 
   @override
@@ -31,52 +36,55 @@ class _JuzListPageState extends State<JuzListPage> {
     });
   }
 
-  String removeTashkeel(String text) {
-    const tashkeelRegex = '[\u064B-\u065F\u06D6-\u06ED]';
-    return text.replaceAll(RegExp(tashkeelRegex), '');
-  }
-
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final searchProvider = Provider.of<SearchProvider>(context);
     final query = normalizeArabic(searchProvider.query.trim().toLowerCase());
 
-    // Filter data and keep track of original index
-    final filteredJuz = juzData.asMap().entries.map((entry) {
-      final index = entry.key;
-      final juz = entry.value;
-      return {
-        'index': index, // Preserve original index
-        'juz': juz,
-      };
-    }).where((entry) {
-      final arbaa = entry['juz']['arbaa'] as List<dynamic>?;
-      if (arbaa == null || query.isEmpty) return false;
+    // Show all Juz if the query is empty
+    final filteredJuz = query.isEmpty
+        ? juzData.asMap().entries.map((entry) {
+            final index = entry.key;
+            final juz = entry.value;
+            return {
+              'index': index,
+              'juz': juz,
+            };
+          }).toList()
+        : juzData.asMap().entries.map((entry) {
+            final index = entry.key;
+            final juz = entry.value;
+            return {
+              'index': index,
+              'juz': juz,
+            };
+          }).where((entry) {
+            final arbaa = entry['juz']['arbaa'] as List<dynamic>?;
+            if (arbaa == null) return false;
 
-      return arbaa.any((quarter) {
-        final surahNumber = quarter['surah_number'];
-        final verseNumber = quarter['verse_number'];
-        if (surahNumber == null || verseNumber == null) return false;
+            return arbaa.any((quarter) {
+              final surahNumber = quarter['surah_number'];
+              final verseNumber = quarter['verse_number'];
+              if (surahNumber == null || verseNumber == null) return false;
 
-        final verse =
-            normalizeArabic(getVerse(surahNumber, verseNumber)).trim();
-        final surahName =
-            normalizeArabic(getSurahNameArabic(surahNumber)).trim();
+              final verse = getVerse(surahNumber, verseNumber);
+              final surahName = getSurahNameArabic(surahNumber);
 
-        final normalizedQuery = removeTashkeel(query);
-        final normalizedVerse = removeTashkeel(verse);
-        final normalizedSurahName = removeTashkeel(surahName);
+              final normalizedQuery = removeTashkeel(query);
+              final normalizedVerse = removeTashkeel(verse);
+              final normalizedSurahName = removeTashkeel(surahName);
 
-        return normalizedVerse.contains(normalizedQuery) ||
-            normalizedSurahName.contains(normalizedQuery);
-      });
-    }).toList();
+              return normalizedVerse.contains(normalizedQuery) ||
+                  normalizedSurahName.contains(normalizedQuery);
+            });
+          }).toList();
 
     return Scaffold(
       backgroundColor: AppColors.kPrimaryColor,
       body: juzData.isEmpty
           ? const Center(child: CircularProgressIndicator())
-          : filteredJuz.isEmpty
+          : filteredJuz.isEmpty && query.isNotEmpty
               ? const Center(child: Text("No results found"))
               : ListView.builder(
                   itemCount: filteredJuz.length,
@@ -98,14 +106,14 @@ class _JuzListPageState extends State<JuzListPage> {
                             ),
                           ),
                           child: Text(
-                            'الجزء ${(originalIndex + 1).toString()}', // Display correct Juz number
+                            'الجزء ${(originalIndex + 1).toString()}',
                             textAlign: TextAlign.center,
                             style:
                                 AppStyles.styleDiodrumArabicMedium15(context),
                           ),
                         ),
                         if (matchingQuarters.isNotEmpty)
-                          ..._buildQuarterContainers(matchingQuarters),
+                          ..._buildQuarterContainers(matchingQuarters, query),
                       ],
                     );
                   },
@@ -142,7 +150,8 @@ class _JuzListPageState extends State<JuzListPage> {
     }).toList();
   }
 
-  List<Widget> _buildQuarterContainers(List<Map<String, dynamic>> quarters) {
+  List<Widget> _buildQuarterContainers(
+      List<Map<String, dynamic>> quarters, String query) {
     List<Widget> containers = [];
     List<String> quarterImages = [
       Assets.imagesHizp,
@@ -157,10 +166,13 @@ class _JuzListPageState extends State<JuzListPage> {
       if (quarter != null) {
         final surahNumber = quarter['surah_number'];
         final verseNumber = quarter['verse_number'];
+        final verse = getVerse(surahNumber, verseNumber);
 
         containers.add(
           GestureDetector(
             onTap: () {
+              Provider.of<SearchProvider>(context, listen: false)
+                  .clearSearchController();
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => SurahPage(
@@ -181,35 +193,38 @@ class _JuzListPageState extends State<JuzListPage> {
               ),
               child: Row(
                 children: [
+                  // HizbImage widget
                   HizbImage(
                     quarterImages: quarterImages,
                     index: originalIndex,
                   ),
-                  const SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "${getVerse(surahNumber, verseNumber).length > 30 ? getVerse(surahNumber, verseNumber).substring(0, 30) : getVerse(surahNumber, verseNumber)}...",
-                        style: AppStyles.styleRajdhaniMedium20(context),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Text(
-                            'آية: $verseNumber',
-                            style: AppStyles.styleRajdhaniMedium18(context),
-                          ),
-                          const SizedBox(width: 16),
-                          Text(
-                            getSurahNameArabic(surahNumber),
-                            style: AppStyles.styleRajdhaniBold18(context),
-                          ),
-                        ],
-                      ),
-                    ],
+                  const SizedBox(width: 10), // Spacing between image and text
+
+                  // Constrained Column for Text
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Highlighted verse
+                        _buildHighlightedVerse(verse, query, context),
+                        const SizedBox(height: 8),
+
+                        // Surah name and Ayah number
+                        Row(
+                          children: [
+                            Text(
+                              'آية: $verseNumber',
+                              style: AppStyles.styleRajdhaniMedium18(context),
+                            ),
+                            const SizedBox(width: 16),
+                            _buildHighlightedSurahName(
+                                getSurahNameArabic(surahNumber),
+                                query,
+                                context),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -221,41 +236,116 @@ class _JuzListPageState extends State<JuzListPage> {
 
     return containers;
   }
-}
 
-class HizbImage extends StatelessWidget {
-  const HizbImage({
-    super.key,
-    required this.quarterImages,
-    required this.index,
-  });
+  Widget _buildHighlightedSurahName(
+      String surahName, String query, BuildContext context) {
+    // Normalize both the surah name and query by removing tashkeel
+    final normalizedQuery = removeTashkeel(query);
+    final normalizedSurahName = removeTashkeel(surahName);
 
-  final List<String> quarterImages;
-  final int index;
+    final queryIndex = normalizedSurahName.indexOf(normalizedQuery);
 
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 60,
-      width: 60,
-      child: Stack(
-        children: [
-          Image.asset(
-            quarterImages[index % quarterImages.length],
-            fit: BoxFit.cover,
-          ),
-          Center(
-            child: Text(
-              '${index + 1}',
+    if (queryIndex != -1) {
+      final start = queryIndex > 10 ? queryIndex - 10 : 0;
+      final end = queryIndex + normalizedQuery.length + 10 < surahName.length
+          ? queryIndex + normalizedQuery.length + 10
+          : surahName.length;
+
+      final preText = start > 0 ? '...' : '';
+      final postText = end < surahName.length ? '...' : '';
+
+      return RichText(
+        text: TextSpan(
+          style: AppStyles.styleRajdhaniMedium18(context),
+          children: [
+            if (start > 0)
+              TextSpan(
+                text: preText,
+                style: const TextStyle(
+                  color: Colors.red,
+                ),
+              ),
+            TextSpan(
+              text: surahName.substring(start, queryIndex),
+            ),
+            TextSpan(
+              text: surahName.substring(
+                  queryIndex, queryIndex + normalizedQuery.length),
               style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: Colors.red,
+                backgroundColor: Colors.yellow,
               ),
             ),
-          ),
-        ],
-      ),
+            TextSpan(
+              text:
+                  surahName.substring(queryIndex + normalizedQuery.length, end),
+            ),
+            if (end < surahName.length)
+              TextSpan(
+                text: postText,
+                style: const TextStyle(
+                  color: Colors.red,
+                ),
+              ),
+          ],
+        ),
+      );
+    } else {
+      return Text(
+        surahName,
+        style: AppStyles.styleRajdhaniMedium18(context),
+      );
+    }
+  }
+
+  Widget _buildHighlightedVerse(
+      String verse, String query, BuildContext context) {
+    // Normalize query and verse for accurate comparison
+    final normalizedQuery = removeTashkeel(query.trim());
+    final normalizedVerse = removeTashkeel(verse.trim());
+    final queryIndex = normalizedVerse.indexOf(normalizedQuery);
+    final isSearching = Provider.of<SearchProvider>(context).isSearching;
+    if (isSearching) {
+      verse = removeTashkeel(verse);
+    }
+    // If a query matches part of the verse
+    if (queryIndex != -1) {
+      final start = queryIndex > 0 ? queryIndex : 0;
+      final end = queryIndex + normalizedQuery.length;
+
+      return RichText(
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis, // Ensure ellipses for overflow
+        text: TextSpan(
+          style: AppStyles.styleRajdhaniMedium22(context), // Base text style
+          children: [
+            // Text before the matched query
+            TextSpan(
+              text: verse.substring(0, start),
+            ),
+            // Highlighted matched query
+            TextSpan(
+              text: verse.substring(start, end),
+              style: const TextStyle(
+                color: Colors.red,
+                backgroundColor: Colors.yellow,
+              ),
+            ),
+            // Text after the matched query
+            TextSpan(
+              text: verse.substring(end),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Default: Show the verse with ellipsis if it overflows
+    return Text(
+      verse,
+      style: AppStyles.styleRajdhaniMedium20(context),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
     );
   }
 }

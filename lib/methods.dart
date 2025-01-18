@@ -37,6 +37,7 @@ Future<List<dynamic>> loadJSONDataList(String path) async {
     return []; // Return an empty list in case of error
   }
 }
+
 void initializeAudioPlayer(
     AudioPlayer audioPlayer,
     Function(Duration) setTotalDuration,
@@ -70,7 +71,6 @@ Future<void> togglePlayPause(
   }
   setIsPlaying(!isPlaying);
 }
-
 
 void adjustSpeed(AudioPlayer audioPlayer, double speed) async {
   await audioPlayer.setPlaybackRate(speed);
@@ -112,7 +112,7 @@ void showTafseer({
           height: MediaQuery.of(context).size.height / 2,
           width: double.infinity,
           padding: const EdgeInsets.all(16),
-          decoration:  BoxDecoration(
+          decoration: BoxDecoration(
               color: AppColors.kSecondaryColor,
               borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(20), topRight: Radius.circular(20))),
@@ -181,6 +181,19 @@ Future<void> downloadAudio(
   }
 }
 
+String removeTashkeel(String text) {
+  // Regular expression to remove diacritics (Tashkeel)
+  const tashkeelRegex = '[\u064B-\u065F\u06D6-\u06ED]';
+  text = text.replaceAll(RegExp(tashkeelRegex), '');
+
+  // Replace all forms of "ا" with the base form "ا"
+  const alefVariantsRegex =
+      '[\u0622\u0623\u0625\u0671]'; // Variants: ٱ, أ, إ, etc.
+  text = text.replaceAll(RegExp(alefVariantsRegex), 'ا');
+
+  return text;
+}
+
 Future<bool> requestPermission(Permission permission) async {
   if (await permission.isGranted) {
     return true;
@@ -189,7 +202,8 @@ Future<bool> requestPermission(Permission permission) async {
     return result == PermissionStatus.granted;
   }
 }
- String normalizeArabic(String text) {
+
+String normalizeArabic(String text) {
   String withoutTashkeel = text.replaceAll(RegExp(r'[ًٌٍَُِّْۡ]'), '');
   String normalized = withoutTashkeel
       .replaceAll(RegExp(r'[أإٱآٰ]'), 'ا')
