@@ -1,15 +1,19 @@
+import 'dart:convert';
+
 import 'package:azkar_app/cubit/add_fav_surahcubit/add_fav_surah_item_cubit.dart';
 import 'package:azkar_app/cubit/ruqiya_cubit/ruqiya_cubit.dart';
 import 'package:azkar_app/pages/droos_pages/fav_dars_provider.dart';
 import 'package:azkar_app/simple_bloc_observer.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'cubit/azkar_cubit/azkar_cubit.dart';
 import 'cubit/praying_cubit/praying_cubit.dart';
 import 'cubit/theme_cubit/theme_cubit.dart';
+import 'model/azkar_model/azkar_model/azkar_model.dart';
 import 'pages/azkar_pages/notification_service.dart';
 import 'pages/home_page/home_page.dart';
 import 'pages/quran_pages/book_mark_provider.dart';
@@ -19,6 +23,27 @@ import 'pages/quran_pages/search_provider.dart';
 
 final GlobalKey<NavigatorState> globalNavigatorKey =
     GlobalKey<NavigatorState>();
+Future<List<AzkarModel>> loadResources() async {
+  final String jsonContent =
+      await rootBundle.loadString('assets/db/adhkar.json');
+  final jsonData = jsonDecode(jsonContent) as List;
+  return jsonData.map((json) => AzkarModel.fromJson(json)).toList();
+}
+
+class ErrorScreen extends StatelessWidget {
+  final String errorMessage;
+
+  const ErrorScreen(this.errorMessage, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Text('Error: $errorMessage'),
+      ),
+    );
+  }
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,11 +55,24 @@ void main() async {
 
   await ThemeCubit().loadInitialTheme();
   Bloc.observer = SimpleBlocObserver();
-  runApp(const MyApp());
+  runApp(
+    FutureBuilder(
+      future: loadResources(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator(); // Placeholder screen
+        } else if (snapshot.hasError) {
+          return ErrorScreen(snapshot.error.toString());
+        }
+        return MyApp(preloadedAzkar: snapshot.data as List<AzkarModel>);
+      },
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.preloadedAzkar});
+  final List<AzkarModel> preloadedAzkar;
 
   @override
   Widget build(BuildContext context) {
@@ -45,13 +83,13 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => QuranFontSizeProvider()),
         ChangeNotifierProvider(create: (_) => SearchProvider()),
         BlocProvider(
-          create: (context) => ThemeCubit(),
+          create: (_) => ThemeCubit()..loadInitialTheme(),
         ),
         BlocProvider(
           create: (context) => AddFavSurahItemCubit(),
         ),
         BlocProvider(
-          create: (context) => AzkarCubit(),
+          create: (context) => AzkarCubit(preloadedAzkar),
         ),
         BlocProvider(
           create: (context) => RuqiyaCubit(),
