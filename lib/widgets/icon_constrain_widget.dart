@@ -1,3 +1,4 @@
+import 'package:azkar_app/utils/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -20,6 +21,8 @@ class IconConstrain extends StatelessWidget {
         child: SvgPicture.asset(
           imagePath,
           placeholderBuilder: (context) => const Icon(Icons.error),
+          colorFilter: ColorFilter.mode(
+              AppStyles.styleCairoBold20(context).color!, BlendMode.srcIn),
         ),
       ),
     );

@@ -92,7 +92,10 @@ class _QuranContainerDownState extends State<QuranContainerDown> {
                     padding: const EdgeInsets.all(8),
                     height: 35,
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white),
+                      border: Border.all(
+                        color: AppStyles.styleDiodrumArabicMedium15(context)
+                            .color!,
+                      ),
                       borderRadius: BorderRadius.circular(3),
                     ),
                     child: Center(
@@ -121,13 +124,19 @@ class _QuranContainerDownState extends State<QuranContainerDown> {
                           child: Row(
                             children: [
                               isBookmarked
-                                  ? const Icon(
+                                  ? Icon(
                                       Icons.bookmark_outlined,
-                                      color: Colors.white,
+                                      color:
+                                          AppStyles.styleDiodrumArabicMedium15(
+                                                  context)
+                                              .color,
                                     )
-                                  : const Icon(
+                                  : Icon(
                                       Icons.bookmark_border_rounded,
-                                      color: Colors.white,
+                                      color:
+                                          AppStyles.styleDiodrumArabicMedium15(
+                                                  context)
+                                              .color,
                                     ),
                               const SizedBox(
                                 width: 10,

@@ -74,7 +74,6 @@ Widget buildPrayerDetails(BuildContext context, Timings timings,
       // Next prayer details card
       Container(
         width: MediaQuery.of(context).size.width * 0.85,
-        height: MediaQuery.of(context).size.height * 0.12,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           color: Colors.white,

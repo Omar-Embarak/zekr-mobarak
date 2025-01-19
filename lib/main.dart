@@ -20,6 +20,7 @@ import 'pages/quran_pages/book_mark_provider.dart';
 import 'pages/quran_pages/quran_data_provider.dart';
 import 'pages/quran_pages/quran_font_size_provider.dart';
 import 'pages/quran_pages/search_provider.dart';
+import 'splash_page.dart';
 
 final GlobalKey<NavigatorState> globalNavigatorKey =
     GlobalKey<NavigatorState>();
@@ -55,14 +56,16 @@ void main() async {
 
   await ThemeCubit().loadInitialTheme();
   Bloc.observer = SimpleBlocObserver();
-  runApp(
+ runApp(
     FutureBuilder(
       future: loadResources(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator(); // Placeholder screen
+          return const AppIconLoader(); // Use your animated app icon here
         } else if (snapshot.hasError) {
-          return ErrorScreen(snapshot.error.toString());
+          return MaterialApp(
+            home: ErrorScreen(snapshot.error.toString()),
+          );
         }
         return MyApp(preloadedAzkar: snapshot.data as List<AzkarModel>);
       },

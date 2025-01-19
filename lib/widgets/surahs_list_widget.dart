@@ -81,16 +81,16 @@ class _SurahListWidgetState extends State<SurahListWidget>
 
     return Row(
       children: [
-        const SizedBox(width: 10),
+        const SizedBox(width: 30),
         Text(
           '${entry.key}', // Surah number
-          style: AppStyles.styleRajdhaniMedium18(context),
+          style: AppStyles.styleCairoMedium15white(context),
         ),
         Expanded(
           child: ListTile(
             trailing: Text(
               '$firstVersePage', // Display the first page of the Surah
-              style: AppStyles.styleRajdhaniBold13(context),
+              style: AppStyles.styleDiodrumArabicMedium11(context),
             ),
             title: RichText(
               text: TextSpan(
@@ -98,21 +98,21 @@ class _SurahListWidgetState extends State<SurahListWidget>
                   if (queryIndex != -1) ...[
                     TextSpan(
                       text: surahName.substring(0, queryIndex),
-                      style: AppStyles.styleRajdhaniMedium22(context),
+                      style: AppStyles.styleCairoBold20(context),
                     ),
                     TextSpan(
                       text: query,
-                      style: AppStyles.styleRajdhaniMedium22(context)
+                      style: AppStyles.styleCairoBold20(context)
                           .copyWith(color: Colors.red),
                     ),
                     TextSpan(
                       text: surahName.substring(queryIndex + query.length),
-                      style: AppStyles.styleRajdhaniMedium22(context),
+                      style: AppStyles.styleCairoBold20(context),
                     ),
                   ] else ...[
                     TextSpan(
                       text: surahName,
-                      style: AppStyles.styleRajdhaniMedium22(context),
+                      style: AppStyles.styleCairoBold20(context),
                     ),
                   ],
                 ],
@@ -122,8 +122,7 @@ class _SurahListWidgetState extends State<SurahListWidget>
               children: [
                 Text(
                   '$surahType - ${surahsAyat[entry.key - 1]['count']} اية',
-                  style: AppStyles.styleRajdhaniBold13(context)
-                      .copyWith(color: Colors.white),
+                  style: AppStyles.styleDiodrumArabicMedium11(context),
                 ),
               ],
             ),
@@ -154,8 +153,7 @@ class _SurahListWidgetState extends State<SurahListWidget>
           const Spacer(),
           Text(
             '${quran.getSurahPages(index).first}', // Page number where each Juz starts
-            style: AppStyles.styleRajdhaniMedium18(context)
-                .copyWith(color: Colors.white),
+            style: AppStyles.styleCairoMedium15white(context),
           ),
           const SizedBox(width: 10),
         ],

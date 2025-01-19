@@ -224,84 +224,84 @@ class _SurahPageState extends State<SurahPage> {
   Widget _buildPageContent() {
     return Consumer<QuranFontSizeProvider>(
       builder: (context, fontSizeProvider, child) {
-        return CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Container(
-                padding: const EdgeInsets.only(right: 8),
-                alignment: Alignment.center,
-                child: RichText(
-                  text: TextSpan(
-                    style: AppStyles.styleAmiriMedium30(context).copyWith(
-                      fontSize: fontSizeProvider.fontSize,
-                    ),
-                    children: pageContent.entries.expand((entry) {
-                      int surahNumber = entry.key;
-                      return entry.value.map((verseEntry) {
-                        int verseIndex = verseEntry['verseNumber'];
-                        String verseText = verseEntry['verseText'];
-                        bool isHighlighted = highlightedVerses[surahNumber]
-                                ?[verseIndex] ??
-                            false;
+        return Center(
+          // Center the entire content
+          child: SingleChildScrollView(
+            // Allow vertical scrolling
+            child: Padding(
+              padding:
+                  const EdgeInsets.all(8.0), // Add padding around the content
+              child: RichText(
+                textAlign: TextAlign.center, // Center-align text
+                text: TextSpan(
+                  style: AppStyles.styleAmiriMedium30(context).copyWith(
+                    fontSize: fontSizeProvider.fontSize,
+                  ),
+                  children: pageContent.entries.expand((entry) {
+                    int surahNumber = entry.key;
+                    return entry.value.map((verseEntry) {
+                      int verseIndex = verseEntry['verseNumber'];
+                      String verseText = verseEntry['verseText'];
+                      bool isHighlighted =
+                          highlightedVerses[surahNumber]?[verseIndex] ?? false;
 
-                        // Split the verse text into words
-                        List<String> words = verseText.split(' ');
+                      // Split the verse text into words
+                      List<String> words = verseText.split(' ');
 
-                        // Create spans for each word with adjusted font sizes
-                        List<InlineSpan> wordSpans = words.map((word) {
-                          double adjustedFontSize = _getAdjustedFontSize(
-                              word, fontSizeProvider.fontSize);
-
-                          return TextSpan(
-                            text: '$word ', // Add a space after each word
-                            style: TextStyle(
-                              fontSize: adjustedFontSize,
-                              backgroundColor: isHighlighted
-                                  ? Colors.yellow.withOpacity(0.4)
-                                  : Colors.transparent,
-                              color: isHighlighted ? Colors.red : null,
-                            ),
-                            recognizer: LongPressGestureRecognizer()
-                              ..onLongPressStart = (details) {
-                                // Get the global position of the long press
-                                RenderBox renderBox =
-                                    context.findRenderObject() as RenderBox;
-                                Offset globalPosition = renderBox
-                                    .localToGlobal(details.globalPosition);
-
-                                // Trigger _selectVerse
-                                _selectVerse(
-                                    globalPosition, verseIndex, surahNumber);
-                              },
-                          );
-                        }).toList();
-
-                        // Add the verse end symbol
-                        wordSpans.add(TextSpan(
-                          text:
-                              '${quran.getVerseEndSymbol(verseIndex, arabicNumeral: true)} ',
-                          style: TextStyle(
-                            fontSize: fontSizeProvider.fontSize,
-                          ),
-                        ));
+                      // Create spans for each word with adjusted font sizes
+                      List<InlineSpan> wordSpans = words.map((word) {
+                        double adjustedFontSize = _getAdjustedFontSize(
+                            word, fontSizeProvider.fontSize);
 
                         return TextSpan(
-                          children: [
-                            if (verseIndex == 1)
-                              WidgetSpan(
-                                alignment: PlaceholderAlignment.middle,
-                                child: SurahBorder(surahNumber: surahNumber),
-                              ),
-                            ...wordSpans,
-                          ],
+                          text: '$word ', // Add a space after each word
+                          style: TextStyle(
+                            fontSize: adjustedFontSize,
+                            backgroundColor: isHighlighted
+                                ? Colors.yellow.withOpacity(0.4)
+                                : Colors.transparent,
+                            color: isHighlighted ? Colors.red : null,
+                          ),
+                          recognizer: LongPressGestureRecognizer()
+                            ..onLongPressStart = (details) {
+                              // Get the global position of the long press
+                              RenderBox renderBox =
+                                  context.findRenderObject() as RenderBox;
+                              Offset globalPosition = renderBox
+                                  .localToGlobal(details.globalPosition);
+
+                              // Trigger _selectVerse
+                              _selectVerse(
+                                  globalPosition, verseIndex, surahNumber);
+                            },
                         );
-                      });
-                    }).toList(),
-                  ),
+                      }).toList();
+
+                      // Add the verse end symbol
+                      wordSpans.add(TextSpan(
+                        text:
+                            '${quran.getVerseEndSymbol(verseIndex, arabicNumeral: true)} ',
+                        style: TextStyle(
+                          fontSize: fontSizeProvider.fontSize,
+                        ),
+                      ));
+
+                      return TextSpan(
+                        children: [
+                          if (verseIndex == 1)
+                            WidgetSpan(
+                              alignment: PlaceholderAlignment.middle,
+                              child: SurahBorder(surahNumber: surahNumber),
+                            ),
+                          ...wordSpans,
+                        ],
+                      );
+                    });
+                  }).toList(),
                 ),
               ),
             ),
-          ],
+          ),
         );
       },
     );

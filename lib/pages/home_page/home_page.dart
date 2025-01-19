@@ -29,11 +29,13 @@ class _HomePagesState extends State<HomePages> {
     return Scaffold(
       backgroundColor: AppColors.kPrimaryColor,
       appBar: AppBar(
+        iconTheme: IconThemeData(
+            color: AppStyles.styleCairoMedium15white(context).color),
         backgroundColor: AppColors.kSecondaryColor,
         centerTitle: true,
-        title: const Text(
+        title: Text(
           "القائمة الرئيسية",
-          style: TextStyle(color: Colors.white),
+          style: AppStyles.styleCairoBold20(context),
         ),
         leading: IconButton(
           onPressed: () {
@@ -83,7 +85,6 @@ class _HomePagesState extends State<HomePages> {
           },
           icon: const Icon(
             Icons.light_mode,
-            color: Colors.white,
           ),
         ),
       ),
@@ -147,7 +148,6 @@ class _HomePagesState extends State<HomePages> {
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => const PrayPage()));
-                                
                           },
                           child: MainCategoryWidget(
                             categoryImg: "assets/images/muslim_prayer.png",

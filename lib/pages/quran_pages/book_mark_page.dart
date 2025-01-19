@@ -11,7 +11,6 @@ class BookmarksPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     return Consumer<BookmarkProvider>(
       builder: (context, provider, child) {
         // Check if bookmarks are empty
@@ -47,7 +46,7 @@ class BookmarksPage extends StatelessWidget {
                   ),
                   title: Text(
                     'سورة ${bookmark.surahName}',
-                    style: TextStyle(color: AppColors.kSecondaryColor),
+                    style: AppStyles.styleCairoMedium15white(context),
                   ),
                   subtitle: Text(
                     'صفحة ${bookmark.pageNumber}',

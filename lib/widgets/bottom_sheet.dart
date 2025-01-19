@@ -27,8 +27,7 @@ Future<dynamic> modalBottomSheet(BuildContext context) {
                 child: Center(
                   child: Text(
                     'القران الكريم',
-                    style: AppStyles.styleRajdhaniBold20(context)
-                        .copyWith(color: Colors.white),
+                    style: AppStyles.styleCairoMedium15white(context),
                   ),
                 ),
               ),
@@ -71,7 +70,8 @@ Future<dynamic> modalBottomSheet(BuildContext context) {
                                     child: Text(
                                       'سماع',
                                       style: AppStyles.styleCairoMedium15white(
-                                          context),
+                                              context)
+                                          .copyWith(color: Colors.white),
                                     ),
                                   ),
                                   Positioned(
@@ -129,7 +129,8 @@ Future<dynamic> modalBottomSheet(BuildContext context) {
                                     child: Text(
                                       'قراءة',
                                       style: AppStyles.styleCairoMedium15white(
-                                          context),
+                                              context)
+                                          .copyWith(color: Colors.white),
                                     ),
                                   ),
                                   Positioned(

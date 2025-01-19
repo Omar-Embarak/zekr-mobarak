@@ -89,6 +89,9 @@ class _QuranContainerUPState extends State<QuranContainerUP> {
                         widget.isPageLeft
                             ? Assets.imagesLeftPage
                             : Assets.imagesRightPage,
+                        colorFilter: ColorFilter.mode(
+                            AppStyles.styleCairoBold20(context).color!,
+                            BlendMode.srcIn),
                       ),
                     ),
                     FittedBox(
@@ -154,9 +157,9 @@ class _QuranContainerUPState extends State<QuranContainerUP> {
                     ],
                   );
                 },
-                icon: const Icon(
+                icon: Icon(
                   Icons.light_mode,
-                  color: Colors.white,
+                  color: AppStyles.styleCairoBold20(context).color,
                 ),
               ),
               SizedBox(
