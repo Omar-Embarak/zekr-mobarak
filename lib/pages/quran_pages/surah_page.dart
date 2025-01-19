@@ -1,5 +1,5 @@
+import 'package:al_quran/al_quran.dart';
 import 'dart:async';
-import 'dart:developer';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +9,7 @@ import 'package:quran/quran.dart' as quran;
 import 'package:audioplayers/audioplayers.dart';
 import '../../constants.dart';
 import '../../cubit/theme_cubit/theme_cubit.dart';
+import '../../methods.dart';
 import '../../no_scroll_beyond_physics.dart';
 import '../../utils/app_style.dart';
 import '../../widgets/quran_container_down.dart';
@@ -113,10 +114,7 @@ class _SurahPageState extends State<SurahPage> {
       }
       setState(() {});
     } catch (e) {
-      log("Error loading page content: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to load page content: $e")),
-      );
+      showMessage("تعذر تحميل الصفحة $e");
     }
   }
 
@@ -288,11 +286,23 @@ class _SurahPageState extends State<SurahPage> {
 
                       return TextSpan(
                         children: [
-                          if (verseIndex == 1)
+                          if (verseIndex == 1) ...[
                             WidgetSpan(
                               alignment: PlaceholderAlignment.middle,
                               child: SurahBorder(surahNumber: surahNumber),
                             ),
+                            if (surahNumber != 1 &&
+                                surahNumber !=
+                                    9) // Exclude Surah Al-Fatiha and Al-Tawbah
+                              TextSpan(
+                                text: '${AlQuran.getBismillah.unicode}\n\n',
+                                style: AppStyles.styleAmiriMedium30(context)
+                                    .copyWith(
+                                  height: 1,
+                                  fontSize: fontSizeProvider.fontSize,
+                                ),
+                              ),
+                          ],
                           ...wordSpans,
                         ],
                       );
