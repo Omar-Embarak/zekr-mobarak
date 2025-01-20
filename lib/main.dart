@@ -25,6 +25,7 @@ import 'splash_page.dart';
 final GlobalKey<NavigatorState> globalNavigatorKey =
     GlobalKey<NavigatorState>();
 Future<List<AzkarModel>> loadResources() async {
+  
   final String jsonContent =
       await rootBundle.loadString('assets/db/adhkar.json');
   final jsonData = jsonDecode(jsonContent) as List;

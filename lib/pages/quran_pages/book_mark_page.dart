@@ -45,7 +45,7 @@ class BookmarksPage extends StatelessWidget {
                   ),
                   title: Text(
                     'سورة ${bookmark.surahName}',
-                    style: AppStyles.styleCairoMedium15white(context),
+                    style: AppStyles.alwaysBlack18(context),
                   ),
                   subtitle: Text(
                     'صفحة ${bookmark.pageNumber}',

@@ -17,7 +17,6 @@ class _SurahListWidgetState extends State<SurahListWidget>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-
   @override
   Widget build(BuildContext context) {
     super.build(context); // Call this to ensure keep-alive works
@@ -121,7 +120,7 @@ class _SurahListWidgetState extends State<SurahListWidget>
             subtitle: Row(
               children: [
                 Text(
-                  '$surahType - ${surahsAyat[entry.key - 1]['count']} اية',
+                  '$surahType - ${quran.getVerseCount(entry.key)} اية',
                   style: AppStyles.styleDiodrumArabicMedium11(context),
                 ),
               ],
