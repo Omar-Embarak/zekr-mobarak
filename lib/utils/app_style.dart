@@ -202,9 +202,9 @@ abstract class AppStyles {
     );
   }
 
-  static TextStyle styleAmiriMedium30(context) {
+  static TextStyle styleUthmanicMedium30(context) {
     return TextStyle(
-      fontFamily: 'Amiri',
+      fontFamily: 'Uthmanic',
       fontSize: getResponsiveFontSize(context, fontSize: 30),
       color: AppStyles.themeNotifier.value == defaultTheme
           ? AppColors.kSecondaryColor

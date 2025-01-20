@@ -12,7 +12,8 @@ WidgetSpan bamallaWidget(BuildContext context) {
             vertical: 4.0), // Control space above and below
         child: Text(
           AlQuran.getBismillah.unicode, // Removed extra \n
-          style: AppStyles.styleAmiriMedium30(context).copyWith(fontSize: 14),
+          style:
+              AppStyles.styleUthmanicMedium30(context).copyWith(fontSize: 14),
           textAlign: TextAlign.center,
         ),
       ),

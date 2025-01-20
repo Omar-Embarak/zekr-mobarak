@@ -3,7 +3,6 @@ import 'package:azkar_app/utils/app_images.dart';
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../constants.dart';
 import 'book_mark_provider.dart';
 
 class BookmarksPage extends StatelessWidget {

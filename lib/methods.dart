@@ -115,7 +115,7 @@ void showTafseer({
           child: SingleChildScrollView(
             child: Text(
               tafseerAyah,
-              style: AppStyles.styleAmiriMedium30(context)
+              style: AppStyles.styleUthmanicMedium30(context)
                   .copyWith(color: Colors.white),
               textAlign: TextAlign.justify,
             ),

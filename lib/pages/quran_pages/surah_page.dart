@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:al_quran/al_quran.dart';
 import 'dart:async';
 import 'package:flutter/gestures.dart';
@@ -223,16 +225,13 @@ class _SurahPageState extends State<SurahPage> {
     return Consumer<QuranFontSizeProvider>(
       builder: (context, fontSizeProvider, child) {
         return Center(
-          // Center the entire content
           child: SingleChildScrollView(
-            // Allow vertical scrolling
             child: Padding(
-              padding:
-                  const EdgeInsets.all(8.0), // Add padding around the content
+              padding: const EdgeInsets.all(8.0),
               child: RichText(
-                textAlign: TextAlign.center, // Center-align text
+                textAlign: TextAlign.center,
                 text: TextSpan(
-                  style: AppStyles.styleAmiriMedium30(context).copyWith(
+                  style: AppStyles.styleUthmanicMedium30(context).copyWith(
                     fontSize: fontSizeProvider.fontSize,
                   ),
                   children: pageContent.entries.expand((entry) {
@@ -252,7 +251,7 @@ class _SurahPageState extends State<SurahPage> {
                             word, fontSizeProvider.fontSize);
 
                         return TextSpan(
-                          text: '$word ', // Add a space after each word
+                          text: '$word ',
                           style: TextStyle(
                             fontSize: adjustedFontSize,
                             backgroundColor: isHighlighted
@@ -262,25 +261,24 @@ class _SurahPageState extends State<SurahPage> {
                           ),
                           recognizer: LongPressGestureRecognizer()
                             ..onLongPressStart = (details) {
-                              // Get the global position of the long press
                               RenderBox renderBox =
                                   context.findRenderObject() as RenderBox;
                               Offset globalPosition = renderBox
                                   .localToGlobal(details.globalPosition);
 
-                              // Trigger _selectVerse
                               _selectVerse(
                                   globalPosition, verseIndex, surahNumber);
                             },
                         );
                       }).toList();
 
-                      // Add the verse end symbol
+                      // Manually add the verse end symbol with number only
                       wordSpans.add(TextSpan(
                         text:
                             '${quran.getVerseEndSymbol(verseIndex, arabicNumeral: true)} ',
                         style: TextStyle(
                           fontSize: fontSizeProvider.fontSize,
+                          fontFamily: "Amiri",
                         ),
                       ));
 
@@ -291,15 +289,14 @@ class _SurahPageState extends State<SurahPage> {
                               alignment: PlaceholderAlignment.middle,
                               child: SurahBorder(surahNumber: surahNumber),
                             ),
-                            if (surahNumber != 1 &&
-                                surahNumber !=
-                                    9) // Exclude Surah Al-Fatiha and Al-Tawbah
+                            if (surahNumber != 1 && surahNumber != 9)
                               TextSpan(
                                 text: '${AlQuran.getBismillah.unicode}\n\n',
-                                style: AppStyles.styleAmiriMedium30(context)
+                                style: AppStyles.styleAmiriMedium11(context)
                                     .copyWith(
                                   height: 1,
-                                  fontSize: fontSizeProvider.fontSize,
+                                  fontSize:
+                                      min(fontSizeProvider.fontSize - 10, 34),
                                 ),
                               ),
                           ],

@@ -94,6 +94,9 @@ flutter:
     - family: DiodrumArabic
       fonts:
         - asset: assets/fonts/alfont_com_AlFont_com_DiodrumArabic-Regular-1.ttf
+    - family: Uthmanic
+      fonts:
+        - asset: assets\fonts\KFGQPC-Uthmanic-Script-HAFS.otf
 flutter_assets:
   assets_path: assets/images
   output_path: lib/utils/

@@ -170,7 +170,7 @@ class SearchItem extends StatelessWidget {
     return ListTile(
       title: RichText(
         text: TextSpan(
-          style: AppStyles.styleAmiriMedium30(context),
+          style: AppStyles.styleUthmanicMedium30(context),
           children: spans,
         ),
       ),
