@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:al_quran/al_quran.dart';
 import 'dart:async';
 import 'package:flutter/gestures.dart';
@@ -164,6 +163,7 @@ class _SurahPageState extends State<SurahPage> {
       return PopScope(
           canPop: false,
           onPopInvokedWithResult: (bool didPop, Object? result) async {
+              
             // Navigate to QuranReadingMainPage
             Navigator.pushAndRemoveUntil(
               context,

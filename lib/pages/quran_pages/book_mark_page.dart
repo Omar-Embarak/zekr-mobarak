@@ -4,6 +4,7 @@ import 'package:azkar_app/utils/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'book_mark_provider.dart';
+import 'search_provider.dart';
 
 class BookmarksPage extends StatelessWidget {
   const BookmarksPage({super.key});
@@ -33,6 +34,8 @@ class BookmarksPage extends StatelessWidget {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => SurahPage(
                         pageNumber: provider.bookmarks[index].pageNumber)));
+                Provider.of<SearchProvider>(context, listen: false)
+                    .updateQuery('');
               },
               child: Card(
                 elevation: 3,

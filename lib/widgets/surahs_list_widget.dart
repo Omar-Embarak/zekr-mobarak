@@ -169,5 +169,6 @@ class _SurahListWidgetState extends State<SurahListWidget>
         ),
       ),
     );
+    Provider.of<SearchProvider>(context, listen: false).updateQuery('');
   }
 }

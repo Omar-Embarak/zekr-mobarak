@@ -33,8 +33,7 @@ class _QuranReadingMainPageState extends State<QuranReadingMainPage> {
       );
 
       if (!_isSearching) {
-        Provider.of<SearchProvider>(context, listen: false)
-            .clearSearchController();
+       
         _filterPageContent('');
       }
     });

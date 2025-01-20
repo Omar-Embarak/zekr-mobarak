@@ -171,15 +171,15 @@ class _JuzListPageState extends State<JuzListPage>
         containers.add(
           GestureDetector(
             onTap: () {
-              Provider.of<SearchProvider>(context, listen: false)
-                  .clearSearchController();
+        
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => SurahPage(
                     pageNumber: getPageNumber(surahNumber, verseNumber),
                   ),
                 ),
-              );
+              );  Provider.of<SearchProvider>(context, listen: false).updateQuery('');
+
             },
             child: Container(
               width: double.infinity,
@@ -317,7 +317,7 @@ class _JuzListPageState extends State<JuzListPage>
         maxLines: 1,
         overflow: TextOverflow.ellipsis, // Ensure ellipses for overflow
         text: TextSpan(
-          style: AppStyles.styleRajdhaniMedium22(context), // Base text style
+          style: AppStyles.styleUthmanicMedium30(context), // Base text style
           children: [
             // Text before the matched query
             TextSpan(

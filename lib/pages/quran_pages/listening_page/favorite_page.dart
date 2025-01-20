@@ -79,8 +79,9 @@ class _FavoritePageState extends State<FavoritePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.kPrimaryColor,
-      appBar: AppBar(  iconTheme: IconThemeData(
-            color: AppStyles.styleCairoMedium15white(context).color),
+      appBar: AppBar(
+          iconTheme: IconThemeData(
+              color: AppStyles.styleCairoMedium15white(context).color),
           backgroundColor: AppColors.kSecondaryColor,
           title: _isSearching
               ? TextField(
@@ -101,13 +102,13 @@ class _FavoritePageState extends State<FavoritePage> {
                   style: AppStyles.styleCairoBold20(context),
                 ),
           actions: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GestureDetector(
-                onTap: _toggleSearch,
-        child: Icon(_isSearching ? Icons.close : Icons.search),
-              ),
-            )
+            // Padding(
+            //   padding: const EdgeInsets.all(8.0),
+            //   child: GestureDetector(
+            //     onTap: _toggleSearch,
+            //     child: Icon(_isSearching ? Icons.close : Icons.search),
+            //   ),
+            // )
           ]),
       body: filteredFavs.isNotEmpty
           ? ListView.builder(
@@ -134,7 +135,6 @@ class _FavoritePageState extends State<FavoritePage> {
                         child: Text(
                           '> ${favModel.reciter.name} ',
                           style: AppStyles.styleCairoBold20(context).copyWith(
-                            color: AppColors.kSecondaryColor,
                             decoration: TextDecoration.underline,
                           ),
                         ),
@@ -156,5 +156,34 @@ class _FavoritePageState extends State<FavoritePage> {
               ),
             ),
     );
+  }
+
+  List<TextSpan> _highlightQuery(
+      String normalizedContent, String processedQuery, String originalContent) {
+    List<TextSpan> spans = [];
+    int startIndex = normalizedContent.indexOf(processedQuery);
+
+    while (startIndex != -1) {
+      spans.add(TextSpan(
+          text: originalContent.substring(0, startIndex),
+          style: AppStyles.styleUthmanicMedium30(context)));
+      spans.add(TextSpan(
+        text: originalContent.substring(
+            startIndex, startIndex + processedQuery.length),
+        style: AppStyles.styleUthmanicMedium30(context)
+            .copyWith(color: Colors.red),
+      ));
+      originalContent =
+          originalContent.substring(startIndex + processedQuery.length);
+      normalizedContent =
+          normalizedContent.substring(startIndex + processedQuery.length);
+      startIndex = normalizedContent.indexOf(processedQuery);
+    }
+
+    spans.add(TextSpan(
+        text: originalContent,
+        style: AppStyles.styleUthmanicMedium30(context)));
+
+    return spans;
   }
 }

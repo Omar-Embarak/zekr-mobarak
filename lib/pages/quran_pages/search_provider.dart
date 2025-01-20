@@ -12,11 +12,11 @@ class SearchProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void clearSearchController() {
-    _searchController.clear();
-    notifyListeners();
+  // void clearSearchController() {
+  //   _searchController.clear();
+  //   notifyListeners();
 
-  }
+  // }
 
    TextEditingController searchController() {
     return _searchController;
