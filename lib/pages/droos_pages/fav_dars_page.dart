@@ -12,6 +12,9 @@ class FavDarsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        iconTheme:
+            IconThemeData(color: AppStyles.styleCairoBold20(context).color),
         title: Text(
           'المفضلة',
           style: AppStyles.styleCairoBold20(context),

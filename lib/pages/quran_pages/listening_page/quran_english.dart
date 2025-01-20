@@ -46,6 +46,18 @@ class QuranEnglishPage extends StatelessWidget {
       name: 'Abdullah Basfar and Ibrahim Walksi',
       zeroPaddingSurahNumber: true,
     ),
+    RecitersModel(
+      url:
+          'https://download.quranicaudio.com/quran/abdulbaset_with_naeem_sultan_pickthall//',
+      name: 'Abdulbasit and Naeem Sultan ',
+      zeroPaddingSurahNumber: true,
+    ),
+        RecitersModel(
+      url:
+          'https://download.quranicaudio.com/quran/sudais_shuraim_with_naeem_sultan_pickthall//',
+      name: 'Sudais, Shuraim with Naeem Sultan ',
+      zeroPaddingSurahNumber: true,
+    ),
   ];
 
   @override

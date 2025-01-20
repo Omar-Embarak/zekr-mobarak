@@ -50,46 +50,46 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
   Future<void> _checkInternetConnection() async {
     final List<ConnectivityResult> connectivityResults =
         await Connectivity().checkConnectivity();
-        if(mounted) {
-          setState(() {
-      _connectivityStatus =
-          connectivityResults.contains(ConnectivityResult.none)
-              ? ConnectivityResult.none
-              : connectivityResults.first;
-    });
-        }
+    if (mounted) {
+      setState(() {
+        _connectivityStatus =
+            connectivityResults.contains(ConnectivityResult.none)
+                ? ConnectivityResult.none
+                : connectivityResults.first;
+      });
+    }
   }
 
   void setTotalDuration(Duration duration) {
-        if(mounted) {
-          setState(() {
-      totalDuration = duration;
-    });
-        }
+    if (mounted) {
+      setState(() {
+        totalDuration = duration;
+      });
+    }
   }
 
   void setCurrentDuration(Duration duration) {
-        if(mounted) {
-          setState(() {
-      currentDuration = duration;
-    });
-        }
+    if (mounted) {
+      setState(() {
+        currentDuration = duration;
+      });
+    }
   }
 
   void setIsPlaying(bool playing) {
-        if(mounted) {
-          setState(() {
-      isPlaying = playing;
-    });
-        }
+    if (mounted) {
+      setState(() {
+        isPlaying = playing;
+      });
+    }
   }
 
   void toggleExpanded() {
-        if(mounted) {
-          setState(() {
-      isExpanded = !isExpanded;
-    });
-        }
+    if (mounted) {
+      setState(() {
+        isExpanded = !isExpanded;
+      });
+    }
   }
 
   void _showOfflineMessage() {
@@ -123,6 +123,7 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Colors.white,
+        boxShadow: const [BoxShadow(color: Colors.black)],
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -172,9 +173,9 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
             }
 
             // Update the UI after the favorite status changes
-        if(mounted) {
-          setState(() {});
-        }
+            if (mounted) {
+              setState(() {});
+            }
           },
           child: isFavorite
               ? const Icon(
@@ -264,10 +265,10 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
       value: currentDuration.inSeconds.toDouble(),
       max: totalDuration.inSeconds.toDouble(),
       onChanged: (value) {
-        if(mounted) {
+        if (mounted) {
           setState(() {
-          currentDuration = Duration(seconds: value.toInt());
-        });
+            currentDuration = Duration(seconds: value.toInt());
+          });
         }
         _audioPlayer.seek(currentDuration);
       },
@@ -285,6 +286,8 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
         ),
         IconButton(
           onPressed: () => _handleAudioAction(() {
+            showMessage("جاري التشغيل..");
+
             togglePlayPause(
                 _audioPlayer, isPlaying, widget.audioUrl, setIsPlaying, null);
           }),

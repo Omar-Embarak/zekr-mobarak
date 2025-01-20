@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math' show pi;
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_qiblah/flutter_qiblah.dart';
@@ -20,7 +19,7 @@ class QiblaCompass extends StatefulWidget {
 class _QiblaCompassState extends State<QiblaCompass> {
   final _locationStreamController =
       StreamController<LocationStatus>.broadcast();
-  late ConnectivityResult _connectivityStatus;
+  // late ConnectivityResult _connectivityStatus;
 
   @override
   void initState() {
@@ -37,17 +36,17 @@ class _QiblaCompassState extends State<QiblaCompass> {
   }
 
   Future<void> _checkInternetConnection() async {
-    final List<ConnectivityResult> connectivityResults =
-        await Connectivity().checkConnectivity();
+    // final List<ConnectivityResult> connectivityResults =
+    //     await Connectivity().checkConnectivity();
 
-    if (mounted) {
-      setState(() {
-        _connectivityStatus =
-            connectivityResults.contains(ConnectivityResult.none)
-                ? ConnectivityResult.none
-                : connectivityResults.first;
-      });
-    }
+    // if (mounted) {
+    //   setState(() {
+    //     _connectivityStatus =
+    //         connectivityResults.contains(ConnectivityResult.none)
+    //             ? ConnectivityResult.none
+    //             : connectivityResults.first;
+    //   });
+    // }
   }
 
   Future<void> _initializeLocationStream() async {

@@ -30,10 +30,31 @@ class _MurattalPageState extends State<MurattalPage> {
       name: 'ابو بكر الشاطري',
       zeroPaddingSurahNumber: false,
     ),
+       RecitersModel(
+      url: 'https://download.quranicaudio.com/qdc/yasser_ad-dussary/mp3/',
+      name: 'ياسر الدوسري  ',
+      zeroPaddingSurahNumber: false,
+    ),
     RecitersModel(
       url: 'https://download.quranicaudio.com/qdc/hani_ar_rifai/murattal/',
       name: 'هاني الرفاعي',
       zeroPaddingSurahNumber: false,
+    ),  RecitersModel(
+      url:
+          'https://download.quranicaudio.com/quran/sa3d_al-ghaamidi/complete//',
+      name: 'سعد الغامدي',
+      zeroPaddingSurahNumber: true,
+    ),
+    RecitersModel(
+      url:
+          'https://download.quranicaudio.com/quran/tawfeeq_bin_saeed-as-sawaaigh//',
+      name: 'توفيق الصائغ',
+      zeroPaddingSurahNumber: true,
+    ),
+    RecitersModel(
+      url: 'https://download.quranicaudio.com/quran/mahmood_ali_albana//',
+      name: 'محمود علي البنا  ',
+      zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
       url: 'https://download.quranicaudio.com/qdc/khalil_al_husary/murattal/',
@@ -82,23 +103,7 @@ class _MurattalPageState extends State<MurattalPage> {
       name: 'عبدالمحسن القاسم',
       zeroPaddingSurahNumber: true,
     ),
-    RecitersModel(
-      url:
-          'https://download.quranicaudio.com/quran/sa3d_al-ghaamidi/complete//',
-      name: 'سعد الغامدي',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url:
-          'https://download.quranicaudio.com/quran/tawfeeq_bin_saeed-as-sawaaigh//',
-      name: 'توفيق الصائغ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/mahmood_ali_albana//',
-      name: 'محمود علي البنا  ',
-      zeroPaddingSurahNumber: true,
-    ),
+  
     RecitersModel(
       url: 'https://download.quranicaudio.com/quran/thubaity//',
       name: 'عبدالباري بن عواض الثبيتي',
@@ -221,18 +226,8 @@ class _MurattalPageState extends State<MurattalPage> {
       name: 'صلاح البدير ',
       zeroPaddingSurahNumber: true,
     ),
-    RecitersModel(
-      url:
-          'https://download.quranicaudio.com/quran/abdulbaset_with_naeem_sultan_pickthall//',
-      name: 'عبدالباسط عبدالصمد ونعيم سلطان ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url:
-          'https://download.quranicaudio.com/quran/sudais_shuraim_with_naeem_sultan_pickthall//',
-      name: 'السديس والشريم مع نعيم سلطان ',
-      zeroPaddingSurahNumber: true,
-    ),
+
+
     RecitersModel(
       url: 'https://download.quranicaudio.com/quran/maher_256//',
       name: 'ماهر المعيقلي ',
@@ -393,6 +388,7 @@ class _MurattalPageState extends State<MurattalPage> {
       name: 'بندر بليلة - كامل  ',
       zeroPaddingSurahNumber: true,
     ),
+
     RecitersModel(
       url: 'https://download.quranicaudio.com/quran/muhammad_khaleel//',
       name: 'محمد خليل  ',
@@ -443,11 +439,7 @@ class _MurattalPageState extends State<MurattalPage> {
       name: 'نورين محمد صديق  ',
       zeroPaddingSurahNumber: true,
     ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/bandar_baleela/complete//',
-      name: 'بندر بليلة - كامل  ',
-      zeroPaddingSurahNumber: true,
-    ),
+
     RecitersModel(
       url: 'https://download.quranicaudio.com/quran/khalifah_taniji//',
       name: 'خليفة الطنيجي  ',
@@ -479,11 +471,7 @@ class _MurattalPageState extends State<MurattalPage> {
       name: 'محمد الهادي توري  ',
       zeroPaddingSurahNumber: false,
     ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/qdc/yasser_ad-dussary/mp3/',
-      name: 'ياسر الدوسري  ',
-      zeroPaddingSurahNumber: false,
-    ),
+ 
   ];
   final TextEditingController _searchController = TextEditingController();
   List<int> filteredReciters = [];

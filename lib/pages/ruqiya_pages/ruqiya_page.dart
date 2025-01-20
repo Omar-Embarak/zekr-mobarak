@@ -28,6 +28,8 @@ class _RuqiyaPageState extends State<RuqiyaPage> {
       child: Scaffold(
         backgroundColor: AppColors.kPrimaryColor,
         appBar: AppBar(
+          iconTheme:
+              IconThemeData(color: AppStyles.styleCairoBold20(context).color),
           backgroundColor: AppColors.kSecondaryColor,
           centerTitle: true,
           title: Text(

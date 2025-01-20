@@ -14,6 +14,8 @@ class FavAzkarPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme:
+            IconThemeData(color: AppStyles.styleCairoBold20(context).color),
         title: Text(
           'أذكاري المفضلة',
           style: AppStyles.styleCairoBold20(context),
@@ -28,7 +30,7 @@ class FavAzkarPage extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No favorites yet.'));
+            return const Center(child: Text('لم يتم اضافة عناصر مفضلة بعد.'));
           } else {
             final favorites = snapshot.data!;
             return ListView.builder(

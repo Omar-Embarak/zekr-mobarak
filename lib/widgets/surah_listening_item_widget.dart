@@ -68,6 +68,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
         });
       }
     });
+
     _audioPlayer.onDurationChanged.listen((duration) {
       if (mounted) {
         setState(() {
@@ -153,9 +154,9 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       width: double.infinity,
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: Colors.white,
-      ),
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.white,
+          boxShadow: const [BoxShadow(color: Colors.black)]),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

@@ -1,3 +1,4 @@
+import 'package:http/http.dart' as http;
 import 'dart:developer';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:azkar_app/utils/app_style.dart';
@@ -55,21 +56,45 @@ void initializeAudioPlayer(
   });
 }
 
-Future<void> togglePlayPause(
-    AudioPlayer audioPlayer,
-    bool isPlaying,
-    String audioUrl,
-    Function(bool) setIsPlaying,
-    void Function()? onSurahTap) async {
-  if (isPlaying) {
-    await audioPlayer.pause();
-  } else {
-    await audioPlayer.play(UrlSource(audioUrl));
-    if (onSurahTap != null) {
-      onSurahTap();
-    }
+Future<bool> isUrlAccessible(String url) async {
+  try {
+    final response = await http.head(Uri.parse(url));
+    return response.statusCode == 200;
+  } catch (e) {
+    return false;
   }
-  setIsPlaying(!isPlaying);
+}
+
+Future<void> togglePlayPause(
+  AudioPlayer audioPlayer,
+  bool isPlaying,
+  String audioUrl,
+  Function(bool) setIsPlaying,
+  void Function()? onSurahTap,
+) async {
+  if (!await isUrlAccessible(audioUrl)) {
+    showMessage('الملف الصوتي غير متاح.');
+    return;
+  }
+
+  try {
+    if (isPlaying) {
+      showMessage("تم ايقاف التشغيل");
+
+      await audioPlayer.pause();
+    } else {
+      showMessage("جاري التشغيل..");
+
+      await audioPlayer.play(UrlSource(audioUrl));
+      if (onSurahTap != null) {
+        onSurahTap();
+      }
+    }
+    setIsPlaying(!isPlaying);
+  } catch (e) {
+    showMessage('حدث خطأ أثناء تشغيل الصوت.');
+    setIsPlaying(false);
+  }
 }
 
 void showTafseer({
