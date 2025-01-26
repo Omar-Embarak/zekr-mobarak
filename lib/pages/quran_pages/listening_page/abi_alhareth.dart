@@ -23,6 +23,8 @@ class AbiAlharethPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.kPrimaryColor,
       appBar: AppBar(
+          iconTheme: IconThemeData(
+            color: AppStyles.styleCairoMedium15white(context).color),
         backgroundColor: AppColors.kSecondaryColor,
         title: Text(
           'رواية أبي الحارث',

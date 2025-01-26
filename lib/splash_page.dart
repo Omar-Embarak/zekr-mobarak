@@ -10,20 +10,14 @@ class AppIconLoader extends StatefulWidget {
 
 class _AppIconLoaderState extends State<AppIconLoader>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    )..repeat(); // Repeats the animation
   }
 
   @override
   void dispose() {
-    _controller.dispose();
     super.dispose();
   }
 
@@ -33,13 +27,10 @@ class _AppIconLoaderState extends State<AppIconLoader>
       home: Scaffold(
         backgroundColor: Colors.white,
         body: Center(
-          child: RotationTransition(
-            turns: _controller,
-            child: Image.asset(
-              'assets/images/ic_launcher.png', // Replace with your app icon path
-              width: 100,
-              height: 100,
-            ),
+          child: Image.asset(
+            'assets/images/ic_launcher.png', // Replace with your app icon path
+            width: 100,
+            height: 100,
           ),
         ),
       ),

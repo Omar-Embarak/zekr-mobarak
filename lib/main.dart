@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:azkar_app/cubit/add_fav_surahcubit/add_fav_surah_item_cubit.dart';
 import 'package:azkar_app/cubit/ruqiya_cubit/ruqiya_cubit.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'cubit/azkar_cubit/azkar_cubit.dart';
 import 'cubit/praying_cubit/praying_cubit.dart';
 import 'cubit/theme_cubit/theme_cubit.dart';
@@ -25,7 +27,6 @@ import 'splash_page.dart';
 final GlobalKey<NavigatorState> globalNavigatorKey =
     GlobalKey<NavigatorState>();
 Future<List<AzkarModel>> loadResources() async {
-  
   final String jsonContent =
       await rootBundle.loadString('assets/db/adhkar.json');
   final jsonData = jsonDecode(jsonContent) as List;
@@ -51,13 +52,18 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // final db = await DatabaseHelper().database;
   // await db.close();
+  // Initialize database factory for desktop platforms
+  if (!Platform.isAndroid && !Platform.isIOS) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
 
   // Initialize notification service
   await NotificationService.init();
 
   await ThemeCubit().loadInitialTheme();
   Bloc.observer = SimpleBlocObserver();
- runApp(
+  runApp(
     FutureBuilder(
       future: loadResources(),
       builder: (context, snapshot) {

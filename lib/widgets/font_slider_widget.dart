@@ -22,7 +22,9 @@ class FontSlider extends StatelessWidget {
             builder: (context, fontSizeProvider, child) {
               return Slider(
                 activeColor: AppColors.kPrimaryColor,
-                inactiveColor: AppColors.kSecondaryColor,
+                inactiveColor: AppStyles.themeNotifier.value == darkTheme
+                    ? Colors.white
+                    : AppColors.kSecondaryColor,
                 value: fontSizeProvider.fontSize,
                 min: 15,
                 max: 60,

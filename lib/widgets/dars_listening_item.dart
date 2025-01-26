@@ -4,6 +4,7 @@ import 'package:azkar_app/pages/droos_pages/fav_dars_provider.dart';
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import '../../constants.dart';
 import '../../methods.dart';
@@ -123,7 +124,12 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Colors.white,
-        boxShadow: const [BoxShadow(color: Colors.black)],
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black,
+            spreadRadius: .1,
+          )
+        ],
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -183,9 +189,10 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
                   color: Colors.red,
                   size: 30,
                 )
-              : const IconConstrain(
+              : SvgPicture.asset(
                   height: 30,
-                  imagePath: Assets.imagesHeart,
+                  Assets.imagesHeart,
+                  placeholderBuilder: (context) => const Icon(Icons.error),
                 ),
         ),
         const SizedBox(width: 10),
@@ -209,7 +216,11 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
       children: [
         GestureDetector(
           onTap: () => shareAudio(widget.audioUrl),
-          child: const IconConstrain(height: 30, imagePath: Assets.imagesShare),
+          child: SvgPicture.asset(
+            height: 30,
+            Assets.imagesShare,
+            placeholderBuilder: (context) => const Icon(Icons.error),
+          ),
         ),
         const SizedBox(width: 10),
         GestureDetector(
@@ -218,8 +229,11 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
 
             downloadAudio(widget.audioUrl, widget.title, context);
           }),
-          child: const IconConstrain(
-              height: 30, imagePath: Assets.imagesDocumentDownload),
+          child: SvgPicture.asset(
+            height: 30,
+            Assets.imagesDocumentDownload,
+            placeholderBuilder: (context) => const Icon(Icons.error),
+          ),
         ),
         const SizedBox(width: 10),
       ],

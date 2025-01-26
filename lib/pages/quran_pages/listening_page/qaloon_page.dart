@@ -21,7 +21,8 @@ class QaloonPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.kPrimaryColor,
-      appBar: AppBar(
+      appBar: AppBar(  iconTheme: IconThemeData(
+            color: AppStyles.styleCairoMedium15white(context).color),
         backgroundColor: AppColors.kSecondaryColor,
         title: Text(
           'رواية قالون',

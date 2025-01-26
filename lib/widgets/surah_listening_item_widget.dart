@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:quran/quran.dart' as quran;
 import '../cubit/add_fav_surahcubit/add_fav_surah_item_cubit.dart';
 import '../database_helper.dart';
@@ -12,7 +13,6 @@ import '../methods.dart';
 import '../constants.dart';
 import '../utils/app_images.dart';
 import '../utils/app_style.dart';
-import 'icon_constrain_widget.dart';
 
 class SurahListeningItem extends StatefulWidget {
   final int surahIndex;
@@ -40,15 +40,14 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
   Duration currentDuration = Duration.zero;
   final AudioPlayer _audioPlayer = AudioPlayer();
   late ConnectivityResult _connectivityStatus;
-  late DatabaseHelper _databaseHelper;
   StreamSubscription<PlayerState>? _playerStateSubscription;
-
+  final DatabaseHelper _databaseHelper = DatabaseHelper();
   @override
   void initState() {
     super.initState();
+    _initializeFavoriteState();
     _initializeAudioPlayer();
     _checkInternetConnection();
-    _databaseHelper = DatabaseHelper();
   }
 
   @override
@@ -110,6 +109,17 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
     }
   }
 
+  Future<void> _initializeFavoriteState() async {
+    // Check if this surah is marked as favorite
+    final favoriteState = await _databaseHelper.isFavoriteExists(
+        widget.surahIndex, widget.reciter.name);
+    if (mounted) {
+      setState(() {
+        isFavorite = favoriteState;
+      });
+    }
+  }
+
   void toggleFavorite() {
     if (mounted) {
       setState(() {
@@ -154,9 +164,15 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       width: double.infinity,
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Colors.white,
-          boxShadow: const [BoxShadow(color: Colors.black)]),
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.white,
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black,
+            spreadRadius: .1,
+          )
+        ],
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -168,51 +184,29 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
   }
 
   Widget buildSurahRow() {
-    return FutureBuilder<bool>(
-      future: _databaseHelper.isFavoriteExists(
-          widget.surahIndex, widget.reciter.name),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          isFavorite = snapshot.data ?? false;
-          return Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(width: 10),
-              GestureDetector(
-                onTap: toggleFavorite,
-                child: isFavorite
-                    ? const Icon(Icons.favorite, color: Colors.red, size: 30)
-                    : const IconConstrain(
-                        height: 30, imagePath: Assets.imagesHeart),
-              ),
-              const SizedBox(width: 10),
-              Text(
-                'سورة ${quran.getSurahNameArabic(widget.surahIndex + 1)}',
-                style: AppStyles.styleRajdhaniMedium18(context)
-                    .copyWith(color: Colors.black),
-              ),
-              const Spacer(),
-              buildActionButtons(),
-            ],
-          );
-        } else {
-          return Row(
-            children: [
-              const SizedBox(width: 10),
-              GestureDetector(
-                onTap: () {},
-                child: const IconConstrain(
-                    height: 30, imagePath: Assets.imagesHeart),
-              ),
-              const SizedBox(width: 10),
-              Text('سورة ${quran.getSurahNameArabic(widget.surahIndex + 1)}',
-                  style: AppStyles.alwaysBlack18(context)),
-              const Spacer(),
-              buildActionButtons(),
-            ],
-          );
-        }
-      },
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const SizedBox(width: 10),
+        GestureDetector(
+          onTap: toggleFavorite,
+          child: isFavorite
+              ? const Icon(Icons.favorite, color: Colors.red, size: 30)
+              : SvgPicture.asset(
+                  height: 30,
+                  Assets.imagesHeart,
+                  placeholderBuilder: (context) => const Icon(Icons.error),
+                ),
+        ),
+        const SizedBox(width: 10),
+        Text(
+          'سورة ${quran.getSurahNameArabic(widget.surahIndex + 1)}',
+          style: AppStyles.styleRajdhaniMedium18(context)
+              .copyWith(color: Colors.black),
+        ),
+        const Spacer(),
+        buildActionButtons(),
+      ],
     );
   }
 
@@ -222,7 +216,11 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       children: [
         GestureDetector(
           onTap: () => shareAudio(widget.audioUrl),
-          child: const IconConstrain(height: 30, imagePath: Assets.imagesShare),
+          child: SvgPicture.asset(
+            height: 30,
+            Assets.imagesShare,
+            placeholderBuilder: (context) => const Icon(Icons.error),
+          ),
         ),
         const SizedBox(width: 10),
         GestureDetector(
@@ -231,8 +229,11 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
             downloadAudio(widget.audioUrl,
                 quran.getSurahNameArabic(widget.surahIndex + 1), context);
           }),
-          child: const IconConstrain(
-              height: 30, imagePath: Assets.imagesDocumentDownload),
+          child: SvgPicture.asset(
+            height: 30,
+            Assets.imagesDocumentDownload,
+            placeholderBuilder: (context) => const Icon(Icons.error),
+          ),
         ),
         const SizedBox(width: 10),
       ],
@@ -293,8 +294,11 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       children: [
         GestureDetector(
           onTap: () => backward(_audioPlayer),
-          child:
-              const IconConstrain(height: 24, imagePath: Assets.imagesForward),
+          child: SvgPicture.asset(
+            height: 24,
+            Assets.imagesForward,
+            placeholderBuilder: (context) => const Icon(Icons.error),
+          ),
         ),
         IconButton(
           onPressed: () => _handleAudioAction(() {
@@ -316,8 +320,11 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
         ),
         GestureDetector(
           onTap: () => forward(_audioPlayer),
-          child:
-              const IconConstrain(height: 24, imagePath: Assets.imagesBackward),
+          child: SvgPicture.asset(
+            height: 24,
+            Assets.imagesBackward,
+            placeholderBuilder: (context) => const Icon(Icons.error),
+          ),
         ),
       ],
     );

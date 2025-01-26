@@ -1,6 +1,8 @@
 import 'package:azkar_app/database_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import '../../constants.dart';
+import '../../utils/app_images.dart';
 import '../../utils/app_style.dart';
 
 class ZekrPage extends StatefulWidget {
@@ -63,10 +65,21 @@ class _ZekrPageState extends State<ZekrPage> {
         actions: [
           IconButton(
             onPressed: _toggleFavorite,
-            icon: Icon(
-              isFavorite ? Icons.favorite : Icons.favorite_border,
-              color: Colors.red,
-            ),
+            icon: isFavorite
+                ? const Icon(
+                    Icons.favorite,
+                    color: Colors.red,
+                  )
+                : SvgPicture.asset(
+                    height: 30,
+                    Assets.imagesHeart,
+                    placeholderBuilder: (context) => const Icon(Icons.error),
+                    colorFilter: ColorFilter.mode(
+                        AppStyles.themeNotifier.value == lightTheme
+                            ? Colors.black
+                            : Colors.white,
+                        BlendMode.srcIn),
+                  ),
           ),
         ],
       ),

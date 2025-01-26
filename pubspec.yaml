@@ -26,13 +26,13 @@ dependencies:
   flutter_localization: ^0.2.0
   flutter_localizations:
     sdk: flutter
-  flutter_qiblah: ^3.0.3
+  flutter_qiblah: ^3.0.4
   flutter_svg: ^2.0.10+1
   flutter_tts: ^4.0.2
-  fluttertoast: ^8.2.4
+  fluttertoast: ^8.2.10
   font_awesome_flutter: ^10.7.0
   geocoding: ^3.0.0
-  geolocator: ^11.1.0
+  geolocator: ^13.0.1
   google_fonts: ^6.2.1
   hive: ^2.2.3
   hive_flutter: ^1.1.0
@@ -52,6 +52,7 @@ dependencies:
   shared_preferences: ^2.0.8
   shimmer: ^3.0.0
   sqflite: ^2.3.3+2
+  sqflite_common_ffi: ^2.3.4+4
   synchronized: ^3.3.0+3
   timezone: ^0.10.0
   url_launcher: ^6.0.12

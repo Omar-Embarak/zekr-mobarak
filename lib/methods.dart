@@ -140,8 +140,7 @@ void showTafseer({
           child: SingleChildScrollView(
             child: Text(
               tafseerAyah,
-              style: AppStyles.styleUthmanicMedium30(context)
-                  .copyWith(color: Colors.white),
+              style: AppStyles.styleCairoBold20(context).copyWith(),
               textAlign: TextAlign.justify,
             ),
           ),
