@@ -14,8 +14,10 @@ import 'package:flutter/material.dart';
 
 import '../../../utils/app_style.dart';
 import '../../../widgets/listening_button.dart';
+import 'al_muallim_page.dart';
 import 'favorite_page.dart';
 import 'murattal_page.dart';
+import 'taraweeh_page.dart';
 
 class ListeningPage extends StatelessWidget {
   const ListeningPage({super.key});
@@ -24,6 +26,7 @@ class ListeningPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<Map<String, dynamic>> buttonData = [
       {'text': 'المفضلة', 'page': const FavoritePage()},
+      {'text': 'المعلم', 'page': const AlMuallimPage()},
       {'text': 'القرآن المرتل', 'page': const MurattalPage()},
       {'text': 'القرآن المجود', 'page': const MugawwadPage()},
       {'text': 'رواية ورش', 'page': const WarshPage()},
@@ -36,6 +39,7 @@ class ListeningPage extends StatelessWidget {
       {'text': 'Quran English', 'page': const QuranEnglishPage()},
       {'text': 'قرآن مكة', 'page': const MakkaPage()},
       {'text': 'قرآن المدينة', 'page': const MadinaPage()},
+      {'text': 'تراويح', 'page': const TraweehPage()},
     ];
 
     return Scaffold(

@@ -20,7 +20,7 @@ class _FavoritePageState extends State<FavoritePage> {
   late DatabaseHelper _databaseHelper;
   final TextEditingController _searchController = TextEditingController();
   List<FavModel> filteredFavs = [];
-  bool _isSearching = false;
+  final bool _isSearching = false;
 
   @override
   void initState() {
@@ -65,15 +65,15 @@ class _FavoritePageState extends State<FavoritePage> {
     });
   }
 
-  void _toggleSearch() {
-    setState(() {
-      _isSearching = !_isSearching;
-      if (!_isSearching) {
-        _searchController.clear();
-        _filterFavs('');
-      }
-    });
-  }
+  // void _toggleSearch() {
+  //   setState(() {
+  //     _isSearching = !_isSearching;
+  //     if (!_isSearching) {
+  //       _searchController.clear();
+  //       _filterFavs('');
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +101,7 @@ class _FavoritePageState extends State<FavoritePage> {
                   'المفضلة',
                   style: AppStyles.styleCairoBold20(context),
                 ),
-          actions: [
+          actions: const [
             // Padding(
             //   padding: const EdgeInsets.all(8.0),
             //   child: GestureDetector(
@@ -158,32 +158,32 @@ class _FavoritePageState extends State<FavoritePage> {
     );
   }
 
-  List<TextSpan> _highlightQuery(
-      String normalizedContent, String processedQuery, String originalContent) {
-    List<TextSpan> spans = [];
-    int startIndex = normalizedContent.indexOf(processedQuery);
+  // List<TextSpan> _highlightQuery(
+  //     String normalizedContent, String processedQuery, String originalContent) {
+  //   List<TextSpan> spans = [];
+  //   int startIndex = normalizedContent.indexOf(processedQuery);
 
-    while (startIndex != -1) {
-      spans.add(TextSpan(
-          text: originalContent.substring(0, startIndex),
-          style: AppStyles.styleUthmanicMedium30(context)));
-      spans.add(TextSpan(
-        text: originalContent.substring(
-            startIndex, startIndex + processedQuery.length),
-        style: AppStyles.styleUthmanicMedium30(context)
-            .copyWith(color: Colors.red),
-      ));
-      originalContent =
-          originalContent.substring(startIndex + processedQuery.length);
-      normalizedContent =
-          normalizedContent.substring(startIndex + processedQuery.length);
-      startIndex = normalizedContent.indexOf(processedQuery);
-    }
+  //   while (startIndex != -1) {
+  //     spans.add(TextSpan(
+  //         text: originalContent.substring(0, startIndex),
+  //         style: AppStyles.styleUthmanicMedium30(context)));
+  //     spans.add(TextSpan(
+  //       text: originalContent.substring(
+  //           startIndex, startIndex + processedQuery.length),
+  //       style: AppStyles.styleUthmanicMedium30(context)
+  //           .copyWith(color: Colors.red),
+  //     ));
+  //     originalContent =
+  //         originalContent.substring(startIndex + processedQuery.length);
+  //     normalizedContent =
+  //         normalizedContent.substring(startIndex + processedQuery.length);
+  //     startIndex = normalizedContent.indexOf(processedQuery);
+  //   }
 
-    spans.add(TextSpan(
-        text: originalContent,
-        style: AppStyles.styleUthmanicMedium30(context)));
+  //   spans.add(TextSpan(
+  //       text: originalContent,
+  //       style: AppStyles.styleUthmanicMedium30(context)));
 
-    return spans;
-  }
+  //   return spans;
+  // }
 }

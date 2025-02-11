@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.azkar_app"
+    namespace = "com.omar.zekr_mobarak"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -21,20 +21,31 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.azkar_app"
+        applicationId = "com.omar.zekr_mobarak"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        multiDexEnabled true
     }
-
+    signingConfigs {
+        release {
+            
+            storeFile file("my-key.jks")
+            storePassword project.property("storePassword")
+            keyAlias project.property("keyAlias")
+            keyPassword project.property("keyPassword")
+        }
+    }
     buildTypes {
         release {
+            minifyEnabled false
+            shrinkResources false
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
 }

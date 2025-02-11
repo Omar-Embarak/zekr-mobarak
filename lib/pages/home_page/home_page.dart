@@ -29,27 +29,33 @@ class _HomePagesState extends State<HomePages> {
     return Scaffold(
       backgroundColor: AppColors.kPrimaryColor,
       appBar: AppBar(
+        // Sets the theme for the icons in the AppBar (e.g., the leading icon)
         iconTheme: IconThemeData(
-            color: AppStyles.styleCairoMedium15white(context).color),
+          color: AppStyles.styleCairoMedium15white(context).color,
+        ),
         backgroundColor: AppColors.kSecondaryColor,
         centerTitle: true,
         title: Text(
           "القائمة الرئيسية",
           style: AppStyles.styleCairoBold20(context),
         ),
+        // Leading widget: Theme icon that shows a menu to change app themes
         leading: IconButton(
           onPressed: () {
+            // Get the overlay to position the menu relative to the screen
             final RenderBox overlay =
                 Overlay.of(context).context.findRenderObject() as RenderBox;
+            // Access the ThemeCubit for theme changes
             final themeCubit = context.read<ThemeCubit>();
 
+            // Show the popup menu for theme selection
             showMenu(
               color: AppColors.kSecondaryColor,
               context: context,
               position: RelativeRect.fromRect(
                 Rect.fromLTWH(
-                  overlay.size.width - 50, // مكان ظهور القائمة
-                  50, // ارتفاع القائمة
+                  overlay.size.width - 50, // Horizontal position of the menu
+                  50, // Vertical position of the menu
                   50,
                   50,
                 ),
@@ -57,24 +63,30 @@ class _HomePagesState extends State<HomePages> {
               ),
               items: [
                 PopupMenuItem(
-                  onTap: () =>
-                      {themeCubit.setTheme(lightTheme), setState(() {})},
+                  onTap: () {
+                    themeCubit.setTheme(lightTheme);
+                    setState(() {});
+                  },
                   child: Text(
                     'الوضع الفاتح',
                     style: AppStyles.styleCairoMedium15white(context),
                   ),
                 ),
                 PopupMenuItem(
-                  onTap: () =>
-                      {themeCubit.setTheme(darkTheme), setState(() {})},
+                  onTap: () {
+                    themeCubit.setTheme(darkTheme);
+                    setState(() {});
+                  },
                   child: Text(
                     'الوضع المظلم',
                     style: AppStyles.styleCairoMedium15white(context),
                   ),
                 ),
                 PopupMenuItem(
-                  onTap: () =>
-                      {themeCubit.setTheme(defaultTheme), setState(() {})},
+                  onTap: () {
+                    themeCubit.setTheme(defaultTheme);
+                    setState(() {});
+                  },
                   child: Text(
                     'الوضع الافتراضي',
                     style: AppStyles.styleCairoMedium15white(context),
@@ -87,6 +99,67 @@ class _HomePagesState extends State<HomePages> {
             Icons.light_mode,
           ),
         ),
+        // Actions: Right-side icons in the AppBar (used here for the info icon)
+        actions: [
+          IconButton(
+            onPressed: () {
+              // Show an AlertDialog with information when the info icon is pressed
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  backgroundColor: AppColors.kSecondaryColor,
+                  title: Text(
+                    "اهداء",
+                    style: TextStyle(
+                      color: AppStyles.styleCairoBold20(context).color,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign:
+                        TextAlign.center, // Centers text within the Text widget
+                  ),
+                  content: SingleChildScrollView(
+                    // Wrap the Text in Center to ensure overall centering in the dialog
+                    child: Center(
+                      child: Text(
+                        '''
+اللهم اجعله خالصا لوجهك الكريم وانفع به المسلمين واجز كل من ساهم فيه وفي نشره خيرا
+
+صدقة جارية عن أبي امبارك ورداني رحمه الله وأمواتنا واموات المسلمين أجمعين وعن امي واخواتي وأبنائهم وازواجهم وزوجتي واولادي وأهلي جميعا وعن المسلمين أجمعين
+
+للتواصل مع المطور: oesam7797@gmail.com
+          '''
+                            .trim(), // .trim() removes extra newlines and spaces from the start and end
+                        style: TextStyle(
+                          color: AppStyles.styleCairoBold20(context).color,
+                          fontFamily: "Amiri",
+                        ),
+                        textAlign: TextAlign
+                            .center, // This centers text content within the Text widget
+                      ),
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        // Close the dialog when the button is pressed
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        "امين",
+                        style: TextStyle(
+                          color: AppStyles.styleCairoBold20(context).color,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+            icon: const Icon(
+              Icons.info_outline,
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
