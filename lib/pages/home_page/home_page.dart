@@ -37,7 +37,7 @@ class _HomePagesState extends State<HomePages> {
         centerTitle: true,
         title: Text(
           "القائمة الرئيسية",
-          style: AppStyles.styleCairoBold20(context),
+          style: AppStyles.styleDiodrumArabicbold20(context),
         ),
         // Leading widget: Theme icon that shows a menu to change app themes
         leading: IconButton(
@@ -111,7 +111,7 @@ class _HomePagesState extends State<HomePages> {
                   title: Text(
                     "اهداء",
                     style: TextStyle(
-                      color: AppStyles.styleCairoBold20(context).color,
+                      color: AppStyles.styleDiodrumArabicbold20(context).color,
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign:
@@ -130,7 +130,8 @@ class _HomePagesState extends State<HomePages> {
           '''
                             .trim(), // .trim() removes extra newlines and spaces from the start and end
                         style: TextStyle(
-                          color: AppStyles.styleCairoBold20(context).color,
+                          color:
+                              AppStyles.styleDiodrumArabicbold20(context).color,
                           fontFamily: "Amiri",
                         ),
                         textAlign: TextAlign
@@ -147,7 +148,8 @@ class _HomePagesState extends State<HomePages> {
                       child: Text(
                         "امين",
                         style: TextStyle(
-                          color: AppStyles.styleCairoBold20(context).color,
+                          color:
+                              AppStyles.styleDiodrumArabicbold20(context).color,
                         ),
                       ),
                     ),

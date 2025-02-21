@@ -13,11 +13,11 @@ class FavDarsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        iconTheme:
-            IconThemeData(color: AppStyles.styleCairoBold20(context).color),
+        iconTheme: IconThemeData(
+            color: AppStyles.styleDiodrumArabicbold20(context).color),
         title: Text(
           'المفضلة',
-          style: AppStyles.styleCairoBold20(context),
+          style: AppStyles.styleDiodrumArabicbold20(context),
         ),
         backgroundColor: AppColors.kSecondaryColor,
       ),
@@ -27,7 +27,7 @@ class FavDarsPage extends StatelessWidget {
           return Center(
             child: Text(
               'لا يوجد دروس محفوظة',
-              style: AppStyles.styleCairoBold20(context),
+              style: AppStyles.styleDiodrumArabicbold20(context),
             ),
           );
         } else {

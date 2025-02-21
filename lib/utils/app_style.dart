@@ -163,6 +163,19 @@ abstract class AppStyles {
     );
   }
 
+  static TextStyle styleDiodrumArabicbold20(context) {
+    return TextStyle(
+      color: AppStyles.themeNotifier.value == defaultTheme
+          ? const Color(0xffffffff)
+          : (AppStyles.themeNotifier.value == lightTheme
+              ? Colors.black
+              : Colors.white),
+      fontSize: getResponsiveFontSize(context, fontSize: 20),
+      fontFamily: 'DiodrumArabic',
+      fontWeight: FontWeight.bold,
+    );
+  }
+
   static TextStyle styleRajdhaniMedium13(context) {
     return TextStyle(
       color: AppStyles.themeNotifier.value == defaultTheme
@@ -173,19 +186,6 @@ abstract class AppStyles {
       fontSize: getResponsiveFontSize(context, fontSize: 13),
       fontFamily: 'Rajdhani',
       fontWeight: FontWeight.w500,
-    );
-  }
-
-  static TextStyle styleCairoBold20(context) {
-    return TextStyle(
-      color: AppStyles.themeNotifier.value == defaultTheme
-          ? const Color(0xffFFFFFF)
-          : (AppStyles.themeNotifier.value == lightTheme
-              ? Colors.black
-              : Colors.white),
-      fontSize: getResponsiveFontSize(context, fontSize: 20),
-      fontFamily: 'Cairo',
-      fontWeight: FontWeight.w700,
     );
   }
 

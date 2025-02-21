@@ -26,7 +26,7 @@ class KhalafPage extends StatelessWidget {
         backgroundColor: AppColors.kSecondaryColor,
         title: Text(
           'رواية خلف',
-          style: AppStyles.styleCairoBold20(context),
+          style: AppStyles.styleDiodrumArabicbold20(context),
         ),
       ),
       body: ListView.builder(

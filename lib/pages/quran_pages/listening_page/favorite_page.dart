@@ -99,7 +99,7 @@ class _FavoritePageState extends State<FavoritePage> {
                 )
               : Text(
                   'المفضلة',
-                  style: AppStyles.styleCairoBold20(context),
+                  style: AppStyles.styleDiodrumArabicbold20(context),
                 ),
           actions: const [
             // Padding(
@@ -134,7 +134,8 @@ class _FavoritePageState extends State<FavoritePage> {
                         },
                         child: Text(
                           '> ${favModel.reciter.name} ',
-                          style: AppStyles.styleCairoBold20(context).copyWith(
+                          style: AppStyles.styleDiodrumArabicbold20(context)
+                              .copyWith(
                             decoration: TextDecoration.underline,
                           ),
                         ),
@@ -152,7 +153,7 @@ class _FavoritePageState extends State<FavoritePage> {
           : Center(
               child: Text(
                 ' لا يوجد عناصر لعرضها',
-                style: AppStyles.styleCairoBold20(context),
+                style: AppStyles.styleDiodrumArabicbold20(context),
               ),
             ),
     );

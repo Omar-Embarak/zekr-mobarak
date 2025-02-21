@@ -78,11 +78,11 @@ class _DroosPageState extends State<DroosPage> {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          iconTheme:
-              IconThemeData(color: AppStyles.styleCairoBold20(context).color),
+          iconTheme: IconThemeData(
+              color: AppStyles.styleDiodrumArabicbold20(context).color),
           title: Text(
             'الدروس الدينية',
-            style: AppStyles.styleCairoBold20(context),
+            style: AppStyles.styleDiodrumArabicbold20(context),
           ),
           backgroundColor: AppColors.kSecondaryColor,
         ),
@@ -161,11 +161,11 @@ class DroosListeningPage extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         iconTheme: IconThemeData(
-          color: AppStyles.styleCairoBold20(context).color,
+          color: AppStyles.styleDiodrumArabicbold20(context).color,
         ),
         title: Text(
           darsName,
-          style: AppStyles.styleCairoBold20(context),
+          style: AppStyles.styleDiodrumArabicbold20(context),
         ),
         backgroundColor: AppColors.kSecondaryColor,
       ),

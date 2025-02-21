@@ -90,7 +90,7 @@ class _QuranContainerUPState extends State<QuranContainerUP> {
                             ? Assets.imagesLeftPage
                             : Assets.imagesRightPage,
                         colorFilter: ColorFilter.mode(
-                            AppStyles.styleCairoBold20(context).color!,
+                            AppStyles.styleDiodrumArabicbold20(context).color!,
                             BlendMode.srcIn),
                       ),
                     ),
@@ -159,7 +159,7 @@ class _QuranContainerUPState extends State<QuranContainerUP> {
                 },
                 icon: Icon(
                   Icons.light_mode,
-                  color: AppStyles.styleCairoBold20(context).color,
+                  color: AppStyles.styleDiodrumArabicbold20(context).color,
                 ),
               ),
               SizedBox(

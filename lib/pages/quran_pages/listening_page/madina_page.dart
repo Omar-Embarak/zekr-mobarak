@@ -108,7 +108,7 @@ class MadinaPage extends StatelessWidget {
         backgroundColor: AppColors.kSecondaryColor,
         title: Text(
           'قرآن المدينة',
-          style: AppStyles.styleCairoBold20(context),
+          style: AppStyles.styleDiodrumArabicbold20(context),
         ),
       ),
       body: ListView.builder(

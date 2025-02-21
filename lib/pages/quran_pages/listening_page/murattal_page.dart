@@ -47,7 +47,7 @@ class _MurattalPageState extends State<MurattalPage> {
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/abu_bakr_shatri/murattal/',
+      url: 'https://download.quranicaudio.com/qdc/abu_bakr_shatri/murattal/',
       name: 'ابو بكر الشاطري',
       zeroPaddingSurahNumber: false,
     ),
@@ -86,7 +86,7 @@ class _MurattalPageState extends State<MurattalPage> {
 
     // المجموعة (خ)
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/khaalid_al-qahtaanee//',
+      url: 'https://download.quranicaudio.com/quran/khaalid_al-qahtaanee//',
       name: 'خالد القحطاني  ',
       zeroPaddingSurahNumber: true,
     ),
@@ -96,7 +96,7 @@ class _MurattalPageState extends State<MurattalPage> {
       zeroPaddingSurahNumber: false,
     ),
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/khalifah_taniji//',
+      url: 'https://download.quranicaudio.com/quran/khalifah_taniji//',
       name: 'خليفة الطنيجي  ',
       zeroPaddingSurahNumber: true,
     ),
@@ -119,39 +119,39 @@ class _MurattalPageState extends State<MurattalPage> {
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/sahl_yaaseen/',
+      url: 'https://download.quranicaudio.com/quran/sahl_yaaseen/',
       name: 'سهل ياسين',
       zeroPaddingSurahNumber: true,
     ),
 
     // المجموعة (ص)
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/saleh_al_taleb//',
+      url: 'https://download.quranicaudio.com/quran/saleh_al_taleb//',
       name: 'صالح الطالب',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/sadaqat_ali//',
+      url: 'https://download.quranicaudio.com/quran/sadaqat_ali//',
       name: 'صداقت علي ',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download/quranicaudio.com/qdc/siddiq_minshawi/murattal/',
+      url: 'https://download.quranicaudio.com/qdc/siddiq_minshawi/murattal/',
       name: 'صديق المنشاوي',
       zeroPaddingSurahNumber: false,
     ),
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/salahbudair//',
+      url: 'https://download.quranicaudio.com/quran/salahbudair//',
       name: 'صلاح البدير ',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/salaah_bukhaatir//',
+      url: 'https://download.quranicaudio.com/quran/salaah_bukhaatir//',
       name: 'صلاح بوخاطر',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/salah_alhashim//',
+      url: 'https://download.quranicaudio.com/quran/salah_alhashim//',
       name: 'صلاح الهاشم ',
       zeroPaddingSurahNumber: true,
     ),
@@ -183,44 +183,44 @@ class _MurattalPageState extends State<MurattalPage> {
     ),
     RecitersModel(
       url:
-          'https://download/quranicaudio.com/quran/abdurrashid_sufi_soosi_rec//',
+          'https://download.quranicaudio.com/quran/abdurrashid_sufi_soosi_rec//',
       name: 'عبدالرشيد صوفي ',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/abdurrashid_sufi//',
+      url: 'https://download.quranicaudio.com/quran/abdurrashid_sufi//',
       name: 'عبدالرشيد صوفي 2 ',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
       url:
-          'https://download/quranicaudio.com/quran/abdurrashid_sufi_soosi_2020//',
+          'https://download.quranicaudio.com/quran/abdurrashid_sufi_soosi_2020//',
       name: 'عبدالرشيد صوفي 2020  ',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/abdulkareem_al_hazmi//',
+      url: 'https://download.quranicaudio.com/quran/abdulkareem_al_hazmi//',
       name: 'عبدالكريم الحازمي  ',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/jibreen//',
+      url: 'https://download.quranicaudio.com/quran/jibreen//',
       name: 'عبدالله جبرين',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/khayat//',
+      url: 'https://download.quranicaudio.com/quran/khayat//',
       name: 'عبدالله خياط ',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/abdulmun3im_abdulmubdi2//',
+      url: 'https://download.quranicaudio.com/quran/abdulmun3im_abdulmubdi2//',
       name: 'عبدالمنعم عبدالمبديء  ',
       zeroPaddingSurahNumber: true,
     ),
 
     RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/abdul_baset/murattal/',
+      url: 'https://download.quranicaudio.com/qdc/abdul_baset/murattal/',
       name: 'عبد الباسط عبد الصمد',
       zeroPaddingSurahNumber: false,
     ),
@@ -273,36 +273,36 @@ class _MurattalPageState extends State<MurattalPage> {
     ),
     // ج) أسماء تبدأ بـ"علي" أو غيرها من (ع)
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/huthayfi//',
+      url: 'https://download.quranicaudio.com/quran/huthayfi//',
       name: 'علي بن عبدالرحمن الحذيفي  ',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/ali_jaber//',
+      url: 'https://download.quranicaudio.com/quran/ali_jaber//',
       name: 'علي جابر  ',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/ali_hajjaj_alsouasi//',
+      url: 'https://download.quranicaudio.com/quran/ali_hajjaj_alsouasi//',
       name: 'علي حجاج السويسي  ',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/imad_zuhair_hafez//',
+      url: 'https://download.quranicaudio.com/quran/imad_zuhair_hafez//',
       name: 'عماد زهير حافظ  ',
       zeroPaddingSurahNumber: true,
     ),
 
     // المجموعة (ف)
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/fatih_seferagic//',
+      url: 'https://download.quranicaudio.com/quran/fatih_seferagic//',
       name: 'فاتح سفرجيك  ',
       zeroPaddingSurahNumber: true,
     ),
 
     // المجموعة (ق)
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/masjid_quba_1434//',
+      url: 'https://download.quranicaudio.com/quran/masjid_quba_1434//',
       name: 'قران مسجد القبة 1434  ',
       zeroPaddingSurahNumber: true,
     ),
@@ -310,13 +310,13 @@ class _MurattalPageState extends State<MurattalPage> {
     // المجموعة (م)؛ نقسمها حسب الكلمة الأولى (مثلاً: ماهر – محمد – محمود – مشاري – مصطفى)
     // أ) مجموعة "ماهر"
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/maher_256//',
+      url: 'https://download.quranicaudio.com/quran/maher_256//',
       name: 'ماهر المعيقلي ',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
       url:
-          'https://download/quranicaudio.com/quran/maher_almu3aiqly/year1440//',
+          'https://download.quranicaudio.com/quran/maher_almu3aiqly/year1440//',
       name: 'ماهر المعيقلي 1440  ',
       zeroPaddingSurahNumber: true,
     ),
@@ -324,28 +324,28 @@ class _MurattalPageState extends State<MurattalPage> {
     // ب) مجموعة "محمد"
     RecitersModel(
       url:
-          'https://download/quranicaudio.com/quran/mohammad_jibreel/complete//',
+          'https://download.quranicaudio.com/quran/mohammad_jibreel/complete//',
       name: 'محمد اسماعيل المقدم',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/muhammad_ayyoob//',
+      url: 'https://download.quranicaudio.com/quran/muhammad_ayyoob//',
       name: 'محمد أيوب',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/muhammad_ayyoob_hq//',
+      url: 'https://download.quranicaudio.com/quran/muhammad_ayyoob_hq//',
       name: 'محمد أيوب  ',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/muhammad_jibreel/hidayah//',
+      url: 'https://download.quranicaudio.com/quran/muhammad_jibreel/hidayah//',
       name: 'محمد جبريل',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
       url:
-          'https://download/quranicaudio.com/quran/muhammad_jibreel/complete//',
+          'https://download.quranicaudio.com/quran/muhammad_jibreel/complete//',
       name: 'محمد جبريل - كامل  ',
       zeroPaddingSurahNumber: true,
     ),
@@ -355,32 +355,32 @@ class _MurattalPageState extends State<MurattalPage> {
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/muhammad_khaleel//',
+      url: 'https://download.quranicaudio.com/quran/muhammad_khaleel//',
       name: 'محمد خليل  ',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/muhammad_patel//',
+      url: 'https://download.quranicaudio.com/quran/muhammad_patel//',
       name: 'محمد سليمان باتل ',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/mohammad_altablawi//',
+      url: 'https://download.quranicaudio.com/quran/mohammad_altablawi//',
       name: 'محمد الطبلاوي ',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/muhammad_abdulkareem//',
+      url: 'https://download.quranicaudio.com/quran/muhammad_abdulkareem//',
       name: 'محمد عبدالكريم ',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/muhammad_alhaidan//',
+      url: 'https://download.quranicaudio.com/quran/muhammad_alhaidan//',
       name: 'محمد الليحدان ',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/mehysni//',
+      url: 'https://download.quranicaudio.com/quran/mehysni//',
       name: 'محمد المحيسني',
       zeroPaddingSurahNumber: true,
     ),
@@ -396,7 +396,7 @@ class _MurattalPageState extends State<MurattalPage> {
     ),
 
     RecitersModel(
-      url: 'https://download/quranicaudio.com/qdc/hadi_toure/mp3/',
+      url: 'https://download.quranicaudio.com/qdc/hadi_toure/mp3/',
       name: 'محمد الهادي توري  ',
       zeroPaddingSurahNumber: false,
     ),
@@ -404,7 +404,7 @@ class _MurattalPageState extends State<MurattalPage> {
     // ج) مجموعة "محمود"
     RecitersModel(
       url:
-          'https://download/quranicaudio.com/quran/mahmood_khaleel_al-husaree_iza3a//',
+          'https://download.quranicaudio.com/quran/mahmood_khaleel_al-husaree_iza3a//',
       name: 'محمود خليل الحصري - إذاعة  ',
       zeroPaddingSurahNumber: true,
     ),
@@ -415,20 +415,20 @@ class _MurattalPageState extends State<MurattalPage> {
     ),
 
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/mahmood_ali_albana//',
+      url: 'https://download.quranicaudio.com/quran/mahmood_ali_albana//',
       name: 'محمود علي البنا  ',
       zeroPaddingSurahNumber: true,
     ),
 
     // د) مجموعة "مشاري"
     RecitersModel(
-      url: 'https://download/quranicaudio.com/qdc/mishari_al_afasy/murattal/',
+      url: 'https://download.quranicaudio.com/qdc/mishari_al_afasy/murattal/',
       name: 'مشاري العفاسي',
       zeroPaddingSurahNumber: false,
     ),
     RecitersModel(
       url:
-          'https://download/quranicaudio.com/qdc/mishari_al_afasy/streaming/mp3/',
+          'https://download.quranicaudio.com/qdc/mishari_al_afasy/streaming/mp3/',
       name: 'مشاري العفاسي - ستريم  ',
       zeroPaddingSurahNumber: false,
     ),
@@ -441,24 +441,24 @@ class _MurattalPageState extends State<MurattalPage> {
 
     // هـ) مجموعة "مصطفي"
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/mostafa_ismaeel//',
+      url: 'https://download.quranicaudio.com/quran/mostafa_ismaeel//',
       name: 'مصطفي اسماعيل ',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/mustafa_al3azzawi//',
+      url: 'https://download.quranicaudio.com/quran/mustafa_al3azzawi//',
       name: 'مصطفي العزاوي ',
       zeroPaddingSurahNumber: true,
     ),
 
     // المجموعة (ن)
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/nabil_rifa3i//',
+      url: 'https://download.quranicaudio.com/quran/nabil_rifa3i//',
       name: 'نبيل رفاعي  ',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download/quranicaudio.com/quran/noreen_siddiq//',
+      url: 'https://download.quranicaudio.com/quran/noreen_siddiq//',
       name: 'نورين محمد صديق  ',
       zeroPaddingSurahNumber: true,
     ),
@@ -542,7 +542,7 @@ class _MurattalPageState extends State<MurattalPage> {
               )
             : Text(
                 'القران المرتل',
-                style: AppStyles.styleCairoBold20(context),
+                style: AppStyles.styleDiodrumArabicbold20(context),
               ),
         actions: [
           Padding(
@@ -581,7 +581,7 @@ class _MurattalPageState extends State<MurattalPage> {
           : Center(
               child: Text(
               'القاريء غير موجود',
-              style: AppStyles.styleCairoBold20(context),
+              style: AppStyles.styleDiodrumArabicbold20(context),
             )),
     );
   }

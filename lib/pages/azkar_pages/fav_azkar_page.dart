@@ -14,11 +14,11 @@ class FavAzkarPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme:
-            IconThemeData(color: AppStyles.styleCairoBold20(context).color),
+        iconTheme: IconThemeData(
+            color: AppStyles.styleDiodrumArabicbold20(context).color),
         title: Text(
           'أذكاري المفضلة',
-          style: AppStyles.styleCairoBold20(context),
+          style: AppStyles.styleDiodrumArabicbold20(context),
         ),
         centerTitle: true,
         backgroundColor: AppColors.kSecondaryColor,

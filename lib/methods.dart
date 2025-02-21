@@ -143,7 +143,7 @@ void showTafseer({
           child: SingleChildScrollView(
             child: Text(
               tafseerAyah,
-              style: AppStyles.styleCairoBold20(context).copyWith(),
+              style: AppStyles.styleDiodrumArabicbold20(context).copyWith(),
               textAlign: TextAlign.justify,
             ),
           ),
@@ -217,7 +217,10 @@ Future<bool> requestPermission(Permission permission) async {
 
 void showMessage(String message) {
   Fluttertoast.showToast(
-      msg: message, backgroundColor: Colors.black.withOpacity(0.5));
+    msg: message,
+    backgroundColor:
+        const Color.fromRGBO(0, 0, 0, 0.5), // لون أسود بنسبة شفافية 50%
+  );
 }
 
 /// Creates (if needed) and returns a custom download directory.
@@ -298,9 +301,9 @@ Future<void> downloadAudio(
 Future<void> scanFile(String filePath) async {
   try {
     await _mediaScannerChannel.invokeMethod('scanFile', {'filePath': filePath});
-    log("Scanning file: $filePath");
+    debugPrint("Scanning file: $filePath");
   } on PlatformException catch (e) {
-    print("Error scanning file: ${e.message}");
+    debugPrint("Error scanning file: ${e.message}");
   }
 }
 

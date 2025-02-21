@@ -28,13 +28,13 @@ class _RuqiyaPageState extends State<RuqiyaPage> {
       child: Scaffold(
         backgroundColor: AppColors.kPrimaryColor,
         appBar: AppBar(
-          iconTheme:
-              IconThemeData(color: AppStyles.styleCairoBold20(context).color),
+          iconTheme: IconThemeData(
+              color: AppStyles.styleDiodrumArabicbold20(context).color),
           backgroundColor: AppColors.kSecondaryColor,
           centerTitle: true,
           title: Text(
             "الرقية الشرعية",
-            style: AppStyles.styleCairoBold20(context),
+            style: AppStyles.styleDiodrumArabicbold20(context),
           ),
         ),
         body: BlocBuilder<RuqiyaCubit, RuqiyaState>(
@@ -64,7 +64,8 @@ class _RuqiyaPageState extends State<RuqiyaPage> {
                             children: [
                               Text(state.ruqiya[index].text!,
                                   textAlign: TextAlign.justify,
-                                  style: AppStyles.styleCairoBold20(context)),
+                                  style: AppStyles.styleDiodrumArabicbold20(
+                                      context)),
                               Divider(
                                 color: AppColors.kPrimaryColor,
                               ),
@@ -75,7 +76,8 @@ class _RuqiyaPageState extends State<RuqiyaPage> {
                                   Text(
                                     state.ruqiya[index].info!,
                                     textAlign: TextAlign.justify,
-                                    style: AppStyles.styleCairoBold20(context),
+                                    style: AppStyles.styleDiodrumArabicbold20(
+                                        context),
                                   ),
                                   IconButton(
                                     onPressed: () {
@@ -86,7 +88,8 @@ class _RuqiyaPageState extends State<RuqiyaPage> {
                                     },
                                     icon: Icon(
                                       Icons.copy,
-                                      color: AppStyles.styleCairoBold20(context)
+                                      color: AppStyles.styleDiodrumArabicbold20(
+                                              context)
                                           .color,
                                     ),
                                   ),

@@ -80,7 +80,7 @@ class _AzkarPageState extends State<AzkarPage> {
               )
             : Text(
                 'الأذكار',
-                style: AppStyles.styleCairoBold20(context),
+                style: AppStyles.styleDiodrumArabicbold20(context),
               ),
         actions: [
           Padding(

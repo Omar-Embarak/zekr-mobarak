@@ -54,13 +54,13 @@ class _ZekrPageState extends State<ZekrPage> {
     return Scaffold(
       backgroundColor: AppColors.kPrimaryColor,
       appBar: AppBar(
-        iconTheme:
-            IconThemeData(color: AppStyles.styleCairoBold20(context).color),
+        iconTheme: IconThemeData(
+            color: AppStyles.styleDiodrumArabicbold20(context).color),
         backgroundColor: AppColors.kSecondaryColor,
         centerTitle: true,
         title: Text(
           widget.zekerCategory,
-          style: AppStyles.styleCairoBold20(context),
+          style: AppStyles.styleDiodrumArabicbold20(context),
         ),
         actions: [
           IconButton(
@@ -140,13 +140,13 @@ class _ZekrPageState extends State<ZekrPage> {
                         Text(
                           text ?? 'No text available',
                           textAlign: TextAlign.justify,
-                          style: AppStyles.styleCairoBold20(context),
+                          style: AppStyles.styleDiodrumArabicbold20(context),
                         ),
                         Divider(color: AppColors.kPrimaryColor),
                         Text(
                           "التكرار : ${count ?? 'N/A'}",
                           textAlign: TextAlign.justify,
-                          style: AppStyles.styleCairoBold20(context),
+                          style: AppStyles.styleDiodrumArabicbold20(context),
                         ),
                       ],
                     ),

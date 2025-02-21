@@ -33,7 +33,6 @@ class _QuranReadingMainPageState extends State<QuranReadingMainPage> {
       );
 
       if (!_isSearching) {
-       
         _filterPageContent('');
       }
     });
@@ -58,8 +57,9 @@ class _QuranReadingMainPageState extends State<QuranReadingMainPage> {
         length: 3,
         child: Scaffold(
           backgroundColor: AppColors.kPrimaryColor,
-          appBar: AppBar(  iconTheme: IconThemeData(
-            color: AppStyles.styleCairoMedium15white(context).color),
+          appBar: AppBar(
+            iconTheme: IconThemeData(
+                color: AppStyles.styleCairoMedium15white(context).color),
             backgroundColor: AppColors.kSecondaryColor,
             centerTitle: true,
             title: _isSearching
@@ -78,15 +78,14 @@ class _QuranReadingMainPageState extends State<QuranReadingMainPage> {
                   )
                 : Text(
                     'القران الكريم',
-                    style: AppStyles.styleCairoBold20(context),
+                    style: AppStyles.styleDiodrumArabicbold20(context),
                   ),
             actions: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
                   onTap: _toggleSearch,
-                                child: Icon(_isSearching ? Icons.close : Icons.search),
-
+                  child: Icon(_isSearching ? Icons.close : Icons.search),
                 ),
               )
             ],

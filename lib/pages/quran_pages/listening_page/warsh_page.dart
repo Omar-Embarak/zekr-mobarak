@@ -25,7 +25,7 @@ class WarshPage extends StatelessWidget {
         backgroundColor: AppColors.kSecondaryColor,
         title: Text(
           'رواية ورش',
-          style: AppStyles.styleCairoBold20(context),
+          style: AppStyles.styleDiodrumArabicbold20(context),
         ),
       ),
       body: ListView.builder(

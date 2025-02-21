@@ -35,10 +35,10 @@ class DoaaKhatmPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        iconTheme:
-            IconThemeData(color: AppStyles.styleCairoBold20(context).color),
-        title:
-            Text('دعاء ختم القرآن', style: AppStyles.styleCairoBold20(context)),
+        iconTheme: IconThemeData(
+            color: AppStyles.styleDiodrumArabicbold20(context).color),
+        title: Text('دعاء ختم القرآن',
+            style: AppStyles.styleDiodrumArabicbold20(context)),
         backgroundColor: AppColors.kSecondaryColor,
       ),
       backgroundColor: AppColors.kPrimaryColor,

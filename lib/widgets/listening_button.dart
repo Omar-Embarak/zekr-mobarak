@@ -30,7 +30,7 @@ class ListeningButtons extends StatelessWidget {
           child: Text(
             buttonText,
             textAlign: TextAlign.center,
-            style: AppStyles.styleCairoBold20(context),
+            style: AppStyles.styleDiodrumArabicbold20(context),
           ),
         ),
       ),

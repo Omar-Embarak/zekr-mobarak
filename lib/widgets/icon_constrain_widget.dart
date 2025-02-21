@@ -22,7 +22,8 @@ class IconConstrain extends StatelessWidget {
           imagePath,
           placeholderBuilder: (context) => const Icon(Icons.error),
           colorFilter: ColorFilter.mode(
-              AppStyles.styleCairoBold20(context).color!, BlendMode.srcIn),
+              AppStyles.styleDiodrumArabicbold20(context).color!,
+              BlendMode.srcIn),
         ),
       ),
     );

@@ -115,13 +115,13 @@ class _PrayPageState extends State<PrayPage> {
       backgroundColor: AppColors.kPrimaryColor,
       appBar: AppBar(
         iconTheme: IconThemeData(
-          color: AppStyles.styleCairoBold20(context).color,
+          color: AppStyles.styleDiodrumArabicbold20(context).color,
         ),
         backgroundColor: AppColors.kSecondaryColor,
         centerTitle: true,
         title: Text(
           "الصلاة",
-          style: AppStyles.styleCairoBold20(context),
+          style: AppStyles.styleDiodrumArabicbold20(context),
         ),
       ),
       body: SingleChildScrollView(

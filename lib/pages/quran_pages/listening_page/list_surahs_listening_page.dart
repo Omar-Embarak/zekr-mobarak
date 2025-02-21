@@ -55,8 +55,9 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.kSecondaryColor,
-      appBar: AppBar(  iconTheme: IconThemeData(
-            color: AppStyles.styleCairoMedium15white(context).color),
+      appBar: AppBar(
+          iconTheme: IconThemeData(
+              color: AppStyles.styleCairoMedium15white(context).color),
           centerTitle: true,
           title: _isSearching
               ? TextField(
@@ -77,7 +78,7 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
               padding: const EdgeInsets.all(8.0),
               child: GestureDetector(
                 onTap: _toggleSearch,
-            child: Icon(_isSearching ? Icons.close : Icons.search),
+                child: Icon(_isSearching ? Icons.close : Icons.search),
               ),
             )
           ]),
@@ -95,7 +96,7 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
                     children: [
                       Text(
                         widget.reciter.name,
-                        style: AppStyles.styleCairoBold20(context),
+                        style: AppStyles.styleDiodrumArabicbold20(context),
                       ),
                       if (tappedSurahName != null)
                         Text(
@@ -131,7 +132,7 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
                       : Center(
                           child: Text(
                             'اسم السورة غير صحيح.',
-                            style: AppStyles.styleCairoBold20(context),
+                            style: AppStyles.styleDiodrumArabicbold20(context),
                           ),
                         ),
                 ),

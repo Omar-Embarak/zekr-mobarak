@@ -18,6 +18,12 @@ class RecitursItem extends StatelessWidget {
       width: double.infinity,
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
       decoration: BoxDecoration(
+             boxShadow: const [
+          BoxShadow(
+            color: Colors.black,
+            spreadRadius: .1,
+          )
+        ],
         color: Colors.white,
         borderRadius: BorderRadius.circular(7),
       ),

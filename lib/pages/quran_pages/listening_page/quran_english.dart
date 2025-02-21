@@ -52,7 +52,7 @@ class QuranEnglishPage extends StatelessWidget {
       name: 'Abdulbasit and Naeem Sultan ',
       zeroPaddingSurahNumber: true,
     ),
-        RecitersModel(
+    RecitersModel(
       url:
           'https://download.quranicaudio.com/quran/sudais_shuraim_with_naeem_sultan_pickthall//',
       name: 'Sudais, Shuraim with Naeem Sultan ',
@@ -64,12 +64,13 @@ class QuranEnglishPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.kPrimaryColor,
-      appBar: AppBar(  iconTheme: IconThemeData(
+      appBar: AppBar(
+        iconTheme: IconThemeData(
             color: AppStyles.styleCairoMedium15white(context).color),
         backgroundColor: AppColors.kSecondaryColor,
         title: Text(
           'Quran English',
-          style: AppStyles.styleCairoBold20(context),
+          style: AppStyles.styleDiodrumArabicbold20(context),
         ),
       ),
       body: ListView.builder(

@@ -97,21 +97,21 @@ class _SurahListWidgetState extends State<SurahListWidget>
                   if (queryIndex != -1) ...[
                     TextSpan(
                       text: surahName.substring(0, queryIndex),
-                      style: AppStyles.styleCairoBold20(context),
+                      style: AppStyles.styleDiodrumArabicbold20(context),
                     ),
                     TextSpan(
                       text: query,
-                      style: AppStyles.styleCairoBold20(context)
+                      style: AppStyles.styleDiodrumArabicbold20(context)
                           .copyWith(color: Colors.red),
                     ),
                     TextSpan(
                       text: surahName.substring(queryIndex + query.length),
-                      style: AppStyles.styleCairoBold20(context),
+                      style: AppStyles.styleDiodrumArabicbold20(context),
                     ),
                   ] else ...[
                     TextSpan(
                       text: surahName,
-                      style: AppStyles.styleCairoBold20(context),
+                      style: AppStyles.styleDiodrumArabicbold20(context),
                     ),
                   ],
                 ],

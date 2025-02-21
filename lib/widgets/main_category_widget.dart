@@ -22,6 +22,12 @@ class MainCategoryWidget extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
         color: AppColors.kSecondaryColor,
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.grey,
+            spreadRadius: .3,
+          )
+        ],
       ),
       padding: const EdgeInsets.all(8),
       child: Center(
@@ -32,7 +38,7 @@ class MainCategoryWidget extends StatelessWidget {
             const SizedBox(height: 10), // Spacing between image and text
             Text(
               categoryTitle,
-              style: AppStyles.styleCairoBold20(context),
+              style: AppStyles.styleDiodrumArabicbold20(context),
               textAlign: TextAlign.center, // Center align long text
             ),
           ],

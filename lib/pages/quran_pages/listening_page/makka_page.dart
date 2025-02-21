@@ -114,7 +114,7 @@ class MakkaPage extends StatelessWidget {
         backgroundColor: AppColors.kSecondaryColor,
         title: Text(
           'القران مكة',
-          style: AppStyles.styleCairoBold20(context),
+          style: AppStyles.styleDiodrumArabicbold20(context),
         ),
       ),
       body: ListView.builder(
