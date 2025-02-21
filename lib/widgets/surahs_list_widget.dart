@@ -17,14 +17,15 @@ class _SurahListWidgetState extends State<SurahListWidget>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
-    super.build(context); // Call this to ensure keep-alive works
+    super.build(context); // Ensure keep-alive works
 
     final searchProvider = Provider.of<SearchProvider>(context);
     final query = searchProvider.query.trim().toLowerCase();
 
-    // Filter Surahs based on the query
+    // Filter surahs based on the query
     final filteredSurahs =
         List.generate(quran.totalSurahCount, (index) => index + 1)
             .where((surahNumber) =>
@@ -40,93 +41,94 @@ class _SurahListWidgetState extends State<SurahListWidget>
         itemCount: filteredSurahs.length,
         itemBuilder: (context, index) {
           final surahNumber = filteredSurahs[index];
-          final surahsInJuz = quran.getSurahAndVersesFromJuz(
-            quran.getJuzNumber(surahNumber, 1),
+          final currentJuz = quran.getJuzNumber(surahNumber, 1);
+          bool showHeader = false;
+
+          // Show header if it's the first item or if the juz number changes
+          if (index == 0) {
+            showHeader = true;
+          } else {
+            final previousJuz =
+                quran.getJuzNumber(filteredSurahs[index - 1], 1);
+            if (previousJuz != currentJuz) {
+              showHeader = true;
+            }
+          }
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (showHeader) _buildJuzHeader(context, currentJuz),
+              _buildSurahRow(context, surahNumber, currentJuz),
+            ],
           );
-          return _buildJuzSection(context, quran.getJuzNumber(surahNumber, 1),
-              surahsInJuz, surahNumber);
         },
       ),
     );
   }
 
-  Widget _buildJuzSection(BuildContext context, int juzIndex,
-      Map<int, List<int>> surahsInJuz, int surahNumber) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildJuzHeader(context, juzIndex),
-        _buildSurahRow(context,
-            MapEntry(surahNumber, surahsInJuz[surahNumber] ?? []), juzIndex),
-      ],
-    );
-  }
-
-  Widget _buildSurahRow(
-      BuildContext context, MapEntry<int, List<int>> entry, int juzIndex) {
+  Widget _buildSurahRow(BuildContext context, int surahNumber, int juzIndex) {
     final surahType =
-        quran.getPlaceOfRevelation(entry.key) == "Makkah" ? "مكية" : "مدنية";
-
-    // Fetching the actual page where each Surah starts
-    final firstVersePage = quran.getSurahPages(entry.key).first;
-
-    // Get the query from the search provider
+        quran.getPlaceOfRevelation(surahNumber) == "Makkah" ? "مكية" : "مدنية";
+    final firstVersePage = quran.getSurahPages(surahNumber).first;
     final searchProvider = Provider.of<SearchProvider>(context, listen: false);
     final query = searchProvider.query.trim();
-
-    // Get the Surah name and check for matches with the query
-    final surahName = 'سورة ${quran.getSurahNameArabic(entry.key)}';
+    final surahName = 'سورة ${quran.getSurahNameArabic(surahNumber)}';
     final queryIndex = surahName.indexOf(query);
 
-    return Row(
+    return Column(
       children: [
-        const SizedBox(width: 30),
-        Text(
-          '${entry.key}', // Surah number
-          style: AppStyles.styleCairoMedium15white(context),
-        ),
-        Expanded(
-          child: ListTile(
-            trailing: Text(
-              '$firstVersePage', // Display the first page of the Surah
-              style: AppStyles.styleDiodrumArabicMedium11(context),
+        Row(
+          children: [
+            const SizedBox(width: 30),
+            Text(
+              '$surahNumber', // Surah number
+              style: AppStyles.styleCairoMedium15white(context),
             ),
-            title: RichText(
-              text: TextSpan(
-                children: [
-                  if (queryIndex != -1) ...[
-                    TextSpan(
-                      text: surahName.substring(0, queryIndex),
-                      style: AppStyles.styleDiodrumArabicbold20(context),
-                    ),
-                    TextSpan(
-                      text: query,
-                      style: AppStyles.styleDiodrumArabicbold20(context)
-                          .copyWith(color: Colors.red),
-                    ),
-                    TextSpan(
-                      text: surahName.substring(queryIndex + query.length),
-                      style: AppStyles.styleDiodrumArabicbold20(context),
-                    ),
-                  ] else ...[
-                    TextSpan(
-                      text: surahName,
-                      style: AppStyles.styleDiodrumArabicbold20(context),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-            subtitle: Row(
-              children: [
-                Text(
-                  '$surahType - ${quran.getVerseCount(entry.key)} اية',
+            Expanded(
+              child: ListTile(
+                trailing: Text(
+                  '$firstVersePage', // First page of the surah
                   style: AppStyles.styleDiodrumArabicMedium11(context),
                 ),
-              ],
+                title: RichText(
+                  text: TextSpan(
+                    children: [
+                      if (queryIndex != -1) ...[
+                        TextSpan(
+                          text: surahName.substring(0, queryIndex),
+                          style: AppStyles.styleDiodrumArabicbold20(context),
+                        ),
+                        TextSpan(
+                          text: query,
+                          style: AppStyles.styleDiodrumArabicbold20(context)
+                              .copyWith(color: Colors.red),
+                        ),
+                        TextSpan(
+                          text: surahName.substring(queryIndex + query.length),
+                          style: AppStyles.styleDiodrumArabicbold20(context),
+                        ),
+                      ] else ...[
+                        TextSpan(
+                          text: surahName,
+                          style: AppStyles.styleDiodrumArabicbold20(context),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                subtitle: Row(
+                  children: [
+                    Text(
+                      '$surahType - ${quran.getVerseCount(surahNumber)} اية',
+                      style: AppStyles.styleDiodrumArabicMedium11(context),
+                    ),
+                  ],
+                ),
+                onTap: () => _navigateToSurahPage(context, firstVersePage),
+              ),
             ),
-            onTap: () => _navigateToSurahPage(context, firstVersePage),
-          ),
+          ],
         ),
       ],
     );
@@ -137,6 +139,12 @@ class _SurahListWidgetState extends State<SurahListWidget>
       height: 41,
       width: double.infinity,
       decoration: BoxDecoration(
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.grey,
+            spreadRadius: .1,
+          )
+        ],
         color: AppColors.kSecondaryColor,
         gradient: LinearGradient(
           colors: [AppColors.kSecondaryColor, AppColors.kPrimaryColor],

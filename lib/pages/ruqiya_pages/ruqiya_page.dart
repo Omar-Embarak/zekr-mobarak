@@ -54,6 +54,12 @@ class _RuqiyaPageState extends State<RuqiyaPage> {
                       child: Container(
                         width: MediaQuery.of(context).size.width,
                         decoration: BoxDecoration(
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black,
+                              spreadRadius: .1,
+                            )
+                          ],
                           borderRadius: BorderRadius.circular(12),
                           color: AppColors.kSecondaryColor,
                         ),

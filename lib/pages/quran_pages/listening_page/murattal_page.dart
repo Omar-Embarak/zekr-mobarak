@@ -240,7 +240,7 @@ class _MurattalPageState extends State<MurattalPage> {
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/abdullah_abdal//',
+      url: 'https://download.quranicaudio.com/quran/abdallah_abdal//',
       name: 'عبدالله عبدل',
       zeroPaddingSurahNumber: true,
     ),
@@ -324,7 +324,7 @@ class _MurattalPageState extends State<MurattalPage> {
     // ب) مجموعة "محمد"
     RecitersModel(
       url:
-          'https://download.quranicaudio.com/quran/mohammad_jibreel/complete//',
+          'https://download.quranicaudio.com/quran/mohammad_ismaeel_almuqaddim//',
       name: 'محمد اسماعيل المقدم',
       zeroPaddingSurahNumber: true,
     ),
@@ -335,7 +335,7 @@ class _MurattalPageState extends State<MurattalPage> {
     ),
     RecitersModel(
       url: 'https://download.quranicaudio.com/quran/muhammad_ayyoob_hq//',
-      name: 'محمد أيوب  ',
+      name: 'محمد أيوب  2',
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
@@ -387,11 +387,6 @@ class _MurattalPageState extends State<MurattalPage> {
     RecitersModel(
       url: 'https://download.quranicaudio.com/quran/muhaisny_1435//',
       name: '1435 محمد المحيسني  ',
-      zeroPaddingSurahNumber: true,
-    ),
-    RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/muhaisny_1435//',
-      name: '1435 محمد المحيسني',
       zeroPaddingSurahNumber: true,
     ),
 
@@ -468,7 +463,7 @@ class _MurattalPageState extends State<MurattalPage> {
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/hani_ar_rifai/murattal/',
+      url: 'https://download.quranicaudio.com/qdc/hani_ar_rifai/murattal/',
       name: 'هاني الرفاعي',
       zeroPaddingSurahNumber: false,
     ),
