@@ -38,8 +38,11 @@ class PrayingCubit extends Cubit<PrayingState> {
         var nextPrayer = calculateTimeUntilNextPrayer(
             prayerTimesData.data![day - 1].timings!);
 
-        NotificationService.schedulePrayerNotifications(
-            prayerTimesData.data![day - 1].timings!);
+        NotificationService.isNotificationsEnabled()
+            ? NotificationService.schedulePrayerNotifications(
+                prayerTimesData.data![day - 1].timings!)
+            : null;
+
         Timings convertTimingsTo12HourFormat(Timings timings) {
           return Timings(
             fajr: convertTo12HourFormat(timings.fajr!),

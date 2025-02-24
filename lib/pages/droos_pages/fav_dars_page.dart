@@ -35,6 +35,7 @@ class FavDarsPage extends StatelessWidget {
               itemCount: provider.favsDars.length,
               itemBuilder: (context, index) {
                 return DarsListeningItem(
+                  description: '',
                     audioUrl: provider.favsDars[index].url,
                     title: provider.favsDars[index].name);
               });

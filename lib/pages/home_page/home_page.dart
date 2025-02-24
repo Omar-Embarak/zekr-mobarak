@@ -1,3 +1,4 @@
+import 'package:azkar_app/methods.dart';
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,8 +7,10 @@ import 'package:provider/provider.dart';
 import '../../constants.dart';
 import '../../cubit/theme_cubit/theme_cubit.dart';
 import '../../widgets/bottom_sheet.dart';
+import '../../widgets/dedicated_button.dart';
 import '../../widgets/main_category_widget.dart';
 import '../azkar_pages/azkar_main_page.dart';
+import '../azkar_pages/notification_service.dart';
 import '../droos_pages/droos_page.dart';
 import '../pray_page/pray_page.dart';
 import '../ruqiya_pages/ruqiya_page.dart';
@@ -22,6 +25,8 @@ class HomePages extends StatefulWidget {
 class _HomePagesState extends State<HomePages> {
   final jHijri = JHijri.now();
 
+  bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -29,7 +34,6 @@ class _HomePagesState extends State<HomePages> {
     return Scaffold(
       backgroundColor: AppColors.kPrimaryColor,
       appBar: AppBar(
-        // Sets the theme for the icons in the AppBar (e.g., the leading icon)
         iconTheme: IconThemeData(
           color: AppStyles.styleCairoMedium15white(context).color,
         ),
@@ -39,128 +43,36 @@ class _HomePagesState extends State<HomePages> {
           "القائمة الرئيسية",
           style: AppStyles.styleDiodrumArabicbold20(context),
         ),
-        // Leading widget: Theme icon that shows a menu to change app themes
-        leading: IconButton(
-          onPressed: () {
-            // Get the overlay to position the menu relative to the screen
-            final RenderBox overlay =
-                Overlay.of(context).context.findRenderObject() as RenderBox;
-            // Access the ThemeCubit for theme changes
-            final themeCubit = context.read<ThemeCubit>();
-
-            // Show the popup menu for theme selection
-            showMenu(
-              color: AppColors.kSecondaryColor,
-              context: context,
-              position: RelativeRect.fromRect(
-                Rect.fromLTWH(
-                  overlay.size.width - 50, // Horizontal position of the menu
-                  50, // Vertical position of the menu
-                  50,
-                  50,
-                ),
-                Offset.zero & overlay.size,
-              ),
-              items: [
-                PopupMenuItem(
-                  onTap: () {
-                    themeCubit.setTheme(lightTheme);
-                    setState(() {});
-                  },
-                  child: Text(
-                    'الوضع الفاتح',
-                    style: AppStyles.styleCairoMedium15white(context),
-                  ),
-                ),
-                PopupMenuItem(
-                  onTap: () {
-                    themeCubit.setTheme(darkTheme);
-                    setState(() {});
-                  },
-                  child: Text(
-                    'الوضع المظلم',
-                    style: AppStyles.styleCairoMedium15white(context),
-                  ),
-                ),
-                PopupMenuItem(
-                  onTap: () {
-                    themeCubit.setTheme(defaultTheme);
-                    setState(() {});
-                  },
-                  child: Text(
-                    'الوضع الافتراضي',
-                    style: AppStyles.styleCairoMedium15white(context),
-                  ),
-                ),
-              ],
-            );
-          },
-          icon: const Icon(
-            Icons.light_mode,
-          ),
-        ),
-        // Actions: Right-side icons in the AppBar (used here for the info icon)
+        // Leading button to open the left Drawer
+        leading: buildThemeButton(
+            context), // Two action buttons: notifications toggle & info dialog
         actions: [
           IconButton(
             onPressed: () {
-              // Show an AlertDialog with information when the info icon is pressed
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  backgroundColor: AppColors.kSecondaryColor,
-                  title: Text(
-                    "اهداء",
-                    style: TextStyle(
-                      color: AppStyles.styleDiodrumArabicbold20(context).color,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign:
-                        TextAlign.center, // Centers text within the Text widget
-                  ),
-                  content: SingleChildScrollView(
-                    // Wrap the Text in Center to ensure overall centering in the dialog
-                    child: Center(
-                      child: Text(
-                        '''
-اللهم اجعله خالصا لوجهك الكريم وانفع به المسلمين واجز كل من ساهم فيه وفي نشره خيرا
-
-صدقة جارية عن أبي امبارك ورداني رحمه الله وأمواتنا واموات المسلمين أجمعين وعن امي واخواتي وأبنائهم وازواجهم وزوجتي واولادي وأهلي جميعا وعن المسلمين أجمعين
-
-للتواصل مع المطور: oesam7797@gmail.com
-          '''
-                            .trim(), // .trim() removes extra newlines and spaces from the start and end
-                        style: TextStyle(
-                          color:
-                              AppStyles.styleDiodrumArabicbold20(context).color,
-                          fontFamily: "Amiri",
-                        ),
-                        textAlign: TextAlign
-                            .center, // This centers text content within the Text widget
-                      ),
-                    ),
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        // Close the dialog when the button is pressed
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(
-                        "امين",
-                        style: TextStyle(
-                          color:
-                              AppStyles.styleDiodrumArabicbold20(context).color,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
+              setState(() {
+                // _notificationsEnabled = !_notificationsEnabled;
+              });
             },
-            icon: const Icon(
-              Icons.info_outline,
+            icon: IconButton(
+              icon: Icon(
+                NotificationService.isNotificationsEnabled()
+                    ? Icons.notifications
+                    : Icons.notifications_off,
+              ),
+              onPressed: () async {
+                if (NotificationService.isNotificationsEnabled()) {
+                  await NotificationService.disableNotifications();
+                  showMessage("تم ايقاف تشغيل الاشعارات");
+                } else {
+                  await NotificationService.enableNotifications();
+                  showMessage("الاشعارات مفعلة");
+                }
+                setState(() {}); // Refresh UI after toggling
+              },
+              color: AppStyles.styleCairoMedium15white(context).color,
             ),
           ),
+          const DedicationButton(),
         ],
       ),
       body: SingleChildScrollView(
@@ -263,6 +175,68 @@ class _HomePagesState extends State<HomePages> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  IconButton buildThemeButton(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        // Get the overlay to position the menu relative to the screen
+        final RenderBox overlay =
+            Overlay.of(context).context.findRenderObject() as RenderBox;
+        // Access the ThemeCubit for theme changes
+        final themeCubit = context.read<ThemeCubit>();
+
+        // Show the popup menu for theme selection
+        showMenu(
+          color: AppColors.kSecondaryColor,
+          context: context,
+          position: RelativeRect.fromRect(
+            Rect.fromLTWH(
+              overlay.size.width - 50, // Horizontal position of the menu
+              50, // Vertical position of the menu
+              50,
+              50,
+            ),
+            Offset.zero & overlay.size,
+          ),
+          items: [
+            PopupMenuItem(
+              onTap: () {
+                themeCubit.setTheme(lightTheme);
+                setState(() {});
+              },
+              child: Text(
+                'الوضع الفاتح',
+                style: AppStyles.styleCairoMedium15white(context),
+              ),
+            ),
+            PopupMenuItem(
+              onTap: () {
+                themeCubit.setTheme(darkTheme);
+                setState(() {});
+              },
+              child: Text(
+                'الوضع المظلم',
+                style: AppStyles.styleCairoMedium15white(context),
+              ),
+            ),
+            PopupMenuItem(
+              onTap: () {
+                themeCubit.setTheme(defaultTheme);
+                setState(() {});
+              },
+              child: Text(
+                'الوضع الافتراضي',
+                style: AppStyles.styleCairoMedium15white(context),
+              ),
+            ),
+          ],
+        );
+      },
+      icon: const Icon(
+        Icons.light_mode,
       ),
     );
   }

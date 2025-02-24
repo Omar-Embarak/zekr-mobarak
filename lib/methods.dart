@@ -1,8 +1,10 @@
 import 'package:http/http.dart' as http;
 import 'dart:developer';
-import 'package:audioplayers/audioplayers.dart';
+// import 'package:audioplayers/audioplayers.dart';
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
@@ -47,16 +49,16 @@ void initializeAudioPlayer(
     Function(Duration) setTotalDuration,
     Function(Duration) setCurrentDuration,
     Function(bool) setIsPlaying) {
-  audioPlayer.onDurationChanged.listen((Duration duration) {
-    setTotalDuration(duration);
-  });
-  audioPlayer.onPositionChanged.listen((Duration position) {
-    setCurrentDuration(position);
-  });
-  audioPlayer.onPlayerComplete.listen((event) {
-    setIsPlaying(false);
-    setCurrentDuration(Duration.zero);
-  });
+  // audioPlayer.onDurationChanged.listen((Duration duration) {
+  //   setTotalDuration(duration);
+  // });
+  // audioPlayer.onPositionChanged.listen((Duration position) {
+  //   setCurrentDuration(position);
+  // });
+  // audioPlayer.onPlayerComplete.listen((event) {
+  //   setIsPlaying(false);
+  //   setCurrentDuration(Duration.zero);
+  // });
 }
 
 Future<bool> isUrlAccessible(String url) async {
@@ -68,13 +70,16 @@ Future<bool> isUrlAccessible(String url) async {
   }
 }
 
-Future<void> togglePlayPause(
-  AudioPlayer audioPlayer,
-  bool isPlaying,
-  String audioUrl,
-  Function(bool) setIsPlaying,
+Future<void> togglePlayPause({
+  required AudioPlayer audioPlayer,
+  required bool isPlaying,
+  required final String audioUrl,
+  required final String reciterName,
+  required final String surahName,
+  required Function(bool) setIsPlaying,
   void Function()? onSurahTap,
-) async {
+}) async {
+  // Check if the audio URL is accessible.
   if (!await isUrlAccessible(audioUrl)) {
     showMessage('الملف الصوتي غير متاح.');
     return;
@@ -82,19 +87,41 @@ Future<void> togglePlayPause(
 
   try {
     if (isPlaying) {
+      // If already playing, pause the audio.
       showMessage("تم ايقاف التشغيل");
-
       await audioPlayer.pause();
     } else {
+      // If not playing, set the audio source with media metadata and start playback.
       showMessage("جاري التشغيل..");
 
-      await audioPlayer.play(UrlSource(audioUrl));
+      // Set the audio source with metadata (using just_audio's setAudioSource).
+      await audioPlayer.setAudioSource(
+        AudioSource.uri(
+          Uri.parse(audioUrl),
+          tag: MediaItem(
+            // A unique ID for this media item.
+            id: audioUrl,
+            // Album information.
+            album: reciterName,
+
+            title: surahName,
+            artUri: Uri.parse('assets/images/ic_launcher.png'),
+          ),
+        ),
+      );
+
+      // Start playing the audio.
+      await audioPlayer.play();
+
+      // Execute additional functionality if provided.
       if (onSurahTap != null) {
         onSurahTap();
       }
     }
+    // Toggle the playing state.
     setIsPlaying(!isPlaying);
   } catch (e) {
+    // Handle any errors during playback.
     showMessage('حدث خطأ أثناء تشغيل الصوت.');
     setIsPlaying(false);
   }
@@ -178,7 +205,7 @@ double currentSpeed = 1.0; // Track the current speed of playback
 
 void adjustSpeed(AudioPlayer audioPlayer, double speed) async {
   currentSpeed = speed; // Update the speed state
-  await audioPlayer.setPlaybackRate(currentSpeed);
+  // await audioPlayer.setPlaybackRate(currentSpeed);
 }
 
 void forward(AudioPlayer audioPlayer) {
@@ -330,6 +357,10 @@ String normalizeArabic(String text) {
   return normalized;
 }
 
+void showOfflineMessage() {
+  showMessage('لا يتوفر اتصال بالانترنت.');
+}
+
 void playNextSurah(
     AudioPlayer audioPlayer,
     int surahIndex,
@@ -344,7 +375,7 @@ void playNextSurah(
       (surahIndex + 1).toString().padLeft(3, '0'),
       (nextSurahIndex + 1).toString().padLeft(3, '0'),
     );
-    await audioPlayer.play(UrlSource(nextAudioUrl));
+    // await audioPlayer.play(UrlSource(nextAudioUrl));
     setIsPlaying(true);
   }
 }

@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'cubit/azkar_cubit/azkar_cubit.dart';
@@ -48,7 +49,7 @@ class ErrorScreen extends StatelessWidget {
   }
 }
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // final db = await DatabaseHelper().database;
   // await db.close();
@@ -56,6 +57,7 @@ void main() async {
   if (!Platform.isAndroid && !Platform.isIOS) {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
+
   }
 
   // Initialize notification service
@@ -63,6 +65,12 @@ void main() async {
 
   await ThemeCubit().loadInitialTheme();
   Bloc.observer = SimpleBlocObserver();
+    await JustAudioBackground.init(
+    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
+    androidNotificationChannelName: 'Audio playback',
+    androidNotificationOngoing: true,
+
+  );
   runApp(
     FutureBuilder(
       future: loadResources(),

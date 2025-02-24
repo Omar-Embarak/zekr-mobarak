@@ -132,6 +132,7 @@ class _DroosPageState extends State<DroosPage> {
                               MaterialPageRoute(
                                 builder: (context) => DroosListeningPage(
                                   darsName: title,
+                                  description: description,
                                   audios: attachments,
                                 ),
                               ),
@@ -149,8 +150,12 @@ class _DroosPageState extends State<DroosPage> {
 }
 
 class DroosListeningPage extends StatelessWidget {
-  const DroosListeningPage(
-      {super.key, required this.audios, required this.darsName});
+  const DroosListeningPage({
+    super.key,
+    required this.audios,
+    required this.darsName, required this.description,
+  });
+  final String description;
 
   final List audios;
   final String darsName;
@@ -184,6 +189,8 @@ class DroosListeningPage extends StatelessWidget {
                 return DarsListeningItem(
                   audioUrl: audio['url'],
                   title: audio['description'] ?? 'بدون عنوان',
+                            description: description,
+                  
                 );
               },
             ),

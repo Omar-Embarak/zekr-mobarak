@@ -2,9 +2,9 @@ import 'dart:async';
 import 'package:azkar_app/model/quran_models/reciters_model.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:quran/quran.dart' as quran;
 import '../cubit/add_fav_surahcubit/add_fav_surah_item_cubit.dart';
 import '../database_helper.dart';
@@ -58,31 +58,31 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
     super.dispose();
   }
 
-  Future<void> _initializeAudioPlayer() async {
-    _playerStateSubscription =
-        _audioPlayer.onPlayerStateChanged.listen((state) {
-      if (mounted) {
-        setState(() {
-          isPlaying = state == PlayerState.playing;
-        });
-      }
-    });
+Future<void> _initializeAudioPlayer() async {
+  _playerStateSubscription = _audioPlayer.playerStateStream.listen((playerState) {
+    if (mounted) {
+      setState(() {
+        isPlaying = playerState.playing;
+      });
+    }
+  });
 
-    _audioPlayer.onDurationChanged.listen((duration) {
-      if (mounted) {
-        setState(() {
-          totalDuration = duration;
-        });
-      }
-    });
-    _audioPlayer.onPositionChanged.listen((position) {
-      if (mounted) {
-        setState(() {
-          currentDuration = position;
-        });
-      }
-    });
-  }
+  _audioPlayer.durationStream.listen((duration) {
+    if (mounted) {
+      setState(() {
+        totalDuration = duration ?? Duration.zero;
+      });
+    }
+  });
+
+  _audioPlayer.positionStream.listen((position) {
+    if (mounted) {
+      setState(() {
+        currentDuration = position;
+      });
+    }
+  });
+}
 
   Future<void> _checkInternetConnection() async {
     final List<ConnectivityResult> connectivityResults =
@@ -97,13 +97,11 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
     }
   }
 
-  void _showOfflineMessage() {
-    showMessage('لا يتوفر اتصال بالانترنت.');
-  }
+
 
   void _handleAudioAction(Function() action) {
     if (_connectivityStatus == ConnectivityResult.none) {
-      _showOfflineMessage();
+      showOfflineMessage();
     } else {
       action();
     }
@@ -302,12 +300,13 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
         ),
         IconButton(
           onPressed: () => _handleAudioAction(() {
-            togglePlayPause(
-              _audioPlayer,
-              isPlaying,
-              widget.audioUrl,
-              setIsPlaying,
-              widget.onSurahTap != null
+            togglePlayPause(reciterName: widget.reciter.name,
+            surahName: quran.getSurahNameArabic(widget.surahIndex + 1),
+          audioPlayer:     _audioPlayer,
+             isPlaying:  isPlaying,
+              audioUrl:  widget.audioUrl,
+              setIsPlaying:  setIsPlaying,
+             onSurahTap:  widget.onSurahTap != null
                   ? () => widget.onSurahTap!(widget.surahIndex)
                   : null,
             );

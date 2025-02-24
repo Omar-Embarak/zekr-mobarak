@@ -12,6 +12,10 @@ class NotificationService {
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
+  // Internal state for notifications (default: enabled)
+  static bool _notificationsEnabled = true;
+
+  /// Initializes the notifications plugin.
   static Future<void> init() async {
     tz.initializeTimeZones();
 
@@ -42,9 +46,30 @@ class NotificationService {
     );
   }
 
-  static Future<void> schedulePrayerNotifications(Timings timings) async {
-    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+  /// Enables notifications by setting the flag to true.
+  /// Optionally, you can re-schedule notifications if needed.
+  static Future<void> enableNotifications() async {
+    _notificationsEnabled = true;
+    // Optionally, re-schedule notifications here if necessary.
+  }
 
+  /// Disables notifications by setting the flag to false
+  /// and cancelling all scheduled notifications.
+  static Future<void> disableNotifications() async {
+    _notificationsEnabled = false;
+    await _notificationsPlugin.cancelAll();
+  }
+
+  /// Checks if notifications are currently enabled.
+  static bool isNotificationsEnabled() {
+    return _notificationsEnabled;
+  }
+
+  // Existing methods remain unchanged:
+  static Future<void> schedulePrayerNotifications(Timings timings) async {
+    if (!_notificationsEnabled) return; // Do nothing if disabled
+
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
     tz.setLocalLocation(tz.getLocation('Africa/Cairo'));
 
     Map<String, String?> prayers = {
@@ -174,9 +199,9 @@ class NotificationService {
       notificationDetails,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.wallClockTime,
-      matchDateTimeComponents: DateTimeComponents.time, // Repeat daily
+      matchDateTimeComponents: DateTimeComponents.time,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      payload: payload, // Pass payload for navigation
+      payload: payload,
     );
   }
 
@@ -198,4 +223,8 @@ class NotificationService {
         ? scheduledTime.add(const Duration(days: 1))
         : scheduledTime;
   }
+}
+
+mixin globalNavigatorKey {
+  static final currentContext=null;
 }

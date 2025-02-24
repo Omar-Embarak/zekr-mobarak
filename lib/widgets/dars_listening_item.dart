@@ -1,10 +1,11 @@
-import 'package:audioplayers/audioplayers.dart';
+// import 'package:audioplayers/audioplayers.dart';
 import 'package:azkar_app/model/fav_dars_model.dart';
 import 'package:azkar_app/pages/droos_pages/fav_dars_provider.dart';
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 import '../../constants.dart';
 import '../../methods.dart';
@@ -14,11 +15,13 @@ import '../../widgets/icon_constrain_widget.dart';
 class DarsListeningItem extends StatefulWidget {
   final String audioUrl;
   final String title;
+  final String description;
 
   const DarsListeningItem({
     super.key,
     required this.audioUrl,
     required this.title,
+    required this.description,
   });
 
   @override
@@ -93,13 +96,9 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
     }
   }
 
-  void _showOfflineMessage() {
-    showMessage('لا يتوفر اتصال بالانترنت.');
-  }
-
   void _handleAudioAction(Function() action) {
     if (_connectivityStatus == ConnectivityResult.none) {
-      _showOfflineMessage();
+      showOfflineMessage();
     } else {
       action();
     }
@@ -303,7 +302,13 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
             showMessage("جاري التشغيل..");
 
             togglePlayPause(
-                _audioPlayer, isPlaying, widget.audioUrl, setIsPlaying, null);
+                surahName: widget.title,
+                reciterName: widget.description,
+                audioPlayer: _audioPlayer,
+                isPlaying: isPlaying,
+                audioUrl: widget.audioUrl,
+                setIsPlaying: setIsPlaying,
+                onSurahTap: null);
           }),
           icon: Icon(
             isPlaying ? Icons.pause_circle : Icons.play_circle,
