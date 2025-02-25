@@ -153,22 +153,16 @@ void adjustSpeed(AudioPlayer audioPlayer, double speed) async {
 }
 
 void backward(AudioPlayerHandler audioHandler) async {
-  final currentPos = await audioHandler.positionStream.first;
-  final newPos = currentPos - const Duration(seconds: 10);
-  await audioHandler.seek(newPos < Duration.zero ? Duration.zero : newPos);
+  // Old: seek backward 10 seconds
+  // Now: decrease playback speed
+  await audioHandler.decreaseSpeed();
 }
 
 void forward(AudioPlayerHandler audioHandler) async {
-  final currentPos = await audioHandler.positionStream.first;
-  final duration = await audioHandler.durationStream.first;
-  final newPos = currentPos + const Duration(seconds: 10);
-  if (duration != null) {
-    await audioHandler.seek(newPos > duration ? duration : newPos);
-  } else {
-    await audioHandler.seek(newPos);
-  }
+  // Old: seek forward 10 seconds
+  // Now: increase playback speed
+  await audioHandler.increaseSpeed();
 }
-
 
 Future<void> shareAudio(String audioUrl) async {
   Share.share(audioUrl);

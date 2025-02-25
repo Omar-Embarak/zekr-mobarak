@@ -15,11 +15,11 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
           controls: [
             MediaControl.rewind,
             playing ? MediaControl.pause : MediaControl.play,
-            MediaControl.stop,
             MediaControl.fastForward,
           ],
           systemActions: {MediaAction.seek},
-          androidCompactActionIndices: const [0, 1, 3],
+          // Update indices to match new controls array.
+          androidCompactActionIndices: const [0, 1, 2],
           processingState: processingState,
           playing: playing,
           updatePosition: _player.position,
@@ -32,12 +32,18 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
 
   AudioProcessingState _mapProcessingState(ProcessingState state) {
     switch (state) {
-      case ProcessingState.idle: return AudioProcessingState.idle;
-      case ProcessingState.loading: return AudioProcessingState.loading;
-      case ProcessingState.buffering: return AudioProcessingState.buffering;
-      case ProcessingState.ready: return AudioProcessingState.ready;
-      case ProcessingState.completed: return AudioProcessingState.completed;
-      default: return AudioProcessingState.idle;
+      case ProcessingState.idle:
+        return AudioProcessingState.idle;
+      case ProcessingState.loading:
+        return AudioProcessingState.loading;
+      case ProcessingState.buffering:
+        return AudioProcessingState.buffering;
+      case ProcessingState.ready:
+        return AudioProcessingState.ready;
+      case ProcessingState.completed:
+        return AudioProcessingState.completed;
+      default:
+        return AudioProcessingState.idle;
     }
   }
 
@@ -108,5 +114,37 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
         setIsPlaying(true);
       }
     }
+  }
+
+  // Increase playback speed by 0.25, capped at 2.0.
+  Future<void> increaseSpeed() async {
+    double currentSpeed = _player.speed;
+    double newSpeed = (currentSpeed + 0.25).clamp(0.5, 2.0);
+    await _player.setSpeed(newSpeed);
+    showMessage("Speed increased to ${newSpeed.toStringAsFixed(2)}x");
+  }
+
+  // Decrease playback speed by 0.25, with a minimum of 0.5.
+  Future<void> decreaseSpeed() async {
+    double currentSpeed = _player.speed;
+    double newSpeed = (currentSpeed - 0.25).clamp(0.5, 2.0);
+    await _player.setSpeed(newSpeed);
+    showMessage("Speed decreased to ${newSpeed.toStringAsFixed(2)}x");
+  }
+
+  // Override fastForward to increase speed via notification button.
+  @override
+  Future<void> fastForward() async {
+    //the functions is swaped to sync the button that in the item
+    await decreaseSpeed();
+  }
+
+  // Override rewind to decrease speed via notification button.
+  @override
+  Future<void> rewind() async {
+    //the functions is swaped to sync the button that in the item
+
+
+    await increaseSpeed();
   }
 }

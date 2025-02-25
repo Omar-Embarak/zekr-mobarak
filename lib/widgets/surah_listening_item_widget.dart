@@ -370,6 +370,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                     placeholderBuilder: (context) => const Icon(Icons.error),
                   ),
                 ),
+                
               ],
             );
           },
