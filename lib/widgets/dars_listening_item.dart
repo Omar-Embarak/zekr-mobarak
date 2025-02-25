@@ -242,7 +242,7 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: Column(
         children: [
-          buildDurationRow(),
+          buildDurationRow(globalAudioHandler),
           buildSlider(globalAudioHandler),
           buildControlButtons(),
         ],
@@ -250,22 +250,55 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
     );
   }
 
-  Widget buildDurationRow() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            '${currentDuration.inMinutes}:${(currentDuration.inSeconds % 60).toString().padLeft(2, '0')}',
-            style: AppStyles.alwaysBlack18(context),
-          ),
-          Text(
-            '${totalDuration.inMinutes}:${(totalDuration.inSeconds % 60).toString().padLeft(2, '0')}',
-            style: AppStyles.alwaysBlack18(context),
-          ),
-        ],
-      ),
+  Widget buildDurationRow(AudioPlayerHandler audioHandler) {
+    return StreamBuilder<MediaItem?>(
+      stream: audioHandler.mediaItem,
+      builder: (context, mediaSnapshot) {
+        final currentMedia = mediaSnapshot.data;
+        if (currentMedia != null && currentMedia.id == widget.audioUrl) {
+          // Only show live data if this surah is the current media.
+          return StreamBuilder<Duration>(
+            stream: audioHandler.positionStream,
+            builder: (context, posSnapshot) {
+              final position = posSnapshot.data ?? Duration.zero;
+              return StreamBuilder<Duration?>(
+                stream: audioHandler.durationStream,
+                builder: (context, durSnapshot) {
+                  final duration = durSnapshot.data ?? Duration.zero;
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '${position.inMinutes}:${(position.inSeconds % 60).toString().padLeft(2, '0')}',
+                          style: AppStyles.alwaysBlack18(context),
+                        ),
+                        Text(
+                          '${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}',
+                          style: AppStyles.alwaysBlack18(context),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        } else {
+          // Not playing: show zeros.
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('0:00', style: AppStyles.alwaysBlack18(context)),
+                Text('0:00', style: AppStyles.alwaysBlack18(context)),
+              ],
+            ),
+          );
+        }
+      },
     );
   }
 
@@ -311,42 +344,65 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
     );
   }
 
+  // Control buttons using stream builders to sync play/pause icon.
   Widget buildControlButtons() {
-    final audioHandler = AudioPlayerHandler();
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        GestureDetector(
-          onTap: () => forward(globalAudioHandler),
-          child:
-              const IconConstrain(height: 24, imagePath: Assets.imagesForward),
-        ),
-        // At the top of your widget build method or in an appropriate place:
-
-        IconButton(
-          onPressed: () {
-            // If you don't have _handleAudioAction defined, just call directly:
-            audioHandler.togglePlayPause(
-                surahName: widget.title,
-                reciterName: widget.description,
-                isPlaying: isPlaying,
-                audioUrl: widget.audioUrl,
-                setIsPlaying: setIsPlaying,
-                onSurahTap: null);
+    final audioHandler = globalAudioHandler;
+    return StreamBuilder<MediaItem?>(
+      stream: audioHandler.mediaItem,
+      builder: (context, mediaSnapshot) {
+        final currentMedia = mediaSnapshot.data;
+        final isCurrentMedia =
+            currentMedia != null && currentMedia.id == widget.audioUrl;
+        return StreamBuilder<PlaybackState>(
+          stream: audioHandler.playbackState,
+          builder: (context, playbackSnapshot) {
+            final playing =
+                isCurrentMedia && (playbackSnapshot.data?.playing ?? false);
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                GestureDetector(
+                  onTap: () => backward(audioHandler),
+                  child: SvgPicture.asset(
+                    height: 24,
+                    Assets.imagesForward,
+                    placeholderBuilder: (context) => const Icon(Icons.error),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    _handleAudioAction(() {
+                      // Using widget.title as surahName and widget.description as reciterName.
+                      audioHandler.togglePlayPause(
+                        surahName: widget.title,
+                        reciterName: widget.description,
+                        isPlaying: playing,
+                        audioUrl: widget.audioUrl,
+                        // We no longer update local state manually; sync via streams.
+                        setIsPlaying: (_) {},
+                        onSurahTap: null,
+                      );
+                    });
+                  },
+                  icon: Icon(
+                    playing ? Icons.pause_circle : Icons.play_circle,
+                    color: AppColors.kSecondaryColor,
+                    size: 45,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => forward(audioHandler),
+                  child: SvgPicture.asset(
+                    height: 24,
+                    Assets.imagesBackward,
+                    placeholderBuilder: (context) => const Icon(Icons.error),
+                  ),
+                ),
+              ],
+            );
           },
-          icon: Icon(
-            isPlaying ? Icons.pause_circle : Icons.play_circle,
-            color: AppColors.kSecondaryColor,
-            size: 45,
-          ),
-        ),
-        GestureDetector(
-          onTap: () => backward(globalAudioHandler),
-          child:
-              const IconConstrain(height: 24, imagePath: Assets.imagesBackward),
-        ),
-      ],
+        );
+      },
     );
   }
 }
