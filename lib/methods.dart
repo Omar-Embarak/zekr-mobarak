@@ -1,10 +1,9 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:developer';
-// import 'package:audioplayers/audioplayers.dart';
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:just_audio_background/just_audio_background.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
@@ -14,6 +13,8 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'constants.dart';
 import 'dart:io';
+
+import 'pages/sevices/audio_handler.dart';
 
 /// Define the MethodChannel that matches the one in your MainActivity.
 const MethodChannel _mediaScannerChannel =
@@ -67,63 +68,6 @@ Future<bool> isUrlAccessible(String url) async {
     return response.statusCode == 200;
   } catch (e) {
     return false;
-  }
-}
-
-Future<void> togglePlayPause({
-  required AudioPlayer audioPlayer,
-  required bool isPlaying,
-  required final String audioUrl,
-  required final String reciterName,
-  required final String surahName,
-  required Function(bool) setIsPlaying,
-  void Function()? onSurahTap,
-}) async {
-  // Check if the audio URL is accessible.
-  if (!await isUrlAccessible(audioUrl)) {
-    showMessage('الملف الصوتي غير متاح.');
-    return;
-  }
-
-  try {
-    if (isPlaying) {
-      // If already playing, pause the audio.
-      showMessage("تم ايقاف التشغيل");
-      await audioPlayer.pause();
-    } else {
-      // If not playing, set the audio source with media metadata and start playback.
-      showMessage("جاري التشغيل..");
-
-      // Set the audio source with metadata (using just_audio's setAudioSource).
-      await audioPlayer.setAudioSource(
-        AudioSource.uri(
-          Uri.parse(audioUrl),
-          tag: MediaItem(
-            // A unique ID for this media item.
-            id: audioUrl,
-            // Album information.
-            album: reciterName,
-
-            title: surahName,
-            artUri: Uri.parse('assets/images/ic_launcher.png'),
-          ),
-        ),
-      );
-
-      // Start playing the audio.
-      await audioPlayer.play();
-
-      // Execute additional functionality if provided.
-      if (onSurahTap != null) {
-        onSurahTap();
-      }
-    }
-    // Toggle the playing state.
-    setIsPlaying(!isPlaying);
-  } catch (e) {
-    // Handle any errors during playback.
-    showMessage('حدث خطأ أثناء تشغيل الصوت.');
-    setIsPlaying(false);
   }
 }
 
@@ -208,25 +152,23 @@ void adjustSpeed(AudioPlayer audioPlayer, double speed) async {
   // await audioPlayer.setPlaybackRate(currentSpeed);
 }
 
-void forward(AudioPlayer audioPlayer) {
-  if (currentSpeed == 1.0) {
-    currentSpeed = 1.25; // Increase speed to 1.25
-  } else if (currentSpeed == 0.75) {
-    currentSpeed = 1.0; // Reset to normal speed
-  }
-  adjustSpeed(audioPlayer, currentSpeed);
-  showMessage('الصوت علي سرعة ${currentSpeed.toStringAsFixed(2)}');
+void backward(AudioPlayerHandler audioHandler) async {
+  final currentPos = await audioHandler.positionStream.first;
+  final newPos = currentPos - const Duration(seconds: 10);
+  await audioHandler.seek(newPos < Duration.zero ? Duration.zero : newPos);
 }
 
-void backward(AudioPlayer audioPlayer) {
-  if (currentSpeed == 1.0) {
-    currentSpeed = 0.75; // Decrease speed to 0.75
-  } else if (currentSpeed == 1.25) {
-    currentSpeed = 1.0; // Reset to normal speed
+void forward(AudioPlayerHandler audioHandler) async {
+  final currentPos = await audioHandler.positionStream.first;
+  final duration = await audioHandler.durationStream.first;
+  final newPos = currentPos + const Duration(seconds: 10);
+  if (duration != null) {
+    await audioHandler.seek(newPos > duration ? duration : newPos);
+  } else {
+    await audioHandler.seek(newPos);
   }
-  adjustSpeed(audioPlayer, currentSpeed);
-  showMessage('الصوت علي سرعة ${currentSpeed.toStringAsFixed(2)}');
 }
+
 
 Future<void> shareAudio(String audioUrl) async {
   Share.share(audioUrl);

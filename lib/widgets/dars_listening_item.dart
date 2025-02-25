@@ -1,4 +1,5 @@
 // import 'package:audioplayers/audioplayers.dart';
+import 'package:audio_service/audio_service.dart';
 import 'package:azkar_app/model/fav_dars_model.dart';
 import 'package:azkar_app/pages/droos_pages/fav_dars_provider.dart';
 import 'package:azkar_app/utils/app_style.dart';
@@ -11,6 +12,8 @@ import '../../constants.dart';
 import '../../methods.dart';
 import '../../utils/app_images.dart';
 import '../../widgets/icon_constrain_widget.dart';
+import '../main.dart';
+import '../pages/sevices/audio_handler.dart';
 
 class DarsListeningItem extends StatefulWidget {
   final String audioUrl;
@@ -34,20 +37,15 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
   bool isPlaying = false;
   Duration totalDuration = Duration.zero;
   Duration currentDuration = Duration.zero;
-  final AudioPlayer _audioPlayer = AudioPlayer();
 
   @override
   void initState() {
     super.initState();
     _checkInternetConnection();
-
-    initializeAudioPlayer(
-        _audioPlayer, setTotalDuration, setCurrentDuration, setIsPlaying);
   }
 
   @override
   void dispose() {
-    _audioPlayer.dispose();
     super.dispose();
   }
 
@@ -245,7 +243,7 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
       child: Column(
         children: [
           buildDurationRow(),
-          buildSlider(),
+          buildSlider(globalAudioHandler),
           buildControlButtons(),
         ],
       ),
@@ -271,45 +269,72 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
     );
   }
 
-  Widget buildSlider() {
-    return Slider(
-      activeColor: AppColors.kSecondaryColor,
-      inactiveColor: AppColors.kPrimaryColor,
-      value: currentDuration.inSeconds.toDouble(),
-      max: totalDuration.inSeconds.toDouble(),
-      onChanged: (value) {
-        if (mounted) {
-          setState(() {
-            currentDuration = Duration(seconds: value.toInt());
-          });
+  Widget buildSlider(AudioPlayerHandler audioHandler) {
+    return StreamBuilder<MediaItem?>(
+      stream: audioHandler.mediaItem,
+      builder: (context, snapshot) {
+        final currentMedia = snapshot.data;
+        if (currentMedia != null && currentMedia.id == widget.audioUrl) {
+          return StreamBuilder<Duration>(
+            stream: audioHandler.positionStream,
+            builder: (context, posSnapshot) {
+              final position = posSnapshot.data ?? Duration.zero;
+              return StreamBuilder<Duration?>(
+                stream: audioHandler.durationStream,
+                builder: (context, durSnapshot) {
+                  final duration = durSnapshot.data ?? Duration.zero;
+                  return Slider(
+                    activeColor: AppColors.kSecondaryColor,
+                    inactiveColor: AppColors.kPrimaryColor,
+                    value: position.inSeconds.toDouble(),
+                    max: duration.inSeconds > 0
+                        ? duration.inSeconds.toDouble()
+                        : 1,
+                    onChanged: (value) {
+                      audioHandler.seek(Duration(seconds: value.toInt()));
+                    },
+                  );
+                },
+              );
+            },
+          );
+        } else {
+          return Slider(
+            activeColor: AppColors.kSecondaryColor,
+            inactiveColor: AppColors.kPrimaryColor,
+            value: 0,
+            max: 1,
+            onChanged: null,
+          );
         }
-        _audioPlayer.seek(currentDuration);
       },
     );
   }
 
   Widget buildControlButtons() {
+    final audioHandler = AudioPlayerHandler();
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         GestureDetector(
-          onTap: () => forward(_audioPlayer),
+          onTap: () => forward(globalAudioHandler),
           child:
               const IconConstrain(height: 24, imagePath: Assets.imagesForward),
         ),
-        IconButton(
-          onPressed: () => _handleAudioAction(() {
-            showMessage("جاري التشغيل..");
+        // At the top of your widget build method or in an appropriate place:
 
-            togglePlayPause(
+        IconButton(
+          onPressed: () {
+            // If you don't have _handleAudioAction defined, just call directly:
+            audioHandler.togglePlayPause(
                 surahName: widget.title,
                 reciterName: widget.description,
-                audioPlayer: _audioPlayer,
                 isPlaying: isPlaying,
                 audioUrl: widget.audioUrl,
                 setIsPlaying: setIsPlaying,
                 onSurahTap: null);
-          }),
+          },
           icon: Icon(
             isPlaying ? Icons.pause_circle : Icons.play_circle,
             color: AppColors.kSecondaryColor,
@@ -317,7 +342,7 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
           ),
         ),
         GestureDetector(
-          onTap: () => backward(_audioPlayer),
+          onTap: () => backward(globalAudioHandler),
           child:
               const IconConstrain(height: 24, imagePath: Assets.imagesBackward),
         ),

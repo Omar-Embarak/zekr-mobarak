@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:azkar_app/cubit/add_fav_surahcubit/add_fav_surah_item_cubit.dart';
 import 'package:azkar_app/cubit/ruqiya_cubit/ruqiya_cubit.dart';
 import 'package:azkar_app/pages/droos_pages/fav_dars_provider.dart';
@@ -10,12 +11,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:just_audio_background/just_audio_background.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'cubit/azkar_cubit/azkar_cubit.dart';
 import 'cubit/praying_cubit/praying_cubit.dart';
 import 'cubit/theme_cubit/theme_cubit.dart';
+import 'methods.dart';
 import 'model/azkar_model/azkar_model/azkar_model.dart';
 import 'pages/azkar_pages/notification_service.dart';
 import 'pages/home_page/home_page.dart';
@@ -23,6 +24,7 @@ import 'pages/quran_pages/book_mark_provider.dart';
 import 'pages/quran_pages/quran_data_provider.dart';
 import 'pages/quran_pages/quran_font_size_provider.dart';
 import 'pages/quran_pages/search_provider.dart';
+import 'pages/sevices/audio_handler.dart';
 import 'splash_page.dart';
 
 final GlobalKey<NavigatorState> globalNavigatorKey =
@@ -48,7 +50,7 @@ class ErrorScreen extends StatelessWidget {
     );
   }
 }
-
+late AudioPlayerHandler globalAudioHandler;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // final db = await DatabaseHelper().database;
@@ -65,12 +67,16 @@ Future<void> main() async {
 
   await ThemeCubit().loadInitialTheme();
   Bloc.observer = SimpleBlocObserver();
-    await JustAudioBackground.init(
-    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
-    androidNotificationChannelName: 'Audio playback',
-    androidNotificationOngoing: true,
-
+  // Initialize the global audio handler.
+  globalAudioHandler = await AudioService.init(
+    builder: () => AudioPlayerHandler(),
+    config: const AudioServiceConfig(
+      androidNotificationChannelId: 'com.mycompany.myapp.channel.audio',
+      androidNotificationChannelName: 'Audio playback',
+      androidNotificationOngoing: true,
+    ),
   );
+
   runApp(
     FutureBuilder(
       future: loadResources(),

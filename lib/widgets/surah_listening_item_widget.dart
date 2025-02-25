@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:audio_service/audio_service.dart';
 import 'package:azkar_app/model/quran_models/reciters_model.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +9,11 @@ import 'package:just_audio/just_audio.dart';
 import 'package:quran/quran.dart' as quran;
 import '../cubit/add_fav_surahcubit/add_fav_surah_item_cubit.dart';
 import '../database_helper.dart';
+import '../main.dart';
 import '../model/quran_models/fav_model.dart';
 import '../methods.dart';
 import '../constants.dart';
+import '../pages/sevices/audio_handler.dart';
 import '../utils/app_images.dart';
 import '../utils/app_style.dart';
 
@@ -38,7 +41,6 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
   bool isFavorite = false;
   Duration totalDuration = Duration.zero;
   Duration currentDuration = Duration.zero;
-  final AudioPlayer _audioPlayer = AudioPlayer();
   late ConnectivityResult _connectivityStatus;
   StreamSubscription<PlayerState>? _playerStateSubscription;
   final DatabaseHelper _databaseHelper = DatabaseHelper();
@@ -46,43 +48,14 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
   void initState() {
     super.initState();
     _initializeFavoriteState();
-    _initializeAudioPlayer();
     _checkInternetConnection();
   }
 
   @override
   void dispose() {
-    _audioPlayer.stop();
-    _audioPlayer.dispose();
     _playerStateSubscription?.cancel();
     super.dispose();
   }
-
-Future<void> _initializeAudioPlayer() async {
-  _playerStateSubscription = _audioPlayer.playerStateStream.listen((playerState) {
-    if (mounted) {
-      setState(() {
-        isPlaying = playerState.playing;
-      });
-    }
-  });
-
-  _audioPlayer.durationStream.listen((duration) {
-    if (mounted) {
-      setState(() {
-        totalDuration = duration ?? Duration.zero;
-      });
-    }
-  });
-
-  _audioPlayer.positionStream.listen((position) {
-    if (mounted) {
-      setState(() {
-        currentDuration = position;
-      });
-    }
-  });
-}
 
   Future<void> _checkInternetConnection() async {
     final List<ConnectivityResult> connectivityResults =
@@ -96,8 +69,6 @@ Future<void> _initializeAudioPlayer() async {
       });
     }
   }
-
-
 
   void _handleAudioAction(Function() action) {
     if (_connectivityStatus == ConnectivityResult.none) {
@@ -241,91 +212,169 @@ Future<void> _initializeAudioPlayer() async {
   Widget buildExpandedContent() {
     return Column(
       children: [
-        buildDurationRow(),
-        buildSlider(),
+        buildDurationRow(globalAudioHandler),
+        buildSlider(globalAudioHandler),
         buildControlButtons(),
       ],
     );
   }
 
-  Widget buildDurationRow() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            '${currentDuration.inMinutes}:${(currentDuration.inSeconds % 60).toString().padLeft(2, '0')}',
-            style: AppStyles.alwaysBlack18(context),
-          ),
-          Text(
-            '${totalDuration.inMinutes}:${(totalDuration.inSeconds % 60).toString().padLeft(2, '0')}',
-            style: AppStyles.alwaysBlack18(context),
-          ),
-        ],
-      ),
+  Widget buildDurationRow(AudioPlayerHandler audioHandler) {
+    return StreamBuilder<MediaItem?>(
+      stream: audioHandler.mediaItem,
+      builder: (context, mediaSnapshot) {
+        final currentMedia = mediaSnapshot.data;
+        if (currentMedia != null && currentMedia.id == widget.audioUrl) {
+          // Only show live data if this surah is the current media.
+          return StreamBuilder<Duration>(
+            stream: audioHandler.positionStream,
+            builder: (context, posSnapshot) {
+              final position = posSnapshot.data ?? Duration.zero;
+              return StreamBuilder<Duration?>(
+                stream: audioHandler.durationStream,
+                builder: (context, durSnapshot) {
+                  final duration = durSnapshot.data ?? Duration.zero;
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '${position.inMinutes}:${(position.inSeconds % 60).toString().padLeft(2, '0')}',
+                          style: AppStyles.alwaysBlack18(context),
+                        ),
+                        Text(
+                          '${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}',
+                          style: AppStyles.alwaysBlack18(context),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        } else {
+          // Not playing: show zeros.
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('0:00', style: AppStyles.alwaysBlack18(context)),
+                Text('0:00', style: AppStyles.alwaysBlack18(context)),
+              ],
+            ),
+          );
+        }
+      },
     );
   }
 
-  Widget buildSlider() {
-    return Slider(
-      activeColor: AppColors.kSecondaryColor,
-      inactiveColor: AppColors.kPrimaryColor,
-      value: currentDuration.inSeconds.toDouble(),
-      max: totalDuration.inSeconds > 0 ? totalDuration.inSeconds.toDouble() : 1,
-      onChanged: totalDuration.inSeconds > 0
-          ? (value) {
-              if (mounted) {
-                setState(() {
-                  currentDuration = Duration(seconds: value.toInt());
-                });
-              }
-              _audioPlayer.seek(currentDuration);
-            }
-          : null,
+  Widget buildSlider(AudioPlayerHandler audioHandler) {
+    return StreamBuilder<MediaItem?>(
+      stream: audioHandler.mediaItem,
+      builder: (context, snapshot) {
+        final currentMedia = snapshot.data;
+        if (currentMedia != null && currentMedia.id == widget.audioUrl) {
+          return StreamBuilder<Duration>(
+            stream: audioHandler.positionStream,
+            builder: (context, posSnapshot) {
+              final position = posSnapshot.data ?? Duration.zero;
+              return StreamBuilder<Duration?>(
+                stream: audioHandler.durationStream,
+                builder: (context, durSnapshot) {
+                  final duration = durSnapshot.data ?? Duration.zero;
+                  return Slider(
+                    activeColor: AppColors.kSecondaryColor,
+                    inactiveColor: AppColors.kPrimaryColor,
+                    value: position.inSeconds.toDouble(),
+                    max: duration.inSeconds > 0
+                        ? duration.inSeconds.toDouble()
+                        : 1,
+                    onChanged: (value) {
+                      audioHandler.seek(Duration(seconds: value.toInt()));
+                    },
+                  );
+                },
+              );
+            },
+          );
+        } else {
+          return Slider(
+            activeColor: AppColors.kSecondaryColor,
+            inactiveColor: AppColors.kPrimaryColor,
+            value: 0,
+            max: 1,
+            onChanged: null,
+          );
+        }
+      },
     );
   }
 
   Widget buildControlButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        GestureDetector(
-          onTap: () => backward(_audioPlayer),
-          child: SvgPicture.asset(
-            height: 24,
-            Assets.imagesForward,
-            placeholderBuilder: (context) => const Icon(Icons.error),
-          ),
-        ),
-        IconButton(
-          onPressed: () => _handleAudioAction(() {
-            togglePlayPause(reciterName: widget.reciter.name,
-            surahName: quran.getSurahNameArabic(widget.surahIndex + 1),
-          audioPlayer:     _audioPlayer,
-             isPlaying:  isPlaying,
-              audioUrl:  widget.audioUrl,
-              setIsPlaying:  setIsPlaying,
-             onSurahTap:  widget.onSurahTap != null
-                  ? () => widget.onSurahTap!(widget.surahIndex)
-                  : null,
+    final audioHandler =
+        globalAudioHandler; // already your global AudioPlayerHandler
+    return StreamBuilder<MediaItem?>(
+      stream: audioHandler.mediaItem,
+      builder: (context, mediaSnapshot) {
+        final currentMedia = mediaSnapshot.data;
+        final isCurrentMedia =
+            currentMedia != null && currentMedia.id == widget.audioUrl;
+        return StreamBuilder<PlaybackState>(
+          stream: audioHandler.playbackState,
+          builder: (context, playbackSnapshot) {
+            // Only show "playing" if this surah is the current one and global state is playing.
+            final playing =
+                isCurrentMedia && (playbackSnapshot.data?.playing ?? false);
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                GestureDetector(
+                  onTap: () => backward(audioHandler),
+                  child: SvgPicture.asset(
+                    height: 24,
+                    Assets.imagesForward,
+                    placeholderBuilder: (context) => const Icon(Icons.error),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    _handleAudioAction(() {
+                      audioHandler.togglePlayPause(
+                        reciterName: widget.reciter.name,
+                        surahName:
+                            quran.getSurahNameArabic(widget.surahIndex + 1),
+                        isPlaying: playing,
+                        audioUrl: widget.audioUrl,
+                        // We no longer need to update local state manually.
+                        setIsPlaying: (_) {},
+                        onSurahTap: widget.onSurahTap != null
+                            ? () => widget.onSurahTap!(widget.surahIndex)
+                            : null,
+                      );
+                    });
+                  },
+                  icon: Icon(
+                    playing ? Icons.pause_circle : Icons.play_circle,
+                    color: AppColors.kSecondaryColor,
+                    size: 45,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => forward(audioHandler),
+                  child: SvgPicture.asset(
+                    height: 24,
+                    Assets.imagesBackward,
+                    placeholderBuilder: (context) => const Icon(Icons.error),
+                  ),
+                ),
+              ],
             );
-          }),
-          icon: Icon(
-            isPlaying ? Icons.pause_circle : Icons.play_circle,
-            color: AppColors.kSecondaryColor,
-            size: 45,
-          ),
-        ),
-        GestureDetector(
-          onTap: () => forward(_audioPlayer),
-          child: SvgPicture.asset(
-            height: 24,
-            Assets.imagesBackward,
-            placeholderBuilder: (context) => const Icon(Icons.error),
-          ),
-        ),
-      ],
+          },
+        );
+      },
     );
   }
 
