@@ -108,22 +108,96 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       });
     }
   }
+// Inside _SurahListeningItemState in your SurahListeningItem widget
+
+// Inside _SurahListeningItemState in your SurahListeningItem widget
+
+// Helper: Play previous surah.
+  void playPreviousSurah(AudioPlayerHandler audioHandler) {
+    int prevIndex = widget.surahIndex - 1;
+    if (prevIndex < 0) {
+      showMessage("لا يوجد سورة سابقة");
+      return;
+    }
+    String prevAudioUrl = widget.reciter.zeroPaddingSurahNumber
+        ? '${widget.reciter.url}${(prevIndex + 1).toString().padLeft(3, '0')}.mp3'
+        : '${widget.reciter.url}${prevIndex + 1}.mp3';
+    audioHandler.togglePlayPause(
+      reciterName: widget.reciter.name,
+      surahName: quran.getSurahNameArabic(prevIndex + 1),
+      isPlaying: false,
+      audioUrl: prevAudioUrl,
+      surahIndex: prevIndex,
+      reciterUrl: widget.reciter.url,
+      setIsPlaying: (_) {},
+      onSurahTap: () {},
+    );
+    setState(() {
+      isExpanded = true;
+    });
+  }
+
+// Helper: Play next surah.
+  void playNextSurah(AudioPlayerHandler audioHandler) {
+    int nextIndex = widget.surahIndex + 1;
+    if (nextIndex >= 114) {
+      showMessage("لا يوجد سورة تالية");
+      return;
+    }
+    String nextAudioUrl = widget.reciter.zeroPaddingSurahNumber
+        ? '${widget.reciter.url}${(nextIndex + 1).toString().padLeft(3, '0')}.mp3'
+        : '${widget.reciter.url}${nextIndex + 1}.mp3';
+    audioHandler.togglePlayPause(
+      reciterName: widget.reciter.name,
+      surahName: quran.getSurahNameArabic(nextIndex + 1),
+      isPlaying: false,
+      audioUrl: nextAudioUrl,
+      surahIndex: nextIndex,
+      reciterUrl: widget.reciter.url,
+      setIsPlaying: (_) {},
+      onSurahTap: () {},
+    );
+    setState(() {
+      isExpanded = true;
+    });
+  }
+
+  @override
+// Inside _SurahListeningItemState in your SurahListeningItem widget
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        GestureDetector(
-          onTap: () {
-            if (mounted) {
+    // Listen to the global mediaItem and auto-expand if this item is current.
+    return StreamBuilder<MediaItem?>(
+      stream: globalAudioHandler.mediaItem,
+      builder: (context, snapshot) {
+        final currentMedia = snapshot.data;
+        if (currentMedia != null && currentMedia.extras != null) {
+          final playingIndex = currentMedia.extras!['surahIndex'] as int?;
+          if (playingIndex != null &&
+              playingIndex == widget.surahIndex &&
+              !isExpanded) {
+            // Auto-expand without blocking build.
+            Future.microtask(() {
               setState(() {
-                isExpanded = !isExpanded;
+                isExpanded = true;
               });
-            }
-          },
-          child: buildSurahItem(),
-        ),
-      ],
+            });
+          }
+        }
+        return Column(
+          children: [
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  isExpanded = !isExpanded;
+                });
+              },
+              child: buildSurahItem(),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -313,9 +387,9 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
     );
   }
 
+// In your buildControlButtons method:
   Widget buildControlButtons() {
-    final audioHandler =
-        globalAudioHandler; // already your global AudioPlayerHandler
+    final audioHandler = globalAudioHandler; // your global AudioPlayerHandler
     return StreamBuilder<MediaItem?>(
       stream: audioHandler.mediaItem,
       builder: (context, mediaSnapshot) {
@@ -325,20 +399,43 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
         return StreamBuilder<PlaybackState>(
           stream: audioHandler.playbackState,
           builder: (context, playbackSnapshot) {
-            // Only show "playing" if this surah is the current one and global state is playing.
+            // Determine if this item is playing and enabled.
             final playing =
                 isCurrentMedia && (playbackSnapshot.data?.playing ?? false);
+            // Check if the processing state is loading.
+            final isLoading = playbackSnapshot.data?.processingState ==
+                AudioProcessingState.loading;
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                GestureDetector(
-                  onTap: () => backward(audioHandler),
-                  child: SvgPicture.asset(
-                    height: 24,
-                    Assets.imagesForward,
-                    placeholderBuilder: (context) => const Icon(Icons.error),
+                // Navigation previous surah button.
+                IconButton(
+                  onPressed: isCurrentMedia
+                      ? () => playPreviousSurah(audioHandler)
+                      : null,
+                  icon: Icon(
+                    Icons
+                        .skip_next, // swapped for RTL: "skip_next" represents previous
+                    size: 30,
+                    color: isCurrentMedia
+                        ? AppColors.kSecondaryColor
+                        : Colors.grey,
                   ),
                 ),
+                // Speed decrease button.
+                IconButton(
+                  onPressed: isCurrentMedia
+                      ? () => audioHandler.decreaseSpeed()
+                      : null,
+                  icon: Icon(
+                    Icons.fast_rewind,
+                    size: 30,
+                    color: isCurrentMedia
+                        ? AppColors.kSecondaryColor
+                        : Colors.grey,
+                  ),
+                ),
+                // Play/Pause button with loading indicator.
                 IconButton(
                   onPressed: () {
                     _handleAudioAction(() {
@@ -348,7 +445,8 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                             quran.getSurahNameArabic(widget.surahIndex + 1),
                         isPlaying: playing,
                         audioUrl: widget.audioUrl,
-                        // We no longer need to update local state manually.
+                        surahIndex: widget.surahIndex,
+                        reciterUrl: widget.reciter.url,
                         setIsPlaying: (_) {},
                         onSurahTap: widget.onSurahTap != null
                             ? () => widget.onSurahTap!(widget.surahIndex)
@@ -356,21 +454,48 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                       );
                     });
                   },
+                  icon: isLoading
+                      ? SizedBox(
+                          height: 45,
+                          width: 45,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.5,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                AppColors.kSecondaryColor),
+                          ),
+                        )
+                      : Icon(
+                          playing ? Icons.pause_circle : Icons.play_circle,
+                          color: AppColors.kSecondaryColor,
+                          size: 45,
+                        ),
+                ),
+                // Speed increase button.
+                IconButton(
+                  onPressed: isCurrentMedia
+                      ? () => audioHandler.increaseSpeed()
+                      : null,
                   icon: Icon(
-                    playing ? Icons.pause_circle : Icons.play_circle,
-                    color: AppColors.kSecondaryColor,
-                    size: 45,
+                    Icons.fast_forward,
+                    size: 30,
+                    color: isCurrentMedia
+                        ? AppColors.kSecondaryColor
+                        : Colors.grey,
                   ),
                 ),
-                GestureDetector(
-                  onTap: () => forward(audioHandler),
-                  child: SvgPicture.asset(
-                    height: 24,
-                    Assets.imagesBackward,
-                    placeholderBuilder: (context) => const Icon(Icons.error),
+                // Navigation next surah button.
+                IconButton(
+                  onPressed:
+                      isCurrentMedia ? () => playNextSurah(audioHandler) : null,
+                  icon: Icon(
+                    Icons
+                        .skip_previous, // swapped for RTL: "skip_previous" represents next
+                    size: 30,
+                    color: isCurrentMedia
+                        ? AppColors.kSecondaryColor
+                        : Colors.grey,
                   ),
                 ),
-                
               ],
             );
           },

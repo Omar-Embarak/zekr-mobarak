@@ -1,4 +1,3 @@
-import 'package:audio_service/audio_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:developer';
 import 'package:azkar_app/utils/app_style.dart';
@@ -297,28 +296,4 @@ void showOfflineMessage() {
   showMessage('لا يتوفر اتصال بالانترنت.');
 }
 
-void playNextSurah(
-    AudioPlayer audioPlayer,
-    int surahIndex,
-    Function(int) onSurahTap,
-    String audioUrl,
-    Function(bool) setIsPlaying) async {
-  final nextSurahIndex = surahIndex + 1;
-  if (nextSurahIndex < 114) {
-    onSurahTap(nextSurahIndex);
-    await audioPlayer.pause();
-    final nextAudioUrl = audioUrl.replaceFirst(
-      (surahIndex + 1).toString().padLeft(3, '0'),
-      (nextSurahIndex + 1).toString().padLeft(3, '0'),
-    );
-    // await audioPlayer.play(UrlSource(nextAudioUrl));
-    setIsPlaying(true);
-  }
-}
 
-void playPreviousSurah(int surahIndex, Function(int) onSurahTap) {
-  final previousSurahIndex = surahIndex - 1;
-  if (previousSurahIndex >= 0) {
-    onSurahTap(previousSurahIndex);
-  }
-}

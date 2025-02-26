@@ -6,12 +6,10 @@ import 'package:azkar_app/utils/app_style.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 import '../../constants.dart';
 import '../../methods.dart';
 import '../../utils/app_images.dart';
-import '../../widgets/icon_constrain_widget.dart';
 import '../main.dart';
 import '../pages/sevices/audio_handler.dart';
 
@@ -373,15 +371,15 @@ class _SurahListeningItemState extends State<DarsListeningItem> {
                   onPressed: () {
                     _handleAudioAction(() {
                       // Using widget.title as surahName and widget.description as reciterName.
-                      audioHandler.togglePlayPause(
-                        surahName: widget.title,
-                        reciterName: widget.description,
-                        isPlaying: playing,
-                        audioUrl: widget.audioUrl,
-                        // We no longer update local state manually; sync via streams.
-                        setIsPlaying: (_) {},
-                        onSurahTap: null,
-                      );
+                      // audioHandler.togglePlayPause(
+                      //   surahName: widget.title,
+                      //   reciterName: widget.description,
+                      //   isPlaying: playing,
+                      //   audioUrl: widget.audioUrl,
+                      //   // We no longer update local state manually; sync via streams.
+                      //   setIsPlaying: (_) {},
+                      //   onSurahTap: null,
+                      // );
                     });
                   },
                   icon: Icon(
