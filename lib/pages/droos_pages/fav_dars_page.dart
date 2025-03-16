@@ -15,30 +15,34 @@ class FavDarsPage extends StatelessWidget {
         centerTitle: true,
         iconTheme: IconThemeData(
             color: AppStyles.styleDiodrumArabicbold20(context).color),
-        title: Text(
-          'المفضلة',
-          style: AppStyles.styleDiodrumArabicbold20(context),
-        ),
+        title:
+            Text('المفضلة', style: AppStyles.styleDiodrumArabicbold20(context)),
         backgroundColor: AppColors.kSecondaryColor,
       ),
       backgroundColor: AppColors.kPrimaryColor,
-      body: Consumer<FavDarsProvider>(builder: (context, provider, body) {
+      body: Consumer<FavDarsProvider>(builder: (context, provider, child) {
         if (provider.favsDars.isEmpty) {
           return Center(
-            child: Text(
-              'لا يوجد دروس محفوظة',
-              style: AppStyles.styleDiodrumArabicbold20(context),
-            ),
+            child: Text('لا يوجد دروس محفوظة',
+                style: AppStyles.styleDiodrumArabicbold20(context)),
           );
         } else {
           return ListView.builder(
-              itemCount: provider.favsDars.length,
-              itemBuilder: (context, index) {
-                return DarsListeningItem(
-                  description: '',
-                    audioUrl: provider.favsDars[index].url,
-                    title: provider.favsDars[index].name);
-              });
+            itemCount: provider.favsDars.length,
+            itemBuilder: (context, index) {
+              final fav = provider.favsDars[index];
+              return DarsListeningItem(
+                darsIndex: index,
+                totalLessons: provider.favsDars.length,
+                audioUrl: fav.url,
+                title: fav.name,
+                description: '', // adjust if you have a description field
+                getAudioUrl: (int idx) {
+                  return provider.favsDars[idx].url;
+                },
+              );
+            },
+          );
         }
       }),
     );

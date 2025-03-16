@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:audio_service/audio_service.dart';
 import 'package:azkar_app/model/quran_models/reciters_model.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -115,6 +116,8 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
 // Helper: Play previous surah.
   void playPreviousSurah(AudioPlayerHandler audioHandler) {
     int prevIndex = widget.surahIndex - 1;
+      showMessage("جاري تشغيل السورة السابقة");
+
     if (prevIndex < 0) {
       showMessage("لا يوجد سورة سابقة");
       return;
@@ -122,24 +125,28 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
     String prevAudioUrl = widget.reciter.zeroPaddingSurahNumber
         ? '${widget.reciter.url}${(prevIndex + 1).toString().padLeft(3, '0')}.mp3'
         : '${widget.reciter.url}${prevIndex + 1}.mp3';
+    log(prevAudioUrl);
     audioHandler.togglePlayPause(
-      reciterName: widget.reciter.name,
-      surahName: quran.getSurahNameArabic(prevIndex + 1),
       isPlaying: false,
       audioUrl: prevAudioUrl,
+      reciterName: widget.reciter.name,
+      surahName: quran.getSurahNameArabic(prevIndex + 1),
       surahIndex: prevIndex,
+      playlistIndex: prevIndex, // Pass the playlist index here!
       reciterUrl: widget.reciter.url,
       setIsPlaying: (_) {},
       onSurahTap: () {},
+      zeroPadding: widget.reciter.zeroPaddingSurahNumber,
     );
     setState(() {
       isExpanded = true;
     });
   }
 
-// Helper: Play next surah.
   void playNextSurah(AudioPlayerHandler audioHandler) {
     int nextIndex = widget.surahIndex + 1;
+      showMessage("جاري تشغيل السورة التالية");
+
     if (nextIndex >= 114) {
       showMessage("لا يوجد سورة تالية");
       return;
@@ -148,14 +155,16 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
         ? '${widget.reciter.url}${(nextIndex + 1).toString().padLeft(3, '0')}.mp3'
         : '${widget.reciter.url}${nextIndex + 1}.mp3';
     audioHandler.togglePlayPause(
-      reciterName: widget.reciter.name,
-      surahName: quran.getSurahNameArabic(nextIndex + 1),
       isPlaying: false,
       audioUrl: nextAudioUrl,
+      reciterName: widget.reciter.name,
+      surahName: quran.getSurahNameArabic(nextIndex + 1),
       surahIndex: nextIndex,
+      playlistIndex: nextIndex, // Important: pass the updated index!
       reciterUrl: widget.reciter.url,
       setIsPlaying: (_) {},
       onSurahTap: () {},
+      zeroPadding: widget.reciter.zeroPaddingSurahNumber,
     );
     setState(() {
       isExpanded = true;
@@ -387,7 +396,6 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
     );
   }
 
-// In your buildControlButtons method:
   Widget buildControlButtons() {
     final audioHandler = globalAudioHandler; // your global AudioPlayerHandler
     return StreamBuilder<MediaItem?>(
@@ -428,7 +436,8 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                       ? () => audioHandler.decreaseSpeed()
                       : null,
                   icon: Icon(
-                    Icons.fast_rewind,
+                    Icons.fast_forward,
+                    
                     size: 30,
                     color: isCurrentMedia
                         ? AppColors.kSecondaryColor
@@ -436,16 +445,18 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                   ),
                 ),
                 // Play/Pause button with loading indicator.
+                // Assuming you have access to the current index from the list builder
                 IconButton(
                   onPressed: () {
                     _handleAudioAction(() {
-                      audioHandler.togglePlayPause(
+                      globalAudioHandler.togglePlayPause(
+                        isPlaying: playing,
+                        audioUrl: widget.audioUrl,
                         reciterName: widget.reciter.name,
                         surahName:
                             quran.getSurahNameArabic(widget.surahIndex + 1),
-                        isPlaying: playing,
-                        audioUrl: widget.audioUrl,
                         surahIndex: widget.surahIndex,
+                        playlistIndex: widget.surahIndex, // Pass the index here
                         reciterUrl: widget.reciter.url,
                         setIsPlaying: (_) {},
                         onSurahTap: widget.onSurahTap != null
@@ -476,7 +487,8 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                       ? () => audioHandler.increaseSpeed()
                       : null,
                   icon: Icon(
-                    Icons.fast_forward,
+                    Icons.fast_rewind,
+
                     size: 30,
                     color: isCurrentMedia
                         ? AppColors.kSecondaryColor
@@ -502,13 +514,5 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
         );
       },
     );
-  }
-
-  void setIsPlaying(bool value) {
-    if (mounted) {
-      setState(() {
-        isPlaying = value;
-      });
-    }
   }
 }

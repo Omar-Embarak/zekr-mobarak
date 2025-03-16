@@ -16,7 +16,6 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'cubit/azkar_cubit/azkar_cubit.dart';
 import 'cubit/praying_cubit/praying_cubit.dart';
 import 'cubit/theme_cubit/theme_cubit.dart';
-import 'methods.dart';
 import 'model/azkar_model/azkar_model/azkar_model.dart';
 import 'pages/azkar_pages/notification_service.dart';
 import 'pages/home_page/home_page.dart';

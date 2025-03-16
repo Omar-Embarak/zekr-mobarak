@@ -1,4 +1,5 @@
 // audio_player_handler.dart
+
 import 'package:audio_service/audio_service.dart';
 import 'package:just_audio/just_audio.dart';
 import '../../methods.dart';
@@ -10,22 +11,27 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
   // Fields to track the current surah and reciter base URL.
   int? currentSurahIndex;
   String? currentReciterUrl;
+  bool useZeroPadding = false; // Add this flag if applicable
+
+  // New playlist fields
+  static List<String> currentPlaylist = [];
+  int currentIndex = 0;
 
   AudioPlayerHandler() {
+    // Existing listener for playback events
     _player.playbackEventStream.listen((event) {
       final playing = _player.playing;
       final processingState = _mapProcessingState(_player.processingState);
       playbackState.add(
         PlaybackState(
           controls: [
-            MediaControl.skipToPrevious, // navigation previous surah
-            MediaControl.rewind,         // speed down
+            MediaControl.skipToPrevious,
+            MediaControl.rewind,
             playing ? MediaControl.pause : MediaControl.play,
-            MediaControl.fastForward,    // speed up
-            MediaControl.skipToNext,     // navigation next surah
+            MediaControl.fastForward,
+            MediaControl.skipToNext,
           ],
           systemActions: {MediaAction.seek},
-          // In compact view, show the middle three buttons (speed & play/pause)
           androidCompactActionIndices: const [1, 2, 3],
           processingState: processingState,
           playing: playing,
@@ -34,6 +40,13 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
           speed: _player.speed,
         ),
       );
+    });
+
+    // New: Listen for the completed state to auto-skip to the next surah.
+    _player.playerStateStream.listen((state) {
+      if (state.processingState == ProcessingState.completed) {
+        skipToNext();
+      }
     });
   }
 
@@ -49,8 +62,6 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
         return AudioProcessingState.ready;
       case ProcessingState.completed:
         return AudioProcessingState.completed;
-      default:
-        return AudioProcessingState.idle;
     }
   }
 
@@ -74,52 +85,98 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     required String surahName,
     required int surahIndex,
     required String reciterUrl,
+    bool zeroPadding = false,
     Uri? artUri,
   }) async {
-    // Update global current surah info.
+    // Update global info.
     currentSurahIndex = surahIndex;
-    currentReciterUrl = reciterUrl;
+    currentReciterUrl = reciterUrl; // Make sure this is always set.
+    useZeroPadding = zeroPadding;
+
     final newMediaItem = MediaItem(
       id: audioUrl,
       album: reciterName,
       title: surahName,
-      extras: {'surahIndex': surahIndex},
+      extras: {
+        'surahIndex': surahIndex,
+        'reciterUrl': reciterUrl, // Save reciterUrl here.
+      },
       artUri: artUri ?? Uri.parse('assets/images/ic_launcher.png'),
     );
+
+    // Update media item stream ASAP for quick UI updates.
     mediaItem.add(newMediaItem);
+
+    // Load the audio source.
     await _player.setAudioSource(
       AudioSource.uri(Uri.parse(audioUrl), tag: newMediaItem),
     );
   }
 
-  /// Toggle play/pause; if a different surah is requested, load it.
   Future<void> togglePlayPause({
     required bool isPlaying,
     required String audioUrl,
     required String reciterName,
     required String surahName,
     required int surahIndex,
+    required int playlistIndex, // New parameter for the playlist index
     required String reciterUrl,
     required Function(bool) setIsPlaying,
     void Function()? onSurahTap,
+    bool zeroPadding = false,
   }) async {
+    // Check if the requested audio is accessible
     if (!await isUrlAccessible(audioUrl)) {
       showMessage('الملف الصوتي غير متاح.');
       return;
     }
     if (mediaItem.value?.id != audioUrl) {
+      currentIndex = playlistIndex; // update index
       showMessage("جاري التشغيل..");
-      await setAudioSourceWithMetadata(
-        audioUrl: audioUrl,
-        reciterName: reciterName,
-        surahName: surahName,
-        surahIndex: surahIndex,
-        reciterUrl: reciterUrl,
+
+      // Create new media item and update streams immediately.
+      final newMediaItem = MediaItem(
+        id: audioUrl,
+        album: reciterName,
+        title: surahName,
+        extras: {'surahIndex': surahIndex},
+        artUri: Uri.parse('assets/images/ic_launcher.png'),
       );
-      await play();
-      if (onSurahTap != null) onSurahTap();
-      setIsPlaying(true);
+      mediaItem.add(newMediaItem);
+
+      // Immediately update playback state so notifications react fast.
+      playbackState.add(
+        PlaybackState(
+          controls: [
+            MediaControl.skipToPrevious,
+            MediaControl.rewind,
+            MediaControl.play,
+            MediaControl.fastForward,
+            MediaControl.skipToNext,
+          ],
+          systemActions: {MediaAction.seek},
+          androidCompactActionIndices: const [1, 2, 3],
+          processingState: AudioProcessingState.loading,
+          playing: false,
+          updatePosition: _player.position,
+          bufferedPosition: _player.bufferedPosition,
+          speed: _player.speed,
+        ),
+      );
+
+      // Instead of awaiting heavy operations, fire-and-forget.
+      _player
+          .setAudioSource(
+        AudioSource.uri(Uri.parse(audioUrl), tag: newMediaItem),
+      )
+          .then((_) async {
+        await play();
+        if (onSurahTap != null) onSurahTap();
+        setIsPlaying(true);
+        // Optionally, update playback state after play starts.
+      });
     } else {
+      // Toggle play/pause if the same surah is tapped again.
       if (isPlaying) {
         showMessage("تم ايقاف التشغيل");
         await pause();
@@ -147,68 +204,80 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     showMessage("Speed decreased to ${newSpeed.toStringAsFixed(2)}x");
   }
 
-  // --- Notification button overrides ---
+  Future<void> setAudioSourceWithPlaylist({
+    required List<String> playlist,
+    required int index,
+    required String reciterName,
+    required String surahName,
+    required String reciterUrl,
+    bool zeroPadding = false,
+    Uri? artUri,
+  }) async {
+    currentPlaylist = playlist;
+    currentIndex = index;
 
-  // Navigation: previous surah.
-  @override
-  Future<void> skipToPrevious() async {
-    if (currentSurahIndex == null || currentReciterUrl == null) return;
-    int prevIndex = currentSurahIndex! - 1;
-    if (prevIndex < 0) {
-      showMessage("لا يوجد سورة سابقة");
-      return;
-    }
-    String prevAudioUrl = _buildAudioUrl(prevIndex, currentReciterUrl!);
-    await togglePlayPause(
-      isPlaying: false,
-      audioUrl: prevAudioUrl,
-      reciterName: mediaItem.value?.album ?? '',
-      surahName: quran.getSurahNameArabic(prevIndex + 1),
-      surahIndex: prevIndex,
-      reciterUrl: currentReciterUrl!,
-      setIsPlaying: (_) {},
-      onSurahTap: () {},
+    // Build a concatenating audio source from the playlist.
+    List<AudioSource> sources = playlist.map((url) {
+      return AudioSource.uri(Uri.parse(url));
+    }).toList();
+    final concatenatingAudioSource =
+        ConcatenatingAudioSource(children: sources);
+
+    // Set the concatenating audio source once.
+    await _player.setAudioSource(concatenatingAudioSource, initialIndex: index);
+
+    // Update the media item stream immediately.
+    final firstUrl = playlist[index];
+    final newMediaItem = MediaItem(
+      id: firstUrl,
+      album: reciterName,
+      title: surahName,
+      extras: {
+        'surahIndex': index,
+        'reciterUrl': reciterUrl,
+      },
+      artUri: artUri ?? Uri.parse('assets/images/ic_launcher.png'),
     );
+    mediaItem.add(newMediaItem);
   }
 
-  // Navigation: next surah.
   @override
   Future<void> skipToNext() async {
-    if (currentSurahIndex == null || currentReciterUrl == null) return;
-    int nextIndex = currentSurahIndex! + 1;
-    if (nextIndex >= 114) {
-      showMessage("لا يوجد سورة تالية");
-      return;
-    }
-    String nextAudioUrl = _buildAudioUrl(nextIndex, currentReciterUrl!);
-    await togglePlayPause(
-      isPlaying: false,
-      audioUrl: nextAudioUrl,
-      reciterName: mediaItem.value?.album ?? '',
-      surahName: quran.getSurahNameArabic(nextIndex + 1),
-      surahIndex: nextIndex,
-      reciterUrl: currentReciterUrl!,
-      setIsPlaying: (_) {},
-      onSurahTap: () {},
+    await _player.seekToNext();
+    currentIndex = _player.currentIndex ?? currentIndex;
+    String nextAudioUrl = currentPlaylist[currentIndex];
+    final newMediaItem = MediaItem(
+      id: nextAudioUrl,
+      album: mediaItem.value?.album ?? '',
+      title: quran.getSurahNameArabic(currentIndex + 1),
+      extras: {'surahIndex': currentIndex},
+      artUri: Uri.parse('assets/images/ic_launcher.png'),
     );
+    mediaItem.add(newMediaItem);
   }
 
-  // Speed down via notification.
+  @override
+  Future<void> skipToPrevious() async {
+    await _player.seekToPrevious();
+    currentIndex = _player.currentIndex ?? currentIndex;
+    String prevAudioUrl = currentPlaylist[currentIndex];
+    final newMediaItem = MediaItem(
+      id: prevAudioUrl,
+      album: mediaItem.value?.album ?? '',
+      title: quran.getSurahNameArabic(currentIndex + 1),
+      extras: {'surahIndex': currentIndex},
+      artUri: Uri.parse('assets/images/ic_launcher.png'),
+    );
+    mediaItem.add(newMediaItem);
+  }
+
   @override
   Future<void> rewind() async {
     await decreaseSpeed();
   }
 
-  // Speed up via notification.
   @override
   Future<void> fastForward() async {
     await increaseSpeed();
-  }
-
-  String _buildAudioUrl(int surahIndex, String reciterUrl) {
-    // Adjust according to zero-padding option.
-    // Example:
-    // return '$reciterUrl${(surahIndex + 1).toString().padLeft(3, '0')}.mp3';
-    return '$reciterUrl${surahIndex + 1}.mp3';
   }
 }

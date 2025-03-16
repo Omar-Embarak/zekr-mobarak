@@ -22,7 +22,7 @@ class _MurattalPageState extends State<MurattalPage> {
       zeroPaddingSurahNumber: true,
     ),
     RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/idrees_akbar//',
+      url: 'https://download.quranicaudio.com/quran/idrees_akbar/',
       name: 'إدريس أبكر',
       zeroPaddingSurahNumber: true,
     ),

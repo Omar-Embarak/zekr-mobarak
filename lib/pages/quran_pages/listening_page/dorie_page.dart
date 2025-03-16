@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../../constants.dart';
 import '../../../model/quran_models/reciters_model.dart';
 import '../../../utils/app_style.dart';
@@ -41,6 +40,7 @@ class DoriePage extends StatelessWidget {
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
+       
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -50,6 +50,7 @@ class DoriePage extends StatelessWidget {
                 ),
               );
             },
+
             child: RecitursItem(
               title: reciters[index].name,
             ),
