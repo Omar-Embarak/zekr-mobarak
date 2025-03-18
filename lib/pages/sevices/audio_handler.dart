@@ -10,7 +10,6 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
 
   // Fields to track the current surah and reciter base URL.
   int? currentSurahIndex;
-  String? currentReciterUrl;
   bool useZeroPadding = false; // Add this flag if applicable
 
   // New playlist fields
@@ -81,26 +80,18 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
   /// Sets the audio source while updating current surah info.
   Future<void> setAudioSourceWithMetadata({
     required String audioUrl,
-    required String reciterName,
-    required String surahName,
+    required String album,
+    required String title,
     required int surahIndex,
-    required String reciterUrl,
-    bool zeroPadding = false,
     Uri? artUri,
   }) async {
     // Update global info.
     currentSurahIndex = surahIndex;
-    currentReciterUrl = reciterUrl; // Make sure this is always set.
-    useZeroPadding = zeroPadding;
 
     final newMediaItem = MediaItem(
       id: audioUrl,
-      album: reciterName,
-      title: surahName,
-      extras: {
-        'surahIndex': surahIndex,
-        'reciterUrl': reciterUrl, // Save reciterUrl here.
-      },
+      album: album,
+      title: title,
       artUri: artUri ?? Uri.parse('assets/images/ic_launcher.png'),
     );
 
@@ -116,14 +107,12 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
   Future<void> togglePlayPause({
     required bool isPlaying,
     required String audioUrl,
-    required String reciterName,
-    required String surahName,
-    required int surahIndex,
+    required String albumName,
+    required String title,
+    required int index,
     required int playlistIndex, // New parameter for the playlist index
-    required String reciterUrl,
     required Function(bool) setIsPlaying,
-    void Function()? onSurahTap,
-    bool zeroPadding = false,
+    void Function()? onSurahTap, 
   }) async {
     // Check if the requested audio is accessible
     if (!await isUrlAccessible(audioUrl)) {
@@ -137,9 +126,9 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
       // Create new media item and update streams immediately.
       final newMediaItem = MediaItem(
         id: audioUrl,
-        album: reciterName,
-        title: surahName,
-        extras: {'surahIndex': surahIndex},
+        album: albumName,
+        title: title,
+        extras: {'surahIndex': index},
         artUri: Uri.parse('assets/images/ic_launcher.png'),
       );
       mediaItem.add(newMediaItem);
@@ -207,10 +196,8 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
   Future<void> setAudioSourceWithPlaylist({
     required List<String> playlist,
     required int index,
-    required String reciterName,
-    required String surahName,
-    required String reciterUrl,
-    bool zeroPadding = false,
+    required String album,
+    required String title,
     Uri? artUri,
   }) async {
     currentPlaylist = playlist;
@@ -230,11 +217,10 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     final firstUrl = playlist[index];
     final newMediaItem = MediaItem(
       id: firstUrl,
-      album: reciterName,
-      title: surahName,
+      album: album,
+      title: title,
       extras: {
         'surahIndex': index,
-        'reciterUrl': reciterUrl,
       },
       artUri: artUri ?? Uri.parse('assets/images/ic_launcher.png'),
     );
@@ -265,7 +251,6 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
       id: prevAudioUrl,
       album: mediaItem.value?.album ?? '',
       title: quran.getSurahNameArabic(currentIndex + 1),
-      extras: {'surahIndex': currentIndex},
       artUri: Uri.parse('assets/images/ic_launcher.png'),
     );
     mediaItem.add(newMediaItem);

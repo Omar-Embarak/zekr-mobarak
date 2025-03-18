@@ -1,5 +1,5 @@
-import 'package:azkar_app/pages/droos_pages/fav_dars_provider.dart';
-import 'package:azkar_app/widgets/dars_listening_item.dart';
+import 'package:azkar_app/pages/islamic_lessons_pages/fav_islamic_lessons_provider.dart';
+import 'package:azkar_app/widgets/islamic_lesson_listening_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../constants.dart';
@@ -31,7 +31,7 @@ class FavDarsPage extends StatelessWidget {
             itemCount: provider.favsDars.length,
             itemBuilder: (context, index) {
               final fav = provider.favsDars[index];
-              return DarsListeningItem(
+              return LessonListeningItem(
                 darsIndex: index,
                 totalLessons: provider.favsDars.length,
                 audioUrl: fav.url,

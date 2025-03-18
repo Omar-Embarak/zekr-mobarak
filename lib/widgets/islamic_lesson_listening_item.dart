@@ -10,7 +10,7 @@ import '../../utils/app_images.dart';
 import '../main.dart';
 import '../pages/sevices/audio_handler.dart';
 
-class DarsListeningItem extends StatefulWidget {
+class LessonListeningItem  extends StatefulWidget {
   final int darsIndex;
   final int totalLessons;
   final String audioUrl;
@@ -18,7 +18,7 @@ class DarsListeningItem extends StatefulWidget {
   final String description;
   final String Function(int index) getAudioUrl;
 
-  const DarsListeningItem({
+  const LessonListeningItem({
     super.key,
     required this.darsIndex,
     required this.totalLessons,
@@ -29,10 +29,10 @@ class DarsListeningItem extends StatefulWidget {
   });
 
   @override
-  State<DarsListeningItem> createState() => _DarsListeningItemState();
+  State<LessonListeningItem> createState() => _LessonListeningItemState();
 }
 
-class _DarsListeningItemState extends State<DarsListeningItem> {
+class _LessonListeningItemState extends State<LessonListeningItem> {
   late ConnectivityResult _connectivityStatus;
   bool isExpanded = false; // Control if the item is expanded
   bool isPlaying = false;
@@ -146,16 +146,14 @@ class _DarsListeningItemState extends State<DarsListeningItem> {
       return;
     }
     String prevAudioUrl = widget.getAudioUrl(prevIndex);
-    // audioHandler.togglePlayPause(
-    //   isPlaying: false,
-    //   audioUrl: prevAudioUrl,
-    //   reciterName: widget.title, // using lesson title as metadata
-    //   surahName: widget.title,
-    //   surahIndex: prevIndex,
-    //   reciterUrl: 'YOUR_LESSON_BASE_URL/', // update this URL accordingly
-    //   setIsPlaying: (_) {},
-    //   onSurahTap: () {},
-    // );
+    audioHandler.togglePlayPause(
+      isPlaying: false,
+      audioUrl: prevAudioUrl,
+      albumName: widget.title, // using lesson title as metadata
+      title: widget.title,
+      index: prevIndex,
+      setIsPlaying: (_) {}, playlistIndex: 0, 
+    );
     setState(() {
       isExpanded = true;
     });
@@ -169,16 +167,14 @@ class _DarsListeningItemState extends State<DarsListeningItem> {
       return;
     }
     String nextAudioUrl = widget.getAudioUrl(nextIndex);
-    // audioHandler.togglePlayPause(
-    //   isPlaying: false,
-    //   audioUrl: nextAudioUrl,
-    //   reciterName: widget.title,
-    //   surahName: widget.title,
-    //   surahIndex: nextIndex,
-    //   reciterUrl: 'YOUR_LESSON_BASE_URL/',
-    //   setIsPlaying: (_) {},
-    //   onSurahTap: () {},
-    // );
+    audioHandler.togglePlayPause(
+      isPlaying: false,
+      audioUrl: nextAudioUrl,
+      albumName: widget.title,
+      title: widget.title,
+      index: nextIndex,
+      setIsPlaying: (_) {}, playlistIndex: 0,
+    );
     setState(() {
       isExpanded = true;
     });
@@ -417,16 +413,14 @@ class _DarsListeningItemState extends State<DarsListeningItem> {
                 IconButton(
                   onPressed: () {
                     _handleAudioAction(() {
-                      // audioHandler.togglePlayPause(
-                      //   reciterName: widget.title,
-                      //   surahName: widget.title,
-                      //   isPlaying: playing,
-                      //   audioUrl: widget.audioUrl,
-                      //   surahIndex: widget.darsIndex,
-                      //   reciterUrl: 'YOUR_LESSON_BASE_URL/',
-                      //   setIsPlaying: (_) {},
-                      //   onSurahTap: () {},
-                      // );
+                      audioHandler.togglePlayPause(
+                        albumName: widget.title,
+                        title: widget.title,
+                        isPlaying: playing,
+                        audioUrl: widget.audioUrl,
+                        index: widget.darsIndex,
+                        setIsPlaying: (_) {}, playlistIndex: 0,
+                      );
                     });
                   },
                   icon: isLoading

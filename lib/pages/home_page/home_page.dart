@@ -11,7 +11,7 @@ import '../../widgets/dedicated_button.dart';
 import '../../widgets/main_category_widget.dart';
 import '../azkar_pages/azkar_main_page.dart';
 import '../azkar_pages/notification_service.dart';
-import '../droos_pages/droos_page.dart';
+import '../islamic_lessons_pages/islamic_lessons_page.dart';
 import '../pray_page/pray_page.dart';
 import '../ruqiya_pages/ruqiya_page.dart';
 
@@ -162,7 +162,8 @@ class _HomePagesState extends State<HomePages> {
                   InkWell(
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const DroosPage()));
+                          builder: (context) =>
+                              const MainIslamicLessonsPage()));
                     },
                     child: MainCategoryWidget(
                       width: screenWidth,

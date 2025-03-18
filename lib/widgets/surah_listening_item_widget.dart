@@ -129,14 +129,11 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
     audioHandler.togglePlayPause(
       isPlaying: false,
       audioUrl: prevAudioUrl,
-      reciterName: widget.reciter.name,
-      surahName: quran.getSurahNameArabic(prevIndex + 1),
-      surahIndex: prevIndex,
+      albumName: widget.reciter.name,
+      title: quran.getSurahNameArabic(prevIndex + 1),
+      index: prevIndex,
       playlistIndex: prevIndex, // Pass the playlist index here!
-      reciterUrl: widget.reciter.url,
       setIsPlaying: (_) {},
-      onSurahTap: () {},
-      zeroPadding: widget.reciter.zeroPaddingSurahNumber,
     );
     setState(() {
       isExpanded = true;
@@ -157,14 +154,11 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
     audioHandler.togglePlayPause(
       isPlaying: false,
       audioUrl: nextAudioUrl,
-      reciterName: widget.reciter.name,
-      surahName: quran.getSurahNameArabic(nextIndex + 1),
-      surahIndex: nextIndex,
+      albumName: widget.reciter.name,
+      title: quran.getSurahNameArabic(nextIndex + 1),
+      index: nextIndex,
       playlistIndex: nextIndex, // Important: pass the updated index!
-      reciterUrl: widget.reciter.url,
       setIsPlaying: (_) {},
-      onSurahTap: () {},
-      zeroPadding: widget.reciter.zeroPaddingSurahNumber,
     );
     setState(() {
       isExpanded = true;
@@ -452,12 +446,11 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                       globalAudioHandler.togglePlayPause(
                         isPlaying: playing,
                         audioUrl: widget.audioUrl,
-                        reciterName: widget.reciter.name,
-                        surahName:
+                        albumName: widget.reciter.name,
+                        title:
                             quran.getSurahNameArabic(widget.surahIndex + 1),
-                        surahIndex: widget.surahIndex,
-                        playlistIndex: widget.surahIndex, // Pass the index here
-                        reciterUrl: widget.reciter.url,
+                        index: widget.surahIndex,
+                        playlistIndex: widget.surahIndex, 
                         setIsPlaying: (_) {},
                         onSurahTap: widget.onSurahTap != null
                             ? () => widget.onSurahTap!(widget.surahIndex)

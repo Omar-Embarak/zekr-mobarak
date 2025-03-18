@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:quran/quran.dart' as quran;
-import '../pages/quran_pages/search_provider.dart';
 import '../utils/app_style.dart';
 import '../constants.dart';
 import '../pages/quran_pages/surah_page.dart';
@@ -22,25 +20,16 @@ class _SurahListWidgetState extends State<SurahListWidget>
   Widget build(BuildContext context) {
     super.build(context); // Ensure keep-alive works
 
-    final searchProvider = Provider.of<SearchProvider>(context);
-    final query = searchProvider.query.trim().toLowerCase();
-
-    // Filter surahs based on the query
-    final filteredSurahs =
-        List.generate(quran.totalSurahCount, (index) => index + 1)
-            .where((surahNumber) =>
-                query.isEmpty ||
-                quran.getSurahNameArabic(surahNumber).contains(query) ||
-                quran.getSurahName(surahNumber).toLowerCase().contains(query))
-            .toList();
+    // Generate a list of all surah numbers
+    final surahs = List.generate(quran.totalSurahCount, (index) => index + 1);
 
     return Scaffold(
       backgroundColor: AppColors.kPrimaryColor,
       body: ListView.builder(
         key: const PageStorageKey('surahList'), // Retains scroll position
-        itemCount: filteredSurahs.length,
+        itemCount: surahs.length,
         itemBuilder: (context, index) {
-          final surahNumber = filteredSurahs[index];
+          final surahNumber = surahs[index];
           final currentJuz = quran.getJuzNumber(surahNumber, 1);
           bool showHeader = false;
 
@@ -48,8 +37,7 @@ class _SurahListWidgetState extends State<SurahListWidget>
           if (index == 0) {
             showHeader = true;
           } else {
-            final previousJuz =
-                quran.getJuzNumber(filteredSurahs[index - 1], 1);
+            final previousJuz = quran.getJuzNumber(surahs[index - 1], 1);
             if (previousJuz != currentJuz) {
               showHeader = true;
             }
@@ -68,13 +56,11 @@ class _SurahListWidgetState extends State<SurahListWidget>
   }
 
   Widget _buildSurahRow(BuildContext context, int surahNumber, int juzIndex) {
-    final surahType =
-        quran.getPlaceOfRevelation(surahNumber) == "Makkah" ? "مكية" : "مدنية";
+    final surahType = quran.getPlaceOfRevelation(surahNumber) == "Makkah"
+        ? "مكية"
+        : "مدنية";
     final firstVersePage = quran.getSurahPages(surahNumber).first;
-    final searchProvider = Provider.of<SearchProvider>(context, listen: false);
-    final query = searchProvider.query.trim();
     final surahName = 'سورة ${quran.getSurahNameArabic(surahNumber)}';
-    final queryIndex = surahName.indexOf(query);
 
     return Column(
       children: [
@@ -91,31 +77,9 @@ class _SurahListWidgetState extends State<SurahListWidget>
                   '$firstVersePage', // First page of the surah
                   style: AppStyles.styleDiodrumArabicMedium11(context),
                 ),
-                title: RichText(
-                  text: TextSpan(
-                    children: [
-                      if (queryIndex != -1) ...[
-                        TextSpan(
-                          text: surahName.substring(0, queryIndex),
-                          style: AppStyles.styleDiodrumArabicbold20(context),
-                        ),
-                        TextSpan(
-                          text: query,
-                          style: AppStyles.styleDiodrumArabicbold20(context)
-                              .copyWith(color: Colors.red),
-                        ),
-                        TextSpan(
-                          text: surahName.substring(queryIndex + query.length),
-                          style: AppStyles.styleDiodrumArabicbold20(context),
-                        ),
-                      ] else ...[
-                        TextSpan(
-                          text: surahName,
-                          style: AppStyles.styleDiodrumArabicbold20(context),
-                        ),
-                      ],
-                    ],
-                  ),
+                title: Text(
+                  surahName,
+                  style: AppStyles.styleDiodrumArabicbold20(context),
                 ),
                 subtitle: Row(
                   children: [
@@ -177,6 +141,5 @@ class _SurahListWidgetState extends State<SurahListWidget>
         ),
       ),
     );
-    Provider.of<SearchProvider>(context, listen: false).updateQuery('');
   }
 }

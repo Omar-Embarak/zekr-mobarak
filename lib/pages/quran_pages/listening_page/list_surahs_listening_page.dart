@@ -30,7 +30,6 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
   bool _isSearching = false;
   bool _isLoaded = false;
   @override
-  
   void initState() {
     super.initState();
     _initAudio();
@@ -55,11 +54,10 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
       await globalAudioHandler.setAudioSourceWithPlaylist(
         playlist: playlist,
         index: 0, // Start from the first surah.
-        reciterName: widget.reciter.name,
-        surahName:
+        album: widget.reciter.name,
+        title:
             quran.getSurahNameArabic(1), // Assuming first surah is Al-Fatiha.
-        reciterUrl: widget.reciter.url,
-        zeroPadding: widget.reciter.zeroPaddingSurahNumber,
+
         artUri: null,
       );
       setState(() {

@@ -5,18 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../../constants.dart';
 import '../../methods.dart';
-import '../../widgets/dars_listening_item.dart';
+import '../../widgets/islamic_lesson_listening_item.dart';
 import '../../widgets/reciturs_item.dart';
-import 'fav_dars_page.dart';
+import 'fav_islamic_lessons_page.dart';
 
-class DroosPage extends StatefulWidget {
-  const DroosPage({super.key});
+class MainIslamicLessonsPage extends StatefulWidget {
+  const MainIslamicLessonsPage({super.key});
 
   @override
-  State<DroosPage> createState() => _DroosPageState();
+  State<MainIslamicLessonsPage> createState() => _MainIslamicLessonsPageState();
 }
 
-class _DroosPageState extends State<DroosPage> {
+class _MainIslamicLessonsPageState extends State<MainIslamicLessonsPage> {
   List<dynamic> audioList = [];
   ConnectivityResult _connectivityStatus = ConnectivityResult.none;
   bool isLoading = true;
@@ -120,7 +120,7 @@ class _DroosPageState extends State<DroosPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => DroosListeningPage(
+                              builder: (context) => ListeningIslamicLessonsPage(
                                 darsName: title,
                                 description: description,
                                 audios: attachments,
@@ -138,9 +138,8 @@ class _DroosPageState extends State<DroosPage> {
   }
 }
 
-
-class DroosListeningPage extends StatelessWidget {
-  const DroosListeningPage({
+class ListeningIslamicLessonsPage extends StatelessWidget {
+  const ListeningIslamicLessonsPage({
     super.key,
     required this.audios,
     required this.darsName,
@@ -155,18 +154,22 @@ class DroosListeningPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        iconTheme: IconThemeData(color: AppStyles.styleDiodrumArabicbold20(context).color),
-        title: Text(darsName, style: AppStyles.styleDiodrumArabicbold20(context)),
+        iconTheme: IconThemeData(
+            color: AppStyles.styleDiodrumArabicbold20(context).color),
+        title:
+            Text(darsName, style: AppStyles.styleDiodrumArabicbold20(context)),
         backgroundColor: AppColors.kSecondaryColor,
       ),
       backgroundColor: AppColors.kPrimaryColor,
       body: audios.isEmpty
-          ? Center(child: Text('لا توجد ملفات صوتية متاحة', style: AppStyles.styleDiodrumArabicMedium11(context)))
+          ? Center(
+              child: Text('لا توجد ملفات صوتية متاحة',
+                  style: AppStyles.styleDiodrumArabicMedium11(context)))
           : ListView.builder(
               itemCount: audios.length,
               itemBuilder: (context, index) {
                 final audio = audios[index];
-                return DarsListeningItem(
+                return LessonListeningItem(
                   darsIndex: index,
                   totalLessons: audios.length,
                   audioUrl: audio['url'],

@@ -7,7 +7,6 @@ import '../../constants.dart';
 import 'book_mark_page.dart';
 import 'juz_page.dart';
 import 'quran_font_size_provider.dart';
-import 'search_provider.dart';
 
 class QuranReadingMainPage extends StatefulWidget {
   const QuranReadingMainPage({super.key});
@@ -17,27 +16,6 @@ class QuranReadingMainPage extends StatefulWidget {
 }
 
 class _QuranReadingMainPageState extends State<QuranReadingMainPage> {
-  bool _isSearching = false;
-  void _filterPageContent(String query) {
-    // Notify SurahListWidget about the query change
-    setState(() {
-      Provider.of<SearchProvider>(context, listen: false).updateQuery(query);
-    });
-  }
-
-  void _toggleSearch() {
-    setState(() {
-      _isSearching = !_isSearching;
-      Provider.of<SearchProvider>(context, listen: false).toogleSearch(
-        _isSearching,
-      );
-
-      if (!_isSearching) {
-        _filterPageContent('');
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final fontSizeProvider =
@@ -62,30 +40,20 @@ class _QuranReadingMainPageState extends State<QuranReadingMainPage> {
                 color: AppStyles.styleCairoMedium15white(context).color),
             backgroundColor: AppColors.kSecondaryColor,
             centerTitle: true,
-            title: _isSearching
-                ? TextField(
-                    controller:
-                        Provider.of<SearchProvider>(context, listen: false)
-                            .searchController(),
-                    onChanged: _filterPageContent,
-                    style: AppStyles.styleCairoMedium15white(context),
-                    decoration: InputDecoration(
-                      hintText: 'البحث...',
-                      hintStyle: AppStyles.styleCairoMedium15white(context),
-                      border: InputBorder.none,
-                    ),
-                    autofocus: true,
-                  )
-                : Text(
-                    'القران الكريم',
-                    style: AppStyles.styleDiodrumArabicbold20(context),
-                  ),
+            title: Text(
+              'القران الكريم',
+              style: AppStyles.styleDiodrumArabicbold20(context),
+            ),
             actions: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
-                  onTap: _toggleSearch,
-                  child: Icon(_isSearching ? Icons.close : Icons.search),
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const BookmarksPage(),
+                    ),
+                  ),
+                  child: const Icon(Icons.search),
                 ),
               )
             ],
@@ -101,7 +69,7 @@ class _QuranReadingMainPageState extends State<QuranReadingMainPage> {
                         : Colors.white),
                 unselectedLabelColor: AppStyles.styleRajdhaniBold20(context)
                     .color!
-                    .withOpacity(0.6),
+                    .withAlpha((0.6 * 255).round()),
                 labelStyle: AppStyles.styleRajdhaniBold20(context),
                 tabs: const [
                   Tab(text: 'سورة'),
