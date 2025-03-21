@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import '../../constants.dart';
 import '../../utils/app_style.dart';
 
-class FavDarsPage extends StatelessWidget {
-  const FavDarsPage({super.key});
+class FavLessonPage extends StatelessWidget {
+  const FavLessonPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class FavDarsPage extends StatelessWidget {
             itemBuilder: (context, index) {
               final fav = provider.favsDars[index];
               return LessonListeningItem(
-                darsIndex: index,
+                lessonIndex: index,
                 totalLessons: provider.favsDars.length,
                 audioUrl: fav.url,
                 title: fav.name,

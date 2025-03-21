@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:audio_service/audio_service.dart';
 import 'package:azkar_app/model/quran_models/reciters_model.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -113,10 +112,9 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
 
 // Inside _SurahListeningItemState in your SurahListeningItem widget
 
-// Helper: Play previous surah.
   void playPreviousSurah(AudioPlayerHandler audioHandler) {
     int prevIndex = widget.surahIndex - 1;
-      showMessage("جاري تشغيل السورة السابقة");
+    showMessage("جاري تشغيل السورة السابقة");
 
     if (prevIndex < 0) {
       showMessage("لا يوجد سورة سابقة");
@@ -125,7 +123,6 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
     String prevAudioUrl = widget.reciter.zeroPaddingSurahNumber
         ? '${widget.reciter.url}${(prevIndex + 1).toString().padLeft(3, '0')}.mp3'
         : '${widget.reciter.url}${prevIndex + 1}.mp3';
-    log(prevAudioUrl);
     audioHandler.togglePlayPause(
       isPlaying: false,
       audioUrl: prevAudioUrl,
@@ -142,7 +139,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
 
   void playNextSurah(AudioPlayerHandler audioHandler) {
     int nextIndex = widget.surahIndex + 1;
-      showMessage("جاري تشغيل السورة التالية");
+    showMessage("جاري تشغيل السورة التالية");
 
     if (nextIndex >= 114) {
       showMessage("لا يوجد سورة تالية");
@@ -431,7 +428,6 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                       : null,
                   icon: Icon(
                     Icons.fast_forward,
-                    
                     size: 30,
                     color: isCurrentMedia
                         ? AppColors.kSecondaryColor
@@ -447,12 +443,11 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                         isPlaying: playing,
                         audioUrl: widget.audioUrl,
                         albumName: widget.reciter.name,
-                        title:
-                            quran.getSurahNameArabic(widget.surahIndex + 1),
+                        title: quran.getSurahNameArabic(widget.surahIndex + 1),
                         index: widget.surahIndex,
-                        playlistIndex: widget.surahIndex, 
+                        playlistIndex: widget.surahIndex,
                         setIsPlaying: (_) {},
-                        onSurahTap: widget.onSurahTap != null
+                        onAudioTap: widget.onSurahTap != null
                             ? () => widget.onSurahTap!(widget.surahIndex)
                             : null,
                       );
@@ -481,7 +476,6 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                       : null,
                   icon: Icon(
                     Icons.fast_rewind,
-
                     size: 30,
                     color: isCurrentMedia
                         ? AppColors.kSecondaryColor

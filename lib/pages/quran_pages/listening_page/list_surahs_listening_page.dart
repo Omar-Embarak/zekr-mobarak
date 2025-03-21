@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:azkar_app/cubit/add_fav_surahcubit/add_fav_surah_item_cubit.dart';
 import 'package:azkar_app/model/quran_models/reciters_model.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +7,7 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:quran/quran.dart' as quran;
 import '../../../constants.dart';
 import '../../../main.dart';
+import '../../../model/audio_model.dart';
 import '../../../widgets/surah_listening_item_widget.dart';
 
 class ListSurahsListeningPage extends StatefulWidget {
@@ -36,38 +36,38 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
   }
 
   Future<void> _initAudio() async {
-    try {
-      // Build the playlist synchronously
-      List<String> playlist = [];
-      if (widget.reciter.zeroPaddingSurahNumber) {
-        for (int i = 1; i <= 114; i++) {
-          playlist
-              .add('${widget.reciter.url}${i.toString().padLeft(3, '0')}.mp3');
-        }
-      } else {
-        for (int i = 1; i <= 114; i++) {
-          playlist.add('${widget.reciter.url}$i.mp3');
-        }
+    // Build the playlist synchronously
+    List<AudioModel> playlist = [];
+    if (widget.reciter.zeroPaddingSurahNumber) {
+      for (int i = 1; i <= 114; i++) {
+        playlist.add(AudioModel(
+          audioURL: '${widget.reciter.url}${i.toString().padLeft(3, '0')}.mp3',
+          title: quran.getSurahNameArabic(i),
+          album: widget.reciter.name,
+        ));
       }
-
-      // Set up the audio source asynchronously.
-      await globalAudioHandler.setAudioSourceWithPlaylist(
-        playlist: playlist,
-        index: 0, // Start from the first surah.
-        album: widget.reciter.name,
-        title:
-            quran.getSurahNameArabic(1), // Assuming first surah is Al-Fatiha.
-
-        artUri: null,
-      );
-      setState(() {
-        _isLoaded = true;
-      });
-    } catch (e) {
-      // Handle errors gracefully
-      log("Error during audio initialization: $e");
-      // Optionally, update state to show an error message or a retry button.
+    } else {
+      for (int i = 1; i <= 114; i++) {
+        playlist.add(AudioModel(
+          audioURL: '${widget.reciter.url}$i.mp3',
+          title: quran.getSurahNameArabic(i),
+          album: widget.reciter.name,
+        ));
+      }
     }
+
+    // Set up the audio source asynchronously.
+    await globalAudioHandler.setAudioSourceWithPlaylist(
+      playlist: playlist,
+      index: 0, // Start from the first surah.
+      album: widget.reciter.name,
+      title: quran.getSurahNameArabic(1), // Assuming first surah is Al-Fatiha.
+
+      artUri: null,
+    );
+    setState(() {
+      _isLoaded = true;
+    });
   }
 
   void updateTappedSurahName(int surahIndex) {
@@ -128,7 +128,7 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
         ],
       ),
       body: !_isLoaded
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : BlocConsumer<AddFavSurahItemCubit, AddFavSurahItemState>(
               listener: (context, state) {},
               builder: (context, state) {

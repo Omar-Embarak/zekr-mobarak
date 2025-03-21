@@ -4,14 +4,17 @@ import 'package:azkar_app/utils/app_style.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import '../../constants.dart';
 import '../../methods.dart';
 import '../../utils/app_images.dart';
 import '../main.dart';
+import '../model/fav_dars_model.dart';
+import '../pages/islamic_lessons_pages/fav_islamic_lessons_provider.dart';
 import '../pages/sevices/audio_handler.dart';
 
-class LessonListeningItem  extends StatefulWidget {
-  final int darsIndex;
+class LessonListeningItem extends StatefulWidget {
+  final int lessonIndex;
   final int totalLessons;
   final String audioUrl;
   final String title;
@@ -20,7 +23,7 @@ class LessonListeningItem  extends StatefulWidget {
 
   const LessonListeningItem({
     super.key,
-    required this.darsIndex,
+    required this.lessonIndex,
     required this.totalLessons,
     required this.audioUrl,
     required this.title,
@@ -113,7 +116,7 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
         if (currentMedia != null && currentMedia.extras != null) {
           final playingIndex = currentMedia.extras!['surahIndex'] as int?;
           if (playingIndex != null &&
-              playingIndex == widget.darsIndex &&
+              playingIndex == widget.lessonIndex &&
               !isExpanded) {
             Future.microtask(() {
               setState(() {
@@ -140,7 +143,7 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
 
   // Helper: Play previous lesson.
   void playPreviousLesson(AudioPlayerHandler audioHandler) {
-    int prevIndex = widget.darsIndex - 1;
+    int prevIndex = widget.lessonIndex - 1;
     if (prevIndex < 0) {
       showMessage("لا يوجد درس سابق");
       return;
@@ -152,7 +155,7 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
       albumName: widget.title, // using lesson title as metadata
       title: widget.title,
       index: prevIndex,
-      setIsPlaying: (_) {}, playlistIndex: 0, 
+      setIsPlaying: (_) {}, playlistIndex: 0,
     );
     setState(() {
       isExpanded = true;
@@ -161,7 +164,7 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
 
   // Helper: Play next lesson.
   void playNextLesson(AudioPlayerHandler audioHandler) {
-    int nextIndex = widget.darsIndex + 1;
+    int nextIndex = widget.lessonIndex + 1;
     if (nextIndex >= widget.totalLessons) {
       showMessage("لا يوجد درس تالي");
       return;
@@ -173,7 +176,8 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
       albumName: widget.title,
       title: widget.title,
       index: nextIndex,
-      setIsPlaying: (_) {}, playlistIndex: 0,
+      setIsPlaying: (_) {},
+      playlistIndex: 0,
     );
     setState(() {
       isExpanded = true;
@@ -192,40 +196,77 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          buildDarsRow(),
+          buildNameRow(),
           if (isExpanded) buildExpandedContent(),
         ],
       ),
     );
   }
 
-  Widget buildDarsRow() {
-    // You can include favorite and share functionality similar to surahs.
+  Widget buildNameRow() {
+    final favDarsProvider = Provider.of<FavDarsProvider>(context);
+
+    // Check if the current page is bookmarked
+    final isFavorite = favDarsProvider.favsDars
+        .any((favsDars) => favsDars.url == widget.audioUrl);
+
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center, // Center items vertically
       children: [
         const SizedBox(width: 10),
-        // For simplicity, use an icon without favorite functionality here.
-        Icon(Icons.music_note, size: 30, color: AppColors.kSecondaryColor),
+        GestureDetector(
+          onTap: () async {
+            // Check if the item is already a favorite
+            final isFavorite = favDarsProvider.favsDars
+                .any((favDars) => favDars.url == widget.audioUrl);
+
+            if (isFavorite) {
+              // Remove from favorites
+              final index = favDarsProvider.favsDars.indexWhere(
+                (favDars) => favDars.url == widget.audioUrl,
+              );
+
+              // Ensure async call is awaited
+              await favDarsProvider.removeFavDars(index);
+            } else {
+              // Add to favorites
+              final newFavDars = FavDarsModel(
+                name: widget.title,
+                url: widget.audioUrl,
+              );
+
+              // Ensure async call is awaited
+              await favDarsProvider.addFavDars(newFavDars);
+            }
+
+            // Update the UI after the favorite status changes
+            if (mounted) {
+              setState(() {});
+            }
+          },
+          child: isFavorite
+              ? const Icon(
+                  Icons.favorite,
+                  color: Colors.red,
+                  size: 30,
+                )
+              : SvgPicture.asset(
+                  height: 30,
+                  Assets.imagesHeart,
+                  placeholderBuilder: (context) => const Icon(Icons.error),
+                ),
+        ),
         const SizedBox(width: 10),
+        // Expanded text to allow full view of long titles
         Expanded(
           child: Text(
             widget.title,
             style: AppStyles.alwaysBlack18(context),
-            textAlign: TextAlign.right,
+            textAlign: TextAlign.right, // Align the text to the right
           ),
         ),
         const SizedBox(width: 10),
-        // Placeholder for additional action buttons (like share)
-        IconButton(
-          onPressed: () => shareAudio(widget.audioUrl),
-          icon: SvgPicture.asset(
-            Assets.imagesShare,
-            height: 30,
-            placeholderBuilder: (context) => const Icon(Icons.error),
-          ),
-        ),
-        const SizedBox(width: 10),
+        buildActionButtons(), // Action buttons will remain visible
       ],
     );
   }
@@ -389,7 +430,7 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
                       ? () => playPreviousLesson(audioHandler)
                       : null,
                   icon: Icon(
-                    Icons.skip_previous,
+                    Icons.skip_next,
                     size: 30,
                     color: controlsEnabled
                         ? AppColors.kSecondaryColor
@@ -402,7 +443,7 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
                       ? () => audioHandler.decreaseSpeed()
                       : null,
                   icon: Icon(
-                    Icons.fast_rewind,
+                    Icons.fast_forward,
                     size: 30,
                     color: controlsEnabled
                         ? AppColors.kSecondaryColor
@@ -418,8 +459,9 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
                         title: widget.title,
                         isPlaying: playing,
                         audioUrl: widget.audioUrl,
-                        index: widget.darsIndex,
-                        setIsPlaying: (_) {}, playlistIndex: 0,
+                        index: widget.lessonIndex,
+                        setIsPlaying: (_) {},
+                        playlistIndex: 0,
                       );
                     });
                   },
@@ -445,7 +487,7 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
                       ? () => audioHandler.increaseSpeed()
                       : null,
                   icon: Icon(
-                    Icons.fast_forward,
+                    Icons.fast_rewind,
                     size: 30,
                     color: controlsEnabled
                         ? AppColors.kSecondaryColor
@@ -458,7 +500,7 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
                       ? () => playNextLesson(audioHandler)
                       : null,
                   icon: Icon(
-                    Icons.skip_next,
+                    Icons.skip_previous,
                     size: 30,
                     color: controlsEnabled
                         ? AppColors.kSecondaryColor

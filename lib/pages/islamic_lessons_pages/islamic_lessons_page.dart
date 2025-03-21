@@ -98,13 +98,12 @@ class _MainIslamicLessonsPageState extends State<MainIslamicLessonsPage> {
                   itemCount: audioList.length + 1, // Extra item for favorites
                   itemBuilder: (context, index) {
                     if (index == 0) {
-                      // First item navigates to FavDarsPage
                       return GestureDetector(
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const FavDarsPage()),
+                                builder: (context) => const FavLessonPage()),
                           );
                         },
                         child: const RecitursItem(title: 'المفضلة'),
@@ -121,7 +120,7 @@ class _MainIslamicLessonsPageState extends State<MainIslamicLessonsPage> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => ListeningIslamicLessonsPage(
-                                darsName: title,
+                                lessonName: title,
                                 description: description,
                                 audios: attachments,
                               ),
@@ -142,12 +141,12 @@ class ListeningIslamicLessonsPage extends StatelessWidget {
   const ListeningIslamicLessonsPage({
     super.key,
     required this.audios,
-    required this.darsName,
+    required this.lessonName,
     required this.description,
   });
   final String description;
   final List audios;
-  final String darsName;
+  final String lessonName;
 
   @override
   Widget build(BuildContext context) {
@@ -157,7 +156,7 @@ class ListeningIslamicLessonsPage extends StatelessWidget {
         iconTheme: IconThemeData(
             color: AppStyles.styleDiodrumArabicbold20(context).color),
         title:
-            Text(darsName, style: AppStyles.styleDiodrumArabicbold20(context)),
+            Text(lessonName, style: AppStyles.styleDiodrumArabicbold20(context)),
         backgroundColor: AppColors.kSecondaryColor,
       ),
       backgroundColor: AppColors.kPrimaryColor,
@@ -170,7 +169,7 @@ class ListeningIslamicLessonsPage extends StatelessWidget {
               itemBuilder: (context, index) {
                 final audio = audios[index];
                 return LessonListeningItem(
-                  darsIndex: index,
+                  lessonIndex: index,
                   totalLessons: audios.length,
                   audioUrl: audio['url'],
                   title: audio['description'] ?? 'بدون عنوان',

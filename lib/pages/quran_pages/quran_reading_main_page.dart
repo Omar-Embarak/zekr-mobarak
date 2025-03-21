@@ -1,4 +1,5 @@
 import 'package:azkar_app/pages/home_page/home_page.dart';
+import 'package:azkar_app/pages/quran_pages/search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../utils/app_style.dart';
@@ -50,7 +51,7 @@ class _QuranReadingMainPageState extends State<QuranReadingMainPage> {
                 child: GestureDetector(
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const BookmarksPage(),
+                      builder: (context) => const SearchPage(),
                     ),
                   ),
                   child: const Icon(Icons.search),
