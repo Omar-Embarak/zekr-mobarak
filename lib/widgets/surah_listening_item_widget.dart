@@ -416,9 +416,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                     Icons
                         .skip_next, // swapped for RTL: "skip_next" represents previous
                     size: 30,
-                    color: isCurrentMedia
-                        ? AppColors.kSecondaryColor
-                        : Colors.grey,
+                    color: isCurrentMedia ? Colors.black : Colors.grey,
                   ),
                 ),
                 // Speed decrease button.
@@ -429,9 +427,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                   icon: Icon(
                     Icons.fast_forward,
                     size: 30,
-                    color: isCurrentMedia
-                        ? AppColors.kSecondaryColor
-                        : Colors.grey,
+                    color: isCurrentMedia ? Colors.black : Colors.grey,
                   ),
                 ),
                 // Play/Pause button with loading indicator.
@@ -465,7 +461,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                         )
                       : Icon(
                           playing ? Icons.pause_circle : Icons.play_circle,
-                          color: AppColors.kSecondaryColor,
+                          color: Colors.black,
                           size: 45,
                         ),
                 ),
@@ -477,9 +473,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                   icon: Icon(
                     Icons.fast_rewind,
                     size: 30,
-                    color: isCurrentMedia
-                        ? AppColors.kSecondaryColor
-                        : Colors.grey,
+                    color: isCurrentMedia ? Colors.black : Colors.grey,
                   ),
                 ),
                 // Navigation next surah button.
@@ -490,9 +484,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                     Icons
                         .skip_previous, // swapped for RTL: "skip_previous" represents next
                     size: 30,
-                    color: isCurrentMedia
-                        ? AppColors.kSecondaryColor
-                        : Colors.grey,
+                    color: isCurrentMedia ? Colors.black : Colors.grey,
                   ),
                 ),
               ],

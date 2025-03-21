@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'package:azkar_app/model/audio_model.dart';
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../../constants.dart';
+import '../../main.dart';
 import '../../methods.dart';
 import '../../widgets/islamic_lesson_listening_item.dart';
 import '../../widgets/reciturs_item.dart';
@@ -137,7 +139,7 @@ class _MainIslamicLessonsPageState extends State<MainIslamicLessonsPage> {
   }
 }
 
-class ListeningIslamicLessonsPage extends StatelessWidget {
+class ListeningIslamicLessonsPage extends StatefulWidget {
   const ListeningIslamicLessonsPage({
     super.key,
     required this.audios,
@@ -149,34 +151,70 @@ class ListeningIslamicLessonsPage extends StatelessWidget {
   final String lessonName;
 
   @override
+  State<ListeningIslamicLessonsPage> createState() =>
+      _ListeningIslamicLessonsPageState();
+}
+
+class _ListeningIslamicLessonsPageState
+    extends State<ListeningIslamicLessonsPage> {
+  @override
+  void initState() {
+    super.initState();
+    _initPlaylist();
+  }
+
+  Future<void> _initPlaylist() async {
+    List<AudioModel> playlist = [];
+
+    for (int i = 0; i < widget.audios.length; i++) {
+      playlist.add(AudioModel(
+          audioURL: widget.audios[i]['url'],
+          title: widget.audios[i]['description'],
+          album: widget.description));
+    }
+    // Set up the audio source asynchronously.
+    await globalAudioHandler.setAudioSourceWithPlaylist(
+      playlist: playlist,
+      index: 0, // Start from the first surah.
+      album: widget.description,
+      title: widget.audios[0]
+          ['description'], // Assuming first surah is Al-Fatiha.
+
+      artUri: null,
+    );
+    setState(() {
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         iconTheme: IconThemeData(
             color: AppStyles.styleDiodrumArabicbold20(context).color),
-        title:
-            Text(lessonName, style: AppStyles.styleDiodrumArabicbold20(context)),
+        title: Text(widget.lessonName,
+            style: AppStyles.styleDiodrumArabicbold20(context)),
         backgroundColor: AppColors.kSecondaryColor,
       ),
       backgroundColor: AppColors.kPrimaryColor,
-      body: audios.isEmpty
+      body: widget.audios.isEmpty
           ? Center(
               child: Text('لا توجد ملفات صوتية متاحة',
                   style: AppStyles.styleDiodrumArabicMedium11(context)))
           : ListView.builder(
-              itemCount: audios.length,
+              itemCount: widget.audios.length,
               itemBuilder: (context, index) {
-                final audio = audios[index];
+                final audio = widget.audios[index];
                 return LessonListeningItem(
                   lessonIndex: index,
-                  totalLessons: audios.length,
+                  totalLessons: widget.audios.length,
                   audioUrl: audio['url'],
                   title: audio['description'] ?? 'بدون عنوان',
-                  description: description,
+                  description: widget.description,
                   // Callback to return audio URL for a given index.
                   getAudioUrl: (int idx) {
-                    final audioItem = audios[idx];
+                    final audioItem = widget.audios[idx];
                     return audioItem['url'];
                   },
                 );

@@ -32,10 +32,10 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
   @override
   void initState() {
     super.initState();
-    _initAudio();
+    _initPlayList();
   }
 
-  Future<void> _initAudio() async {
+  Future<void> _initPlayList() async {
     // Build the playlist synchronously
     List<AudioModel> playlist = [];
     if (widget.reciter.zeroPaddingSurahNumber) {
