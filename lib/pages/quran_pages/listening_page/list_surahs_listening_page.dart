@@ -167,9 +167,9 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
                                       : '${widget.reciter.url}${surahIndex + 1}.mp3';
 
                                   return SurahListeningItem(
-                                    surahIndex: surahIndex,
+                                    index: surahIndex,
                                     audioUrl: audioUrl,
-                                    onSurahTap: updateTappedSurahName,
+                                    onAudioTap: updateTappedSurahName,
                                     reciter: widget.reciter,
                                   );
                                 },

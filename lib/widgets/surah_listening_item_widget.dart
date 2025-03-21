@@ -18,16 +18,16 @@ import '../utils/app_images.dart';
 import '../utils/app_style.dart';
 
 class SurahListeningItem extends StatefulWidget {
-  final int surahIndex;
+  final int index;
   final String audioUrl;
-  final void Function(int surahIndex)? onSurahTap;
+  final void Function(int surahIndex)? onAudioTap;
   final RecitersModel reciter;
 
   const SurahListeningItem({
     super.key,
-    required this.surahIndex,
+    required this.index,
     required this.audioUrl,
-    this.onSurahTap,
+    this.onAudioTap,
     required this.reciter,
   });
 
@@ -81,7 +81,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
   Future<void> _initializeFavoriteState() async {
     // Check if this surah is marked as favorite
     final favoriteState = await _databaseHelper.isFavoriteExists(
-        widget.surahIndex, widget.reciter.name);
+        widget.index, widget.reciter.name);
     if (mounted) {
       setState(() {
         isFavorite = favoriteState;
@@ -97,23 +97,20 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
           var favSurahModel = FavModel(
             url: widget.audioUrl,
             reciter: widget.reciter,
-            surahIndex: widget.surahIndex,
+            surahIndex: widget.index,
           );
           BlocProvider.of<AddFavSurahItemCubit>(context)
               .addFavSurahItem(favSurahModel);
         } else {
           BlocProvider.of<AddFavSurahItemCubit>(context)
-              .deleteFavSurah(widget.surahIndex, widget.reciter.name);
+              .deleteFavSurah(widget.index, widget.reciter.name);
         }
       });
     }
   }
-// Inside _SurahListeningItemState in your SurahListeningItem widget
-
-// Inside _SurahListeningItemState in your SurahListeningItem widget
 
   void playPreviousSurah(AudioPlayerHandler audioHandler) {
-    int prevIndex = widget.surahIndex - 1;
+    int prevIndex = widget.index - 1;
     showMessage("جاري تشغيل السورة السابقة");
 
     if (prevIndex < 0) {
@@ -138,7 +135,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
   }
 
   void playNextSurah(AudioPlayerHandler audioHandler) {
-    int nextIndex = widget.surahIndex + 1;
+    int nextIndex = widget.index + 1;
     showMessage("جاري تشغيل السورة التالية");
 
     if (nextIndex >= 114) {
@@ -163,11 +160,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
   }
 
   @override
-// Inside _SurahListeningItemState in your SurahListeningItem widget
-
-  @override
   Widget build(BuildContext context) {
-    // Listen to the global mediaItem and auto-expand if this item is current.
     return StreamBuilder<MediaItem?>(
       stream: globalAudioHandler.mediaItem,
       builder: (context, snapshot) {
@@ -175,9 +168,8 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
         if (currentMedia != null && currentMedia.extras != null) {
           final playingIndex = currentMedia.extras!['surahIndex'] as int?;
           if (playingIndex != null &&
-              playingIndex == widget.surahIndex &&
+              playingIndex == widget.index &&
               !isExpanded) {
-            // Auto-expand without blocking build.
             Future.microtask(() {
               setState(() {
                 isExpanded = true;
@@ -243,7 +235,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
         ),
         const SizedBox(width: 10),
         Text(
-          'سورة ${quran.getSurahNameArabic(widget.surahIndex + 1)}',
+          'سورة ${quran.getSurahNameArabic(widget.index + 1)}',
           style: AppStyles.styleRajdhaniMedium18(context)
               .copyWith(color: Colors.black),
         ),
@@ -270,7 +262,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
           onTap: () => _handleAudioAction(() {
             showMessage("جاري التحميل...");
             downloadAudio(widget.audioUrl,
-                quran.getSurahNameArabic(widget.surahIndex + 1), context);
+                quran.getSurahNameArabic(widget.index + 1), context);
           }),
           child: SvgPicture.asset(
             height: 30,
@@ -430,8 +422,6 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                     color: isCurrentMedia ? Colors.black : Colors.grey,
                   ),
                 ),
-                // Play/Pause button with loading indicator.
-                // Assuming you have access to the current index from the list builder
                 IconButton(
                   onPressed: () {
                     _handleAudioAction(() {
@@ -439,12 +429,12 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                         isPlaying: playing,
                         audioUrl: widget.audioUrl,
                         albumName: widget.reciter.name,
-                        title: quran.getSurahNameArabic(widget.surahIndex + 1),
-                        index: widget.surahIndex,
-                        playlistIndex: widget.surahIndex,
+                        title: quran.getSurahNameArabic(widget.index + 1),
+                        index: widget.index,
+                        playlistIndex: widget.index,
                         setIsPlaying: (_) {},
-                        onAudioTap: widget.onSurahTap != null
-                            ? () => widget.onSurahTap!(widget.surahIndex)
+                        onAudioTap: widget.onAudioTap != null
+                            ? () => widget.onAudioTap!(widget.index)
                             : null,
                       );
                     });

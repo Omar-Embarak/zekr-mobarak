@@ -171,7 +171,8 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     List<AudioSource> sources = playlist.map((audioModel) {
       return AudioSource.uri(Uri.parse(audioModel.audioURL));
     }).toList();
-    final concatenatingAudioSource = ConcatenatingAudioSource(children: sources);
+    final concatenatingAudioSource =
+        ConcatenatingAudioSource(children: sources);
 
     // Set the audio source with the concatenated playlist, starting at the given index.
     await _player.setAudioSource(concatenatingAudioSource, initialIndex: index);
@@ -203,7 +204,6 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     mediaItem.add(newMediaItem);
   }
 
-  // Skip to the previous track in the playlist.
   @override
   Future<void> skipToPrevious() async {
     await _player.seekToPrevious();

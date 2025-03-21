@@ -32,6 +32,7 @@ class FavLessonPage extends StatelessWidget {
             itemBuilder: (context, index) {
               final fav = provider.favsDars[index];
               return LessonListeningItem(
+                playlist: [],
                 lessonIndex: index,
                 totalLessons: provider.favsDars.length,
                 audioUrl: fav.url,

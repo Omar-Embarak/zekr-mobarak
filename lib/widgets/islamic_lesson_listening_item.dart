@@ -1,5 +1,6 @@
 // import 'package:audioplayers/audioplayers.dart';
 import 'package:audio_service/audio_service.dart';
+import 'package:azkar_app/model/audio_model.dart';
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ class LessonListeningItem extends StatefulWidget {
   final String title;
   final String description;
   final String Function(int index) getAudioUrl;
-
+  final List<AudioModel> playlist;
   const LessonListeningItem({
     super.key,
     required this.lessonIndex,
@@ -29,6 +30,7 @@ class LessonListeningItem extends StatefulWidget {
     required this.title,
     required this.description,
     required this.getAudioUrl,
+    required this.playlist,
   });
 
   @override
@@ -108,7 +110,6 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
 
   @override
   Widget build(BuildContext context) {
-    // Auto-expand if this item is the currently playing one.
     return StreamBuilder<MediaItem?>(
       stream: globalAudioHandler.mediaItem,
       builder: (context, snapshot) {
@@ -152,10 +153,11 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
     audioHandler.togglePlayPause(
       isPlaying: false,
       audioUrl: prevAudioUrl,
-      albumName: widget.title, // using lesson title as metadata
-      title: widget.title,
+      albumName: widget.description,
+      title: widget.playlist[prevIndex].title,
       index: prevIndex,
-      setIsPlaying: (_) {}, playlistIndex: 0,
+      setIsPlaying: (_) {},
+      playlistIndex: prevIndex,
     );
     setState(() {
       isExpanded = true;
@@ -173,11 +175,11 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
     audioHandler.togglePlayPause(
       isPlaying: false,
       audioUrl: nextAudioUrl,
-      albumName: widget.title,
-      title: widget.title,
+      albumName: widget.description,
+      title: widget.playlist[nextIndex].title,
       index: nextIndex,
       setIsPlaying: (_) {},
-      playlistIndex: 0,
+      playlistIndex: nextIndex,
     );
     setState(() {
       isExpanded = true;
@@ -461,7 +463,7 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
                         audioUrl: widget.audioUrl,
                         index: widget.lessonIndex,
                         setIsPlaying: (_) {},
-                        playlistIndex: 0,
+                        playlistIndex: widget.lessonIndex,
                       );
                     });
                   },

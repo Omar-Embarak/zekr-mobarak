@@ -157,6 +157,8 @@ class ListeningIslamicLessonsPage extends StatefulWidget {
 
 class _ListeningIslamicLessonsPageState
     extends State<ListeningIslamicLessonsPage> {
+    final List<AudioModel> _playList = [];
+
   @override
   void initState() {
     super.initState();
@@ -164,17 +166,16 @@ class _ListeningIslamicLessonsPageState
   }
 
   Future<void> _initPlaylist() async {
-    List<AudioModel> playlist = [];
 
     for (int i = 0; i < widget.audios.length; i++) {
-      playlist.add(AudioModel(
+      _playList.add(AudioModel(
           audioURL: widget.audios[i]['url'],
           title: widget.audios[i]['description'],
           album: widget.description));
     }
     // Set up the audio source asynchronously.
     await globalAudioHandler.setAudioSourceWithPlaylist(
-      playlist: playlist,
+      playlist: _playList,
       index: 0, // Start from the first surah.
       album: widget.description,
       title: widget.audios[0]
@@ -216,7 +217,7 @@ class _ListeningIslamicLessonsPageState
                   getAudioUrl: (int idx) {
                     final audioItem = widget.audios[idx];
                     return audioItem['url'];
-                  },
+                  }, playlist: _playList,
                 );
               },
             ),

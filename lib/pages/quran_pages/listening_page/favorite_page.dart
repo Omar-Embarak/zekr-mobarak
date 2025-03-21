@@ -142,7 +142,7 @@ class _FavoritePageState extends State<FavoritePage> {
                       ),
                       SurahListeningItem(
                         reciter: favModel.reciter,
-                        surahIndex: favModel.surahIndex,
+                        index: favModel.surahIndex,
                         audioUrl: favModel.url,
                       ),
                     ],
