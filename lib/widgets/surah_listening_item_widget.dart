@@ -166,7 +166,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       builder: (context, snapshot) {
         final currentMedia = snapshot.data;
         if (currentMedia != null && currentMedia.extras != null) {
-          final playingIndex = currentMedia.extras!['surahIndex'] as int?;
+          final playingIndex = currentMedia.extras!['Index'] as int?;
           if (playingIndex != null &&
               playingIndex == widget.index &&
               !isExpanded) {
@@ -390,12 +390,16 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
         return StreamBuilder<PlaybackState>(
           stream: audioHandler.playbackState,
           builder: (context, playbackSnapshot) {
-            // Determine if this item is playing and enabled.
+            // Determine if this item is playing
             final playing =
                 isCurrentMedia && (playbackSnapshot.data?.playing ?? false);
-            // Check if the processing state is loading.
+
+            // Check if the audio is in a loading state or buffering state
             final isLoading = playbackSnapshot.data?.processingState ==
-                AudioProcessingState.loading;
+                    AudioProcessingState.loading ||
+                playbackSnapshot.data?.processingState ==
+                    AudioProcessingState.buffering;
+
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [

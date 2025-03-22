@@ -108,6 +108,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
         album: albumName,
         title: title,
         artUri: Uri.parse('assets/images/ic_launcher.png'),
+        extras: {'Index': playlistIndex},
       );
       // Immediately update the media item stream.
       mediaItem.add(newMediaItem);
@@ -185,6 +186,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
       album: album,
       title: title,
       artUri: artUri ?? Uri.parse('assets/images/ic_launcher.png'),
+      extras: {'Index': currentIndex},
     );
     mediaItem.add(newMediaItem);
   }
@@ -200,6 +202,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
       album: mediaItem.value?.album ?? '',
       title: nextAudio.title,
       artUri: Uri.parse('assets/images/ic_launcher.png'),
+      extras: {'Index': currentIndex},
     );
     mediaItem.add(newMediaItem);
   }
@@ -214,6 +217,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
       album: mediaItem.value?.album ?? '',
       title: prevAudio.title,
       artUri: Uri.parse('assets/images/ic_launcher.png'),
+      extras: {'Index': currentIndex},
     );
     mediaItem.add(newMediaItem);
   }

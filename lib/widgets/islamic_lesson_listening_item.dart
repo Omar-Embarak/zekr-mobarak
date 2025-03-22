@@ -1,4 +1,6 @@
 // import 'package:audioplayers/audioplayers.dart';
+import 'dart:async';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:azkar_app/model/audio_model.dart';
 import 'package:azkar_app/utils/app_style.dart';
@@ -43,15 +45,37 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
   bool isPlaying = false;
   Duration totalDuration = Duration.zero;
   Duration currentDuration = Duration.zero;
+  late final StreamSubscription<MediaItem?> _mediaItemSubscription;
 
   @override
   void initState() {
     super.initState();
     _checkInternetConnection();
+    _mediaItemSubscription = globalAudioHandler.mediaItem.listen((mediaItem) {
+      if (mediaItem != null && mediaItem.extras != null) {
+        final playingIndex = mediaItem.extras!['lessonIndex'] as int?;
+        // If this widget's index is the current playing one, expand it.
+        if (playingIndex != null && playingIndex == widget.lessonIndex) {
+          if (!isExpanded) {
+            setState(() {
+              isExpanded = true;
+            });
+          }
+        } else {
+          // Optionally, collapse if it is not the playing item.
+          if (isExpanded) {
+            setState(() {
+              isExpanded = false;
+            });
+          }
+        }
+      }
+    });
   }
 
   @override
   void dispose() {
+    _mediaItemSubscription.cancel();
     super.dispose();
   }
 
@@ -64,38 +88,6 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
             connectivityResults.contains(ConnectivityResult.none)
                 ? ConnectivityResult.none
                 : connectivityResults.first;
-      });
-    }
-  }
-
-  void setTotalDuration(Duration duration) {
-    if (mounted) {
-      setState(() {
-        totalDuration = duration;
-      });
-    }
-  }
-
-  void setCurrentDuration(Duration duration) {
-    if (mounted) {
-      setState(() {
-        currentDuration = duration;
-      });
-    }
-  }
-
-  void setIsPlaying(bool playing) {
-    if (mounted) {
-      setState(() {
-        isPlaying = playing;
-      });
-    }
-  }
-
-  void toggleExpanded() {
-    if (mounted) {
-      setState(() {
-        isExpanded = !isExpanded;
       });
     }
   }
@@ -114,12 +106,15 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
       stream: globalAudioHandler.mediaItem,
       builder: (context, snapshot) {
         final currentMedia = snapshot.data;
-        if (currentMedia != null && currentMedia.extras != null) {
-          final playingIndex = currentMedia.extras!['surahIndex'] as int?;
+        // Check if current media has the expected extras and matching index
+        if (currentMedia?.extras != null) {
+          final playingIndex = currentMedia!.extras!['Index'] as int?;
+          // If the current media's index matches this widget's index, expand the item
           if (playingIndex != null &&
               playingIndex == widget.lessonIndex &&
               !isExpanded) {
-            Future.microtask(() {
+            // Scheduling a state update outside of build method context
+            WidgetsBinding.instance.addPostFrameCallback((_) {
               setState(() {
                 isExpanded = true;
               });
@@ -134,11 +129,31 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
                   isExpanded = !isExpanded;
                 });
               },
-              child: buildDarsItem(),
+              child: buildLessonItem(),
             ),
           ],
         );
       },
+    );
+  }
+
+  Widget buildLessonItem() {
+    return Container(
+      padding: const EdgeInsets.all(8),
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.white,
+        boxShadow: const [BoxShadow(color: Colors.black, spreadRadius: .1)],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          buildNameRow(),
+          if (isExpanded) buildExpandedContent(),
+        ],
+      ),
     );
   }
 
@@ -159,9 +174,6 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
       setIsPlaying: (_) {},
       playlistIndex: prevIndex,
     );
-    setState(() {
-      isExpanded = true;
-    });
   }
 
   // Helper: Play next lesson.
@@ -180,28 +192,6 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
       index: nextIndex,
       setIsPlaying: (_) {},
       playlistIndex: nextIndex,
-    );
-    setState(() {
-      isExpanded = true;
-    });
-  }
-
-  Widget buildDarsItem() {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: Colors.white,
-        boxShadow: const [BoxShadow(color: Colors.black, spreadRadius: .1)],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          buildNameRow(),
-          if (isExpanded) buildExpandedContent(),
-        ],
-      ),
     );
   }
 
@@ -304,15 +294,12 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
   }
 
   Widget buildExpandedContent() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: Column(
-        children: [
-          buildDurationRow(globalAudioHandler),
-          buildSlider(globalAudioHandler),
-          buildControlButtons(),
-        ],
-      ),
+    return Column(
+      children: [
+        buildDurationRow(globalAudioHandler),
+        buildSlider(globalAudioHandler),
+        buildControlButtons(),
+      ],
     );
   }
 
@@ -405,8 +392,6 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
       },
     );
   }
-
-// In your lesson item widget (e.g., DarsListeningItem)
 
   Widget buildControlButtons() {
     final audioHandler = globalAudioHandler;
