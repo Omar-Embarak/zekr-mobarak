@@ -3,7 +3,7 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:azkar_app/model/audio_model.dart';
 import 'package:just_audio/just_audio.dart';
-import '../../methods.dart'
+import '../../methods.dart';
 
 class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
   // Instance of the Just Audio player.

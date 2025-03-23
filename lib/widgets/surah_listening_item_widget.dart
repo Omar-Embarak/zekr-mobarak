@@ -113,23 +113,23 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
   }
 
   void playPreviousSurah(AudioPlayerHandler audioHandler) {
-    int prevIndex = widget.index - 1;
+    currentIndex -= 1;
     showMessage("جاري تشغيل السورة السابقة");
 
-    if (prevIndex < 0) {
+    if (currentIndex < 0) {
       showMessage("لا يوجد سورة سابقة");
       return;
     }
-    String prevAudioUrl = widget.reciter.zeroPaddingSurahNumber
-        ? '${widget.reciter.url}${(prevIndex + 1).toString().padLeft(3, '0')}.mp3'
-        : '${widget.reciter.url}${prevIndex + 1}.mp3';
+     
     audioHandler.togglePlayPause(
       isPlaying: false,
-      audioUrl: prevAudioUrl,
+      audioUrl: widget.reciter.zeroPaddingSurahNumber
+        ? '${widget.reciter.url}${(currentIndex + 1).toString().padLeft(3, '0')}.mp3'
+        : '${widget.reciter.url}${currentIndex + 1}.mp3',
       albumName: widget.reciter.name,
-      title: quran.getSurahNameArabic(prevIndex + 1),
-      index: prevIndex,
-      playlistIndex: prevIndex, // Pass the playlist index here!
+      title: quran.getSurahNameArabic(currentIndex + 1),
+      index: currentIndex,
+      playlistIndex: currentIndex, // Pass the playlist index here!
       setIsPlaying: (_) {},
     );
     setState(() {
@@ -138,25 +138,24 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
   }
 
   void playNextSurah(AudioPlayerHandler audioHandler) {
-    int nextIndex = widget.index + 1;
 
     currentIndex += 1;
     showMessage("جاري تشغيل السورة التالية");
 
-    if (nextIndex >= 114) {
+    if (currentIndex >= 114) {
       showMessage("لا يوجد سورة تالية");
       return;
     }
-    String nextAudioUrl = widget.reciter.zeroPaddingSurahNumber
-        ? '${widget.reciter.url}${(nextIndex + 1).toString().padLeft(3, '0')}.mp3'
-        : '${widget.reciter.url}${nextIndex + 1}.mp3';
+
     audioHandler.togglePlayPause(
       isPlaying: false,
-      audioUrl: nextAudioUrl,
+      audioUrl: widget.reciter.zeroPaddingSurahNumber
+        ? '${widget.reciter.url}${(currentIndex + 1).toString().padLeft(3, '0')}.mp3'
+        : '${widget.reciter.url}${currentIndex + 1}.mp3',
       albumName: widget.reciter.name,
-      title: quran.getSurahNameArabic(nextIndex + 1),
-      index: nextIndex,
-      playlistIndex: nextIndex, // Important: pass the updated index!
+      title: quran.getSurahNameArabic(currentIndex + 1),
+      index: currentIndex,
+      playlistIndex: currentIndex, // Important: pass the updated index!
       setIsPlaying: (_) {},
     );
     setState(() {
@@ -294,8 +293,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
     return StreamBuilder<MediaItem?>(
       stream: globalAudioHandler.mediaItem,
       builder: (context, mediaSnapshot) {
-        final currentMedia = mediaSnapshot.data;
-        if (currentMedia != null && currentMedia.id == widget.audioUrl) {
+        if (mediaSnapshot.data != null && mediaSnapshot.data!.id == widget.audioUrl) {
           // Only show live data if this surah is the current media.
           return StreamBuilder<Duration>(
             stream: globalAudioHandler.positionStream,
@@ -346,8 +344,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
     return StreamBuilder<MediaItem?>(
       stream: globalAudioHandler.mediaItem,
       builder: (context, snapshot) {
-        final currentMedia = snapshot.data;
-        if (currentMedia != null && currentMedia.id == widget.audioUrl) {
+        if (snapshot.data != null && snapshot.data!.id == widget.audioUrl) {
           return StreamBuilder<Duration>(
             stream: globalAudioHandler.positionStream,
             builder: (context, posSnapshot) {
@@ -400,19 +397,18 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
     return StreamBuilder<MediaItem?>(
       stream: globalAudioHandler.mediaItem,
       builder: (context, mediaSnapshot) {
-        final currentMedia = mediaSnapshot.data;
         final isCurrentMedia =
-            currentMedia != null && currentMedia.id == widget.audioUrl;
+            mediaSnapshot.data != null && mediaSnapshot.data!.id == widget.audioUrl;
         return StreamBuilder<PlaybackState>(
           stream: globalAudioHandler.playbackState,
           builder: (context, playbackSnapshot) {
             final playbackStateData = playbackSnapshot.data;
             // Determine if this item is playing
-            final playing =
+            final bool playing =
                 isCurrentMedia && (playbackStateData?.playing ?? false);
 
             // Check if the audio is loading or buffering
-            final isLoading = playbackStateData?.processingState ==
+            final bool isLoading = playbackStateData?.processingState ==
                     AudioProcessingState.loading ||
                 playbackStateData?.processingState ==
                     AudioProcessingState.buffering;

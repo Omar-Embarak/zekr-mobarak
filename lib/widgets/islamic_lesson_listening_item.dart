@@ -163,41 +163,39 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
 
   // Helper: Play previous lesson.
   void playPreviousLesson(AudioPlayerHandler audioHandler) {
-    int prevIndex = widget.index - 1;
-    if (prevIndex < 0) {
+    currentIndex -= 1;
+
+    if (currentIndex < 0) {
       showMessage("لا يوجد درس سابق");
       return;
     }
-    String prevAudioUrl = widget.getAudioUrl(prevIndex);
     audioHandler.togglePlayPause(
       isPlaying: false,
-      audioUrl: prevAudioUrl,
+      audioUrl: widget.getAudioUrl(currentIndex),
       albumName: widget.description,
-      title: widget.playlist[prevIndex].title,
-      index: prevIndex,
+      title: widget.playlist[currentIndex].title,
+      index: currentIndex,
       setIsPlaying: (_) {},
-      playlistIndex: prevIndex,
+      playlistIndex: currentIndex,
     );
   }
 
   // Helper: Play next lesson.
   void playNextLesson(AudioPlayerHandler audioHandler) {
-    int nextIndex = widget.index + 1;
     currentIndex += 1;
 
-    if (nextIndex >= widget.totalLessons) {
+    if (currentIndex >= widget.totalLessons) {
       showMessage("لا يوجد درس تالي");
       return;
     }
-    String nextAudioUrl = widget.getAudioUrl(nextIndex);
     audioHandler.togglePlayPause(
       isPlaying: false,
-      audioUrl: nextAudioUrl,
+      audioUrl: widget.getAudioUrl(currentIndex),
       albumName: widget.description,
-      title: widget.playlist[nextIndex].title,
-      index: nextIndex,
+      title: widget.playlist[currentIndex].title,
+      index: currentIndex,
       setIsPlaying: (_) {},
-      playlistIndex: nextIndex,
+      playlistIndex: currentIndex,
     );
   }
 
@@ -361,8 +359,7 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
     return StreamBuilder<MediaItem?>(
       stream: audioHandler.mediaItem,
       builder: (context, snapshot) {
-        final currentMedia = snapshot.data;
-        if (currentMedia != null && currentMedia.id == widget.audioUrl) {
+        if (snapshot.data != null && snapshot.data!.id == widget.audioUrl) {
           return StreamBuilder<Duration>(
             stream: audioHandler.positionStream,
             builder: (context, posSnapshot) {
@@ -416,15 +413,14 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
     return StreamBuilder<MediaItem?>(
       stream: audioHandler.mediaItem,
       builder: (context, mediaSnapshot) {
-        final currentMedia = mediaSnapshot.data;
         final controlsEnabled =
-            currentMedia != null && currentMedia.id == widget.audioUrl;
+            mediaSnapshot.data != null && mediaSnapshot.data!.id == widget.audioUrl;
         return StreamBuilder<PlaybackState>(
           stream: audioHandler.playbackState,
           builder: (context, playbackSnapshot) {
-            final playing =
+            final bool playing =
                 controlsEnabled && (playbackSnapshot.data?.playing ?? false);
-            final isLoading = playbackSnapshot.data?.processingState ==
+            final bool isLoading = playbackSnapshot.data?.processingState ==
                 AudioProcessingState.loading;
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
