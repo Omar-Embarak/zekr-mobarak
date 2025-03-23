@@ -3,15 +3,13 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:azkar_app/model/audio_model.dart';
 import 'package:just_audio/just_audio.dart';
-import '../../methods.dart';
-// Removed quran import since metadata now comes via AudioModel
+import '../../methods.dart'
 
 class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
   // Instance of the Just Audio player.
   final AudioPlayer _player = AudioPlayer();
 
-  // Not used directly now; you can use it if needed.
-  int? currentAudioIndex;
+
 
   // Playlist fields – holds the list of AudioModel objects and current index.
   static List<AudioModel> currentPlaylist = [];
@@ -42,12 +40,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
       );
     });
 
-    // Listen to the player's state to auto-skip to the next track when the current one finishes.
-    _player.playerStateStream.listen((state) {
-      if (state.processingState == ProcessingState.completed) {
-        // skipToNext();
-      }
-    });
+
   }
 
   // Map Just Audio's ProcessingState to AudioService's AudioProcessingState.
@@ -108,7 +101,6 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
         album: albumName,
         title: title,
         artUri: Uri.parse('assets/images/ic_launcher.png'),
-        extras: {'Index': playlistIndex},
       );
       // Immediately update the media item stream.
       mediaItem.add(newMediaItem);
@@ -178,15 +170,12 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     // Set the audio source with the concatenated playlist, starting at the given index.
     await _player.setAudioSource(concatenatingAudioSource, initialIndex: index);
 
-    // Retrieve the current track from the playlist.
-    final currentAudio = playlist[index];
     // Create and add a media item with metadata from the AudioModel.
     final newMediaItem = MediaItem(
-      id: currentAudio.audioURL,
+      id: playlist[index].audioURL,
       album: album,
       title: title,
       artUri: artUri ?? Uri.parse('assets/images/ic_launcher.png'),
-      extras: {'Index': currentIndex},
     );
     mediaItem.add(newMediaItem);
   }
@@ -194,32 +183,28 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
   // Skip to the next track in the playlist.
   @override
   Future<void> skipToNext() async {
-    await _player.seekToNext();
+    await _player.seekToPrevious();
+
     currentIndex = _player.currentIndex ?? currentIndex;
-    final nextAudio = currentPlaylist[currentIndex];
-    final newMediaItem = MediaItem(
-      id: nextAudio.audioURL,
+    mediaItem.add(MediaItem(
+      id: currentPlaylist[currentIndex].audioURL,
       album: mediaItem.value?.album ?? '',
-      title: nextAudio.title,
+      title: currentPlaylist[currentIndex].title,
       artUri: Uri.parse('assets/images/ic_launcher.png'),
-      extras: {'Index': currentIndex},
-    );
-    mediaItem.add(newMediaItem);
+    ));
   }
 
   @override
   Future<void> skipToPrevious() async {
-    await _player.seekToPrevious();
+    await _player.seekToNext();
+
     currentIndex = _player.currentIndex ?? currentIndex;
-    final prevAudio = currentPlaylist[currentIndex];
-    final newMediaItem = MediaItem(
-      id: prevAudio.audioURL,
+    mediaItem.add(MediaItem(
+      id: currentPlaylist[currentIndex].audioURL,
       album: mediaItem.value?.album ?? '',
-      title: prevAudio.title,
+      title: currentPlaylist[currentIndex].title,
       artUri: Uri.parse('assets/images/ic_launcher.png'),
-      extras: {'Index': currentIndex},
-    );
-    mediaItem.add(newMediaItem);
+    ));
   }
 
   // For rewind and fast-forward, adjust playback speed.
