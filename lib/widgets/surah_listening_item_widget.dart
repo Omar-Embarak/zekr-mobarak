@@ -37,6 +37,7 @@ class SurahListeningItem extends StatefulWidget {
 
 class _SurahListeningItemState extends State<SurahListeningItem> {
   bool isExpanded = false;
+  bool _hasTriggeredNext = false;
   bool isPlaying = false;
   bool isFavorite = false;
   Duration totalDuration = Duration.zero;
@@ -44,11 +45,13 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
   late ConnectivityResult _connectivityStatus;
   StreamSubscription<PlayerState>? _playerStateSubscription;
   final DatabaseHelper _databaseHelper = DatabaseHelper();
+  late int currentIndex;
   @override
   void initState() {
     super.initState();
     _initializeFavoriteState();
     _checkInternetConnection();
+    currentIndex = widget.index;
   }
 
   @override
@@ -136,6 +139,8 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
 
   void playNextSurah(AudioPlayerHandler audioHandler) {
     int nextIndex = widget.index + 1;
+
+    currentIndex += 1;
     showMessage("جاري تشغيل السورة التالية");
 
     if (nextIndex >= 114) {
@@ -278,26 +283,26 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
   Widget buildExpandedContent() {
     return Column(
       children: [
-        buildDurationRow(globalAudioHandler),
-        buildSlider(globalAudioHandler),
+        buildDurationRow(),
+        buildSlider(),
         buildControlButtons(),
       ],
     );
   }
 
-  Widget buildDurationRow(AudioPlayerHandler audioHandler) {
+  Widget buildDurationRow() {
     return StreamBuilder<MediaItem?>(
-      stream: audioHandler.mediaItem,
+      stream: globalAudioHandler.mediaItem,
       builder: (context, mediaSnapshot) {
         final currentMedia = mediaSnapshot.data;
         if (currentMedia != null && currentMedia.id == widget.audioUrl) {
           // Only show live data if this surah is the current media.
           return StreamBuilder<Duration>(
-            stream: audioHandler.positionStream,
+            stream: globalAudioHandler.positionStream,
             builder: (context, posSnapshot) {
               final position = posSnapshot.data ?? Duration.zero;
               return StreamBuilder<Duration?>(
-                stream: audioHandler.durationStream,
+                stream: globalAudioHandler.durationStream,
                 builder: (context, durSnapshot) {
                   final duration = durSnapshot.data ?? Duration.zero;
                   return Padding(
@@ -337,20 +342,32 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
     );
   }
 
-  Widget buildSlider(AudioPlayerHandler audioHandler) {
+  Widget buildSlider() {
     return StreamBuilder<MediaItem?>(
-      stream: audioHandler.mediaItem,
+      stream: globalAudioHandler.mediaItem,
       builder: (context, snapshot) {
         final currentMedia = snapshot.data;
         if (currentMedia != null && currentMedia.id == widget.audioUrl) {
           return StreamBuilder<Duration>(
-            stream: audioHandler.positionStream,
+            stream: globalAudioHandler.positionStream,
             builder: (context, posSnapshot) {
               final position = posSnapshot.data ?? Duration.zero;
               return StreamBuilder<Duration?>(
-                stream: audioHandler.durationStream,
+                stream: globalAudioHandler.durationStream,
                 builder: (context, durSnapshot) {
                   final duration = durSnapshot.data ?? Duration.zero;
+                  if (position >= duration &&
+                      duration.inSeconds > 0 &&
+                      !_hasTriggeredNext) {
+                    _hasTriggeredNext = true;
+                    // Use a post frame callback to avoid calling during build.
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      globalAudioHandler.skipToNext();
+                      // Optionally, reset the flag after a delay or when UI updates.
+                      _hasTriggeredNext = false;
+                    });
+                  }
+
                   return Slider(
                     activeColor: AppColors.kSecondaryColor,
                     inactiveColor: AppColors.kPrimaryColor,
@@ -359,7 +376,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                         ? duration.inSeconds.toDouble()
                         : 1,
                     onChanged: (value) {
-                      audioHandler.seek(Duration(seconds: value.toInt()));
+                      globalAudioHandler.seek(Duration(seconds: value.toInt()));
                     },
                   );
                 },
@@ -380,24 +397,24 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
   }
 
   Widget buildControlButtons() {
-    final audioHandler = globalAudioHandler; // your global AudioPlayerHandler
     return StreamBuilder<MediaItem?>(
-      stream: audioHandler.mediaItem,
+      stream: globalAudioHandler.mediaItem,
       builder: (context, mediaSnapshot) {
         final currentMedia = mediaSnapshot.data;
         final isCurrentMedia =
             currentMedia != null && currentMedia.id == widget.audioUrl;
         return StreamBuilder<PlaybackState>(
-          stream: audioHandler.playbackState,
+          stream: globalAudioHandler.playbackState,
           builder: (context, playbackSnapshot) {
+            final playbackStateData = playbackSnapshot.data;
             // Determine if this item is playing
             final playing =
-                isCurrentMedia && (playbackSnapshot.data?.playing ?? false);
+                isCurrentMedia && (playbackStateData?.playing ?? false);
 
-            // Check if the audio is in a loading state or buffering state
-            final isLoading = playbackSnapshot.data?.processingState ==
+            // Check if the audio is loading or buffering
+            final isLoading = playbackStateData?.processingState ==
                     AudioProcessingState.loading ||
-                playbackSnapshot.data?.processingState ==
+                playbackStateData?.processingState ==
                     AudioProcessingState.buffering;
 
             return Row(
@@ -406,7 +423,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                 // Navigation previous surah button.
                 IconButton(
                   onPressed: isCurrentMedia
-                      ? () => playPreviousSurah(audioHandler)
+                      ? () => playPreviousSurah(globalAudioHandler)
                       : null,
                   icon: Icon(
                     Icons
@@ -418,7 +435,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                 // Speed decrease button.
                 IconButton(
                   onPressed: isCurrentMedia
-                      ? () => audioHandler.decreaseSpeed()
+                      ? () => globalAudioHandler.decreaseSpeed()
                       : null,
                   icon: Icon(
                     Icons.fast_forward,
@@ -426,6 +443,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                     color: isCurrentMedia ? Colors.black : Colors.grey,
                   ),
                 ),
+                // Play/Pause button with loading indicator.
                 IconButton(
                   onPressed: () {
                     _handleAudioAction(() {
@@ -462,7 +480,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                 // Speed increase button.
                 IconButton(
                   onPressed: isCurrentMedia
-                      ? () => audioHandler.increaseSpeed()
+                      ? () => globalAudioHandler.increaseSpeed()
                       : null,
                   icon: Icon(
                     Icons.fast_rewind,
@@ -472,8 +490,9 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                 ),
                 // Navigation next surah button.
                 IconButton(
-                  onPressed:
-                      isCurrentMedia ? () => playNextSurah(audioHandler) : null,
+                  onPressed: isCurrentMedia
+                      ? () => playNextSurah(globalAudioHandler)
+                      : null,
                   icon: Icon(
                     Icons
                         .skip_previous, // swapped for RTL: "skip_previous" represents next

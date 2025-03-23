@@ -17,7 +17,7 @@ import '../pages/islamic_lessons_pages/fav_islamic_lessons_provider.dart';
 import '../pages/sevices/audio_handler.dart';
 
 class LessonListeningItem extends StatefulWidget {
-  final int lessonIndex;
+  final int index;
   final int totalLessons;
   final String audioUrl;
   final String title;
@@ -26,7 +26,7 @@ class LessonListeningItem extends StatefulWidget {
   final List<AudioModel> playlist;
   const LessonListeningItem({
     super.key,
-    required this.lessonIndex,
+    required this.index,
     required this.totalLessons,
     required this.audioUrl,
     required this.title,
@@ -46,16 +46,20 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
   Duration totalDuration = Duration.zero;
   Duration currentDuration = Duration.zero;
   late final StreamSubscription<MediaItem?> _mediaItemSubscription;
+  late int currentIndex;
+  bool _hasTriggeredNext = false;
 
   @override
   void initState() {
     super.initState();
     _checkInternetConnection();
+    currentIndex = widget.index;
+
     _mediaItemSubscription = globalAudioHandler.mediaItem.listen((mediaItem) {
       if (mediaItem != null && mediaItem.extras != null) {
-        final playingIndex = mediaItem.extras!['lessonIndex'] as int?;
+        final playingIndex = mediaItem.extras!['Index'] as int?;
         // If this widget's index is the current playing one, expand it.
-        if (playingIndex != null && playingIndex == widget.lessonIndex) {
+        if (playingIndex != null && playingIndex == widget.index) {
           if (!isExpanded) {
             setState(() {
               isExpanded = true;
@@ -111,7 +115,7 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
           final playingIndex = currentMedia!.extras!['Index'] as int?;
           // If the current media's index matches this widget's index, expand the item
           if (playingIndex != null &&
-              playingIndex == widget.lessonIndex &&
+              playingIndex == widget.index &&
               !isExpanded) {
             // Scheduling a state update outside of build method context
             WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -159,7 +163,7 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
 
   // Helper: Play previous lesson.
   void playPreviousLesson(AudioPlayerHandler audioHandler) {
-    int prevIndex = widget.lessonIndex - 1;
+    int prevIndex = widget.index - 1;
     if (prevIndex < 0) {
       showMessage("لا يوجد درس سابق");
       return;
@@ -178,7 +182,9 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
 
   // Helper: Play next lesson.
   void playNextLesson(AudioPlayerHandler audioHandler) {
-    int nextIndex = widget.lessonIndex + 1;
+    int nextIndex = widget.index + 1;
+    currentIndex += 1;
+
     if (nextIndex >= widget.totalLessons) {
       showMessage("لا يوجد درس تالي");
       return;
@@ -365,6 +371,18 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
                 stream: audioHandler.durationStream,
                 builder: (context, durSnapshot) {
                   final duration = durSnapshot.data ?? Duration.zero;
+                  if (position >= duration &&
+                      duration.inSeconds > 0 &&
+                      !_hasTriggeredNext) {
+                    _hasTriggeredNext = true;
+                    // Use a post frame callback to avoid calling during build.
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      globalAudioHandler.skipToNext();
+                      // Optionally, reset the flag after a delay or when UI updates.
+                      _hasTriggeredNext = false;
+                    });
+                  }
+
                   return Slider(
                     activeColor: AppColors.kSecondaryColor,
                     inactiveColor: AppColors.kPrimaryColor,
@@ -446,9 +464,9 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
                         title: widget.title,
                         isPlaying: playing,
                         audioUrl: widget.audioUrl,
-                        index: widget.lessonIndex,
+                        index: widget.index,
                         setIsPlaying: (_) {},
-                        playlistIndex: widget.lessonIndex,
+                        playlistIndex: widget.index,
                       );
                     });
                   },

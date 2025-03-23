@@ -208,7 +208,7 @@ class _ListeningIslamicLessonsPageState
               itemBuilder: (context, index) {
                 final audio = widget.audios[index];
                 return LessonListeningItem(
-                  lessonIndex: index,
+                  index: index,
                   totalLessons: widget.audios.length,
                   audioUrl: audio['url'],
                   title: audio['description'] ?? 'بدون عنوان',

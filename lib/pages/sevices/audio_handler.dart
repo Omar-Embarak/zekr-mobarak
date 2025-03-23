@@ -45,7 +45,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     // Listen to the player's state to auto-skip to the next track when the current one finishes.
     _player.playerStateStream.listen((state) {
       if (state.processingState == ProcessingState.completed) {
-        skipToNext();
+        // skipToNext();
       }
     });
   }
