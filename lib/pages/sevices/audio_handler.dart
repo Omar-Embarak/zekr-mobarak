@@ -1,5 +1,7 @@
 // audio_player_handler.dart
 
+import 'dart:developer';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:azkar_app/model/audio_model.dart';
 import 'package:just_audio/just_audio.dart';
@@ -8,8 +10,6 @@ import '../../methods.dart';
 class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
   // Instance of the Just Audio player.
   final AudioPlayer _player = AudioPlayer();
-
-
 
   // Playlist fields – holds the list of AudioModel objects and current index.
   static List<AudioModel> currentPlaylist = [];
@@ -39,8 +39,6 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
         ),
       );
     });
-
-
   }
 
   // Map Just Audio's ProcessingState to AudioService's AudioProcessingState.
@@ -97,11 +95,11 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
 
       // Create a new media item using the provided metadata.
       final newMediaItem = MediaItem(
-        id: audioUrl,
-        album: albumName,
-        title: title,
-        artUri: Uri.parse('assets/images/ic_launcher.png'),
-      );
+          id: audioUrl,
+          album: albumName,
+          title: title,
+          artUri: Uri.parse('assets/images/ic_launcher.png'),
+          extras: {'index': currentIndex});
       // Immediately update the media item stream.
       mediaItem.add(newMediaItem);
 
@@ -172,39 +170,44 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
 
     // Create and add a media item with metadata from the AudioModel.
     final newMediaItem = MediaItem(
-      id: playlist[index].audioURL,
-      album: album,
-      title: title,
-      artUri: artUri ?? Uri.parse('assets/images/ic_launcher.png'),
-    );
+        id: playlist[index].audioURL,
+        album: album,
+        title: title,
+        artUri: artUri ?? Uri.parse('assets/images/ic_launcher.png'),
+        extras: {'index': currentIndex});
     mediaItem.add(newMediaItem);
   }
 
   // Skip to the next track in the playlist.
   @override
   Future<void> skipToNext() async {
-    await _player.seekToPrevious();
+    log("${currentIndex}+ in audio handler");
+    showMessage("جاري التخطي للمقطع السابق");
+    await _player.seekToNext();
+
 
     currentIndex = _player.currentIndex ?? currentIndex;
     mediaItem.add(MediaItem(
-      id: currentPlaylist[currentIndex].audioURL,
-      album: mediaItem.value?.album ?? '',
-      title: currentPlaylist[currentIndex].title,
-      artUri: Uri.parse('assets/images/ic_launcher.png'),
-    ));
+        id: currentPlaylist[currentIndex].audioURL,
+        album: mediaItem.value?.album ?? '',
+        title: currentPlaylist[currentIndex].title,
+        artUri: Uri.parse('assets/images/ic_launcher.png'),
+        extras: {'index': currentIndex}));
   }
 
   @override
   Future<void> skipToPrevious() async {
-    await _player.seekToNext();
+    showMessage("جاري التخطي للمقطع التالي");
+
+    await _player.seekToPrevious();
 
     currentIndex = _player.currentIndex ?? currentIndex;
     mediaItem.add(MediaItem(
-      id: currentPlaylist[currentIndex].audioURL,
-      album: mediaItem.value?.album ?? '',
-      title: currentPlaylist[currentIndex].title,
-      artUri: Uri.parse('assets/images/ic_launcher.png'),
-    ));
+        id: currentPlaylist[currentIndex].audioURL,
+        album: mediaItem.value?.album ?? '',
+        title: currentPlaylist[currentIndex].title,
+        artUri: Uri.parse('assets/images/ic_launcher.png'),
+        extras: {'index': currentIndex}));
   }
 
   // For rewind and fast-forward, adjust playback speed.

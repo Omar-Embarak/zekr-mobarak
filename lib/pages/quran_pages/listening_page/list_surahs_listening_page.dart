@@ -71,10 +71,12 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
   }
 
   void updateTappedSurahName(int surahIndex) {
-    setState(() {
+    if(mounted) {
+      setState(() {
       tappedSurahName =
           'تشغيل سورة ${quran.getSurahNameArabic(surahIndex + 1)} الآن';
     });
+    }
   }
 
   void _filterSurahs(String query) {
