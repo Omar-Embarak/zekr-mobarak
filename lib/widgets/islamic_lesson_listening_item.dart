@@ -1,7 +1,4 @@
-// import 'package:audioplayers/audioplayers.dart';
 import 'dart:async';
-import 'dart:developer';
-
 import 'package:audio_service/audio_service.dart';
 import 'package:azkar_app/model/audio_model.dart';
 import 'package:azkar_app/utils/app_style.dart';
@@ -48,7 +45,6 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
   Duration currentDuration = Duration.zero;
   late final StreamSubscription<MediaItem?> _mediaItemSubscription;
   late int currentIndex;
-  bool _hasTriggeredNext = false;
 
   @override
   void initState() {
@@ -113,7 +109,7 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
         final currentMedia = snapshot.data;
         // Check if current media has the expected extras and matching index
         if (currentMedia?.extras != null) {
-          final playingIndex = currentMedia!.extras!['Index'] as int?;
+          final playingIndex = currentMedia!.extras!['index'] as int?;
           // If the current media's index matches this widget's index, expand the item
           if (playingIndex != null &&
               playingIndex == widget.index &&
@@ -185,7 +181,6 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
   // Helper: Play next lesson.
   void playNextLesson(AudioPlayerHandler audioHandler) {
     currentIndex += 1;
-    log("${currentIndex}+ ${widget.playlist[currentIndex].title}+ ${widget.index} in play");
     showMessage("جاري تشغيل الدرس التالي");
 
     if (currentIndex >= widget.totalLessons) {
@@ -315,9 +310,8 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
     return StreamBuilder<MediaItem?>(
       stream: audioHandler.mediaItem,
       builder: (context, mediaSnapshot) {
-        final currentMedia = mediaSnapshot.data;
-        if (currentMedia != null &&
-            currentMedia.id == widget.playlist[currentIndex].audioURL) {
+        if (globalAudioHandler.mediaItem.value?.extras?['index'] ==
+            widget.index) {
           return StreamBuilder<Duration>(
             stream: audioHandler.positionStream,
             builder: (context, posSnapshot) {
@@ -364,10 +358,8 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
     return StreamBuilder<MediaItem?>(
       stream: audioHandler.mediaItem,
       builder: (context, snapshot) {
-        // log("${currentIndex}+ ${widget.playlist[currentIndex].title}+ ${widget.index}+ ${snapshot.data!.title} before if");
-
-        if (snapshot.data != null &&
-            snapshot.data!.id == widget.playlist[currentIndex].audioURL) {
+        if (globalAudioHandler.mediaItem.value?.extras?['index'] ==
+            widget.index) {
           return StreamBuilder<Duration>(
             stream: audioHandler.positionStream,
             builder: (context, posSnapshot) {
@@ -376,21 +368,6 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
                 stream: audioHandler.durationStream,
                 builder: (context, durSnapshot) {
                   final duration = durSnapshot.data ?? Duration.zero;
-                  if (position >= duration &&
-                      duration.inSeconds > 0 &&
-                      !_hasTriggeredNext) {
-                    _hasTriggeredNext = true;
-                    log("${currentIndex}+ ${widget.playlist[currentIndex].title}+ ${widget.index}");
-
-                    // Use a post frame callback to avoid calling during build.
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      // playNextLesson(audioHandler);
-                      log("${currentIndex}+ ${widget.playlist[currentIndex].title}+ ${widget.index} in if");
-
-                      // Optionally, reset the flag after a delay or when UI updates.
-                      _hasTriggeredNext = false;
-                    });
-                  }
 
                   return Slider(
                     activeColor: AppColors.kSecondaryColor,

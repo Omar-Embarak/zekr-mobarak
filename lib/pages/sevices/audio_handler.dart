@@ -1,6 +1,5 @@
 // audio_player_handler.dart
 
-import 'dart:developer';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:azkar_app/model/audio_model.dart';
@@ -38,7 +37,21 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
           speed: _player.speed,
         ),
       );
-    });
+    }); _player.currentIndexStream.listen((index) {
+    if (index != null && index >= 0 && index < currentPlaylist.length) {
+      currentIndex = index;
+      final audioModel = currentPlaylist[index];
+      mediaItem.add(
+        MediaItem(
+          id: audioModel.audioURL,
+          album: audioModel.album,
+          title: audioModel.title,
+          artUri: Uri.parse('assets/images/ic_launcher.png'),
+          extras: {'index': currentIndex},
+        ),
+      );
+    }
+  });
   }
 
   // Map Just Audio's ProcessingState to AudioService's AudioProcessingState.
@@ -181,7 +194,6 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
   // Skip to the next track in the playlist.
   @override
   Future<void> skipToNext() async {
-    log("${currentIndex}+ in audio handler");
     showMessage("جاري التخطي للمقطع السابق");
     await _player.seekToNext();
 

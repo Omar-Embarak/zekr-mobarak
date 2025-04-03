@@ -37,7 +37,6 @@ class SurahListeningItem extends StatefulWidget {
 
 class _SurahListeningItemState extends State<SurahListeningItem> {
   bool isExpanded = false;
-  bool _hasTriggeredNext = false;
   bool isPlaying = false;
   bool isFavorite = false;
   Duration totalDuration = Duration.zero;
@@ -293,8 +292,8 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
     return StreamBuilder<MediaItem?>(
       stream: globalAudioHandler.mediaItem,
       builder: (context, mediaSnapshot) {
-        if (mediaSnapshot.data != null &&
-            mediaSnapshot.data!.extras!['index'] == widget.index) {
+          if (globalAudioHandler.mediaItem.value?.extras?['index'] == (widget.index)) {
+
           return StreamBuilder<Duration>(
             stream: globalAudioHandler.positionStream,
             builder: (context, posSnapshot) {
@@ -339,48 +338,35 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       },
     );
   }
+Widget buildSlider() {
+  return StreamBuilder<MediaItem?>(
+    stream: globalAudioHandler.mediaItem,
+    builder: (context, snapshot) {
+      if (globalAudioHandler.mediaItem.value?.extras?['index'] == widget.index) {
+        return StreamBuilder<Duration>(
+          stream: globalAudioHandler.positionStream,
+          builder: (context, posSnapshot) {
+            final position = posSnapshot.data ?? Duration.zero;
+            return StreamBuilder<Duration?>(
+              stream: globalAudioHandler.durationStream,
+              builder: (context, durSnapshot) {
+                final duration = durSnapshot.data ?? Duration.zero;
+                // Remove the manual next track trigger here
+                return Slider(
+                  activeColor: AppColors.kSecondaryColor,
+                  inactiveColor: AppColors.kPrimaryColor,
+                  value: position.inSeconds.toDouble(),
+                  max: duration.inSeconds > 0 ? duration.inSeconds.toDouble() : 1,
+                  onChanged: (value) {
+                    globalAudioHandler.seek(Duration(seconds: value.toInt()));
+                  },
+                );
+              },
+            );
+          },
+        );
+      } else {
 
-  Widget buildSlider() {
-    return StreamBuilder<MediaItem?>(
-      stream: globalAudioHandler.mediaItem,
-      builder: (context, snapshot) {
-        if (snapshot.data != null &&
-            snapshot.data!.extras!['index'] == widget.index) {
-          return StreamBuilder<Duration>(
-            stream: globalAudioHandler.positionStream,
-            builder: (context, posSnapshot) {
-              final position = posSnapshot.data ?? Duration.zero;
-              return StreamBuilder<Duration?>(
-                stream: globalAudioHandler.durationStream,
-                builder: (context, durSnapshot) {
-                  final duration = durSnapshot.data ?? Duration.zero;
-                  if (position >= duration &&
-                      duration.inSeconds > 0 &&
-                      !_hasTriggeredNext) {
-                    _hasTriggeredNext = true;
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      playNextSurah(globalAudioHandler);
-
-                      _hasTriggeredNext = false;
-                    });
-                  }
-
-                  return Slider(
-                    activeColor: AppColors.kSecondaryColor,
-                    inactiveColor: AppColors.kPrimaryColor,
-                    value: position.inSeconds.toDouble(),
-                    max: duration.inSeconds > 0
-                        ? duration.inSeconds.toDouble()
-                        : 1,
-                    onChanged: (value) {
-                      globalAudioHandler.seek(Duration(seconds: value.toInt()));
-                    },
-                  );
-                },
-              );
-            },
-          );
-        } else {
           return Slider(
             activeColor: AppColors.kSecondaryColor,
             inactiveColor: AppColors.kPrimaryColor,
