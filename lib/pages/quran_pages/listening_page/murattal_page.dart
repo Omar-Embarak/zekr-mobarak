@@ -101,13 +101,16 @@ class _MurattalPageState extends State<MurattalPage> {
       zeroPaddingSurahNumber: true,
     ),
 
-    // المجموعة (س)
     RecitersModel(
       url:
           'https://download.quranicaudio.com/quran/sa3d_al-ghaamidi/complete//',
       name: 'سعد الغامدي',
       zeroPaddingSurahNumber: true,
     ),
+    RecitersModel(
+        url: 'https://download.tvquran.com/download/TvQuran.com__Shirazad/',
+        name: 'شيرزاد عبدالرحمن',
+        zeroPaddingSurahNumber: true),
     RecitersModel(
       url: 'https://download.quranicaudio.com/qdc/saud_ash-shuraym/murattal/',
       name: 'سعود الشريم',

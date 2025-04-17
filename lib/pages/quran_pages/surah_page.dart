@@ -254,8 +254,10 @@ class _SurahPageState extends State<SurahPage> {
                           text: '$word ',
                           style: TextStyle(
                             fontSize: adjustedFontSize,
+                                fontFamily: word.contains('\u06ED') ? 'Amiri' : null,
+
                             backgroundColor: isHighlighted
-                                ? Colors.yellow.withOpacity(0.4)
+    ? Colors.yellow.withAlpha((0.4 * 255).round()) // 102 ≈ 0.4 * 255
                                 : Colors.transparent,
                             color: isHighlighted ? Colors.red : null,
                           ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
-import '../../main.dart';
 import '../../model/praying_model/praying_model/timings.dart';
 import 'package:intl/intl.dart';
 import '../pray_page/pray_page.dart';
@@ -226,5 +225,5 @@ class NotificationService {
 }
 
 mixin globalNavigatorKey {
-  static final currentContext=null;
+  static const currentContext=null;
 }
