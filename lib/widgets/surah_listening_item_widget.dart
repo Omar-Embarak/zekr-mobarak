@@ -73,6 +73,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
   }
 
   void _handleAudioAction(Function() action) {
+    _checkInternetConnection();
     if (_connectivityStatus == ConnectivityResult.none) {
       showOfflineMessage();
     } else {
@@ -292,8 +293,8 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
     return StreamBuilder<MediaItem?>(
       stream: globalAudioHandler.mediaItem,
       builder: (context, mediaSnapshot) {
-          if (globalAudioHandler.mediaItem.value?.extras?['index'] == (widget.index)) {
-
+        if (globalAudioHandler.mediaItem.value?.extras?['index'] ==
+            (widget.index)) {
           return StreamBuilder<Duration>(
             stream: globalAudioHandler.positionStream,
             builder: (context, posSnapshot) {
@@ -338,35 +339,38 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       },
     );
   }
-Widget buildSlider() {
-  return StreamBuilder<MediaItem?>(
-    stream: globalAudioHandler.mediaItem,
-    builder: (context, snapshot) {
-      if (globalAudioHandler.mediaItem.value?.extras?['index'] == widget.index) {
-        return StreamBuilder<Duration>(
-          stream: globalAudioHandler.positionStream,
-          builder: (context, posSnapshot) {
-            final position = posSnapshot.data ?? Duration.zero;
-            return StreamBuilder<Duration?>(
-              stream: globalAudioHandler.durationStream,
-              builder: (context, durSnapshot) {
-                final duration = durSnapshot.data ?? Duration.zero;
-                // Remove the manual next track trigger here
-                return Slider(
-                  activeColor: AppColors.kSecondaryColor,
-                  inactiveColor: AppColors.kPrimaryColor,
-                  value: position.inSeconds.toDouble(),
-                  max: duration.inSeconds > 0 ? duration.inSeconds.toDouble() : 1,
-                  onChanged: (value) {
-                    globalAudioHandler.seek(Duration(seconds: value.toInt()));
-                  },
-                );
-              },
-            );
-          },
-        );
-      } else {
 
+  Widget buildSlider() {
+    return StreamBuilder<MediaItem?>(
+      stream: globalAudioHandler.mediaItem,
+      builder: (context, snapshot) {
+        if (globalAudioHandler.mediaItem.value?.extras?['index'] ==
+            widget.index) {
+          return StreamBuilder<Duration>(
+            stream: globalAudioHandler.positionStream,
+            builder: (context, posSnapshot) {
+              final position = posSnapshot.data ?? Duration.zero;
+              return StreamBuilder<Duration?>(
+                stream: globalAudioHandler.durationStream,
+                builder: (context, durSnapshot) {
+                  final duration = durSnapshot.data ?? Duration.zero;
+                  // Remove the manual next track trigger here
+                  return Slider(
+                    activeColor: AppColors.kSecondaryColor,
+                    inactiveColor: AppColors.kPrimaryColor,
+                    value: position.inSeconds.toDouble(),
+                    max: duration.inSeconds > 0
+                        ? duration.inSeconds.toDouble()
+                        : 1,
+                    onChanged: (value) {
+                      globalAudioHandler.seek(Duration(seconds: value.toInt()));
+                    },
+                  );
+                },
+              );
+            },
+          );
+        } else {
           return Slider(
             activeColor: AppColors.kSecondaryColor,
             inactiveColor: AppColors.kPrimaryColor,
@@ -380,111 +384,104 @@ Widget buildSlider() {
   }
 
   Widget buildControlButtons() {
-    return StreamBuilder<MediaItem?>(
-      stream: globalAudioHandler.mediaItem,
-      builder: (context, mediaSnapshot) {
-        final isCurrentMedia = mediaSnapshot.data != null &&
-            mediaSnapshot.data!.id == widget.audioUrl;
-        return StreamBuilder<PlaybackState>(
-          stream: globalAudioHandler.playbackState,
-          builder: (context, playbackSnapshot) {
-            final playbackStateData = playbackSnapshot.data;
-            // Determine if this item is playing
-            final bool playing =
-                isCurrentMedia && (playbackStateData?.playing ?? false);
+    return StreamBuilder<PlaybackState>(
+      stream: globalAudioHandler.playbackState,
+      builder: (context, snapshot) {
+        final playbackState = snapshot.data;
+        final isCurrentItem =
+            globalAudioHandler.mediaItem.value?.extras?['index'] ==
+                widget.index;
 
-            // Check if the audio is loading or buffering
-            final bool isLoading = playbackStateData?.processingState ==
-                    AudioProcessingState.loading ||
-                playbackStateData?.processingState ==
-                    AudioProcessingState.buffering;
+        final bool playing = playbackState?.playing ?? false;
+        final bool isLoading = playbackState?.processingState ==
+                AudioProcessingState.loading ||
+            playbackState?.processingState == AudioProcessingState.buffering;
 
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                // Navigation previous surah button.
-                IconButton(
-                  onPressed: isCurrentMedia
-                      ? () => playPreviousSurah(globalAudioHandler)
-                      : null,
-                  icon: Icon(
-                    Icons
-                        .skip_next, // swapped for RTL: "skip_next" represents previous
-                    size: 30,
-                    color: isCurrentMedia ? Colors.black : Colors.grey,
-                  ),
-                ),
-                // Speed decrease button.
-                IconButton(
-                  onPressed: isCurrentMedia
-                      ? () => globalAudioHandler.decreaseSpeed()
-                      : null,
-                  icon: Icon(
-                    Icons.fast_forward,
-                    size: 30,
-                    color: isCurrentMedia ? Colors.black : Colors.grey,
-                  ),
-                ),
-                // Play/Pause button with loading indicator.
-                IconButton(
-                  onPressed: () {
-                    _handleAudioAction(() {
-                      globalAudioHandler.togglePlayPause(
-                        isPlaying: playing,
-                        audioUrl: widget.audioUrl,
-                        albumName: widget.reciter.name,
-                        title: quran.getSurahNameArabic(widget.index + 1),
-                        index: widget.index,
-                        playlistIndex: widget.index,
-                        setIsPlaying: (_) {},
-                        onAudioTap: widget.onAudioTap != null
-                            ? () => widget.onAudioTap!(widget.index)
-                            : null,
-                      );
-                    });
-                  },
-                  icon: isLoading
-                      ? SizedBox(
-                          height: 45,
-                          width: 45,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2.5,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                AppColors.kSecondaryColor),
-                          ),
-                        )
-                      : Icon(
-                          playing ? Icons.pause_circle : Icons.play_circle,
-                          color: Colors.black,
-                          size: 45,
-                        ),
-                ),
-                // Speed increase button.
-                IconButton(
-                  onPressed: isCurrentMedia
-                      ? () => globalAudioHandler.increaseSpeed()
-                      : null,
-                  icon: Icon(
-                    Icons.fast_rewind,
-                    size: 30,
-                    color: isCurrentMedia ? Colors.black : Colors.grey,
-                  ),
-                ),
-                // Navigation next surah button.
-                IconButton(
-                  onPressed: isCurrentMedia
-                      ? () => playNextSurah(globalAudioHandler)
-                      : null,
-                  icon: Icon(
-                    Icons
-                        .skip_previous, // swapped for RTL: "skip_previous" represents next
-                    size: 30,
-                    color: isCurrentMedia ? Colors.black : Colors.grey,
-                  ),
-                ),
-              ],
-            );
-          },
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            IconButton(
+              onPressed: isCurrentItem && playing
+                  ? () => playPreviousSurah(globalAudioHandler)
+                  : null,
+              icon: Icon(
+                Icons.skip_next,
+                size: 30,
+                color: isCurrentItem && playing ? Colors.black : Colors.grey,
+              ),
+            ),
+            IconButton(
+              onPressed: isCurrentItem && playing
+                  ? () => globalAudioHandler.decreaseSpeed()
+                  : null,
+              icon: Icon(
+                Icons.fast_forward,
+                size: 30,
+                color: isCurrentItem && playing ? Colors.black : Colors.grey,
+              ),
+            ),
+            IconButton(
+              onPressed: () {
+                _handleAudioAction(() {
+                  globalAudioHandler.togglePlayPause(
+                    isPlaying: isCurrentItem && playing,
+                    audioUrl: widget.audioUrl,
+                    albumName: widget.reciter.name,
+                    title: quran.getSurahNameArabic(widget.index + 1),
+                    index: widget.index,
+                    playlistIndex: widget.index,
+                    setIsPlaying: (playing) {
+                      if (mounted) {
+                        setState(() {
+                          isPlaying = playing;
+                        });
+                      }
+                    },
+                    onAudioTap: widget.onAudioTap != null
+                        ? () => widget.onAudioTap!(widget.index)
+                        : null,
+                  );
+                });
+              },
+              icon: isLoading
+                  ? SizedBox(
+                      height: 45,
+                      width: 45,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.5,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            AppColors.kSecondaryColor),
+                      ),
+                    )
+                  : Icon(
+                      isCurrentItem && playing
+                          ? Icons.pause_circle
+                          : Icons.play_circle,
+                      color: Colors.black,
+                      size: 45,
+                    ),
+            ),
+            IconButton(
+              onPressed: isCurrentItem && playing
+                  ? () => globalAudioHandler.increaseSpeed()
+                  : null,
+              icon: Icon(
+                Icons.fast_rewind,
+                size: 30,
+                color: isCurrentItem && playing ? Colors.black : Colors.grey,
+              ),
+            ),
+            IconButton(
+              onPressed: isCurrentItem && playing
+                  ? () => playNextSurah(globalAudioHandler)
+                  : null,
+              icon: Icon(
+                Icons.skip_previous,
+                size: 30,
+                color: isCurrentItem && playing ? Colors.black : Colors.grey,
+              ),
+            ),
+          ],
         );
       },
     );

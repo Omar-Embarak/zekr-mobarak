@@ -52,9 +52,10 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
     _checkInternetConnection();
     currentIndex = widget.index;
 
+    // Subscribe to the media item stream
     _mediaItemSubscription = globalAudioHandler.mediaItem.listen((mediaItem) {
       if (mediaItem != null && mediaItem.extras != null) {
-        final playingIndex = mediaItem.extras!['Index'] as int?;
+        final playingIndex = mediaItem.extras!['index'] as int?;
         // If this widget's index is the current playing one, expand it.
         if (playingIndex != null && playingIndex == widget.index) {
           if (!isExpanded) {
@@ -62,13 +63,11 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
               isExpanded = true;
             });
           }
-        } else {
-          // Optionally, collapse if it is not the playing item.
-          if (isExpanded) {
-            setState(() {
-              isExpanded = false;
-            });
-          }
+        } else if (isExpanded) {
+          // Optionally collapse if item is not playing
+          setState(() {
+            isExpanded = false;
+          });
         }
       }
     });
@@ -107,32 +106,28 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
       stream: globalAudioHandler.mediaItem,
       builder: (context, snapshot) {
         final currentMedia = snapshot.data;
-        // Check if current media has the expected extras and matching index
+
+        // Check if current media matches this item's index
         if (currentMedia?.extras != null) {
           final playingIndex = currentMedia!.extras!['index'] as int?;
-          // If the current media's index matches this widget's index, expand the item
-          if (playingIndex != null &&
-              playingIndex == widget.index &&
-              !isExpanded) {
-            // Scheduling a state update outside of build method context
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              setState(() {
-                isExpanded = true;
+          if (playingIndex != null && playingIndex == widget.index) {
+            if (!isExpanded) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                setState(() {
+                  isExpanded = true;
+                });
               });
-            });
+            }
           }
         }
-        return Column(
-          children: [
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  isExpanded = !isExpanded;
-                });
-              },
-              child: buildLessonItem(),
-            ),
-          ],
+
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              isExpanded = !isExpanded; // Toggle the expansion state
+            });
+          },
+          child: buildLessonItem(),
         );
       },
     );
@@ -299,25 +294,25 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
   Widget buildExpandedContent() {
     return Column(
       children: [
-        buildDurationRow(globalAudioHandler),
-        buildSlider(globalAudioHandler),
+        buildDurationRow(),
+        buildSlider(),
         buildControlButtons(),
       ],
     );
   }
 
-  Widget buildDurationRow(AudioPlayerHandler audioHandler) {
+  Widget buildDurationRow() {
     return StreamBuilder<MediaItem?>(
-      stream: audioHandler.mediaItem,
+      stream: globalAudioHandler.mediaItem,
       builder: (context, mediaSnapshot) {
         if (globalAudioHandler.mediaItem.value?.extras?['index'] ==
             widget.index) {
           return StreamBuilder<Duration>(
-            stream: audioHandler.positionStream,
+            stream: globalAudioHandler.positionStream,
             builder: (context, posSnapshot) {
               final position = posSnapshot.data ?? Duration.zero;
               return StreamBuilder<Duration?>(
-                stream: audioHandler.durationStream,
+                stream: globalAudioHandler.durationStream,
                 builder: (context, durSnapshot) {
                   final duration = durSnapshot.data ?? Duration.zero;
                   return Padding(
@@ -326,11 +321,13 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                            '${position.inMinutes}:${(position.inSeconds % 60).toString().padLeft(2, '0')}',
-                            style: AppStyles.alwaysBlack18(context)),
+                          '${position.inMinutes}:${(position.inSeconds % 60).toString().padLeft(2, '0')}',
+                          style: AppStyles.alwaysBlack18(context),
+                        ),
                         Text(
-                            '${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}',
-                            style: AppStyles.alwaysBlack18(context)),
+                          '${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}',
+                          style: AppStyles.alwaysBlack18(context),
+                        ),
                       ],
                     ),
                   );
@@ -354,30 +351,42 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
     );
   }
 
-  Widget buildSlider(AudioPlayerHandler audioHandler) {
+  Widget buildSlider() {
     return StreamBuilder<MediaItem?>(
-      stream: audioHandler.mediaItem,
+      stream: globalAudioHandler.mediaItem,
       builder: (context, snapshot) {
         if (globalAudioHandler.mediaItem.value?.extras?['index'] ==
             widget.index) {
           return StreamBuilder<Duration>(
-            stream: audioHandler.positionStream,
+            stream: globalAudioHandler.positionStream,
             builder: (context, posSnapshot) {
               final position = posSnapshot.data ?? Duration.zero;
               return StreamBuilder<Duration?>(
-                stream: audioHandler.durationStream,
+                stream: globalAudioHandler.durationStream,
                 builder: (context, durSnapshot) {
                   final duration = durSnapshot.data ?? Duration.zero;
+
+                  // Make sure to prevent any assertion errors
+                  double max = duration.inSeconds > 0
+                      ? duration.inSeconds.toDouble()
+                      : 1;
+                  double currentVal = position.inSeconds.toDouble();
+
+                  // Clamp the current value between the min and max bounds
+                  currentVal = currentVal > max
+                      ? max
+                      : currentVal < 0
+                          ? 0
+                          : currentVal;
 
                   return Slider(
                     activeColor: AppColors.kSecondaryColor,
                     inactiveColor: AppColors.kPrimaryColor,
-                    value: position.inSeconds.toDouble(),
-                    max: duration.inSeconds > 0
-                        ? duration.inSeconds.toDouble()
-                        : 1,
+                    value: currentVal,
+                    max: max,
+                    min: 0, // Set minimum value to 0
                     onChanged: (value) {
-                      audioHandler.seek(Duration(seconds: value.toInt()));
+                      globalAudioHandler.seek(Duration(seconds: value.toInt()));
                     },
                   );
                 },
@@ -389,6 +398,7 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
             activeColor: AppColors.kSecondaryColor,
             inactiveColor: AppColors.kPrimaryColor,
             value: 0,
+            min: 0,
             max: 1,
             onChanged: null,
           );
@@ -398,108 +408,113 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
   }
 
   Widget buildControlButtons() {
-    final audioHandler = globalAudioHandler;
-    return StreamBuilder<MediaItem?>(
-      stream: audioHandler.mediaItem,
-      builder: (context, mediaSnapshot) {
-        final controlsEnabled = mediaSnapshot.data != null &&
-            mediaSnapshot.data!.id == widget.audioUrl;
-        return StreamBuilder<PlaybackState>(
-          stream: audioHandler.playbackState,
-          builder: (context, playbackSnapshot) {
-            final bool playing =
-                controlsEnabled && (playbackSnapshot.data?.playing ?? false);
-            final bool isLoading = playbackSnapshot.data?.processingState ==
-                AudioProcessingState.loading;
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                // Previous lesson button.
-                IconButton(
-                  onPressed: controlsEnabled
-                      ? () => playPreviousLesson(audioHandler)
-                      : null,
-                  icon: Icon(
-                    Icons.skip_next,
-                    size: 30,
-                    color: controlsEnabled
-                        ? AppColors.kSecondaryColor
-                        : Colors.grey,
-                  ),
-                ),
-                // Speed decrease button.
-                IconButton(
-                  onPressed: controlsEnabled
-                      ? () => audioHandler.decreaseSpeed()
-                      : null,
-                  icon: Icon(
-                    Icons.fast_forward,
-                    size: 30,
-                    color: controlsEnabled
-                        ? AppColors.kSecondaryColor
-                        : Colors.grey,
-                  ),
-                ),
-                // Play/Pause button with loading indicator.
-                IconButton(
-                  onPressed: () {
-                    _handleAudioAction(() {
-                      audioHandler.togglePlayPause(
-                        albumName: widget.title,
-                        title: widget.title,
-                        isPlaying: playing,
-                        audioUrl: widget.audioUrl,
-                        index: widget.index,
-                        setIsPlaying: (_) {},
-                        playlistIndex: widget.index,
-                      );
-                    });
-                  },
-                  icon: isLoading
-                      ? SizedBox(
-                          height: 45,
-                          width: 45,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2.5,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                AppColors.kSecondaryColor),
-                          ),
-                        )
-                      : Icon(
-                          playing ? Icons.pause_circle : Icons.play_circle,
-                          color: AppColors.kSecondaryColor,
-                          size: 45,
-                        ),
-                ),
-                // Speed increase button.
-                IconButton(
-                  onPressed: controlsEnabled
-                      ? () => audioHandler.increaseSpeed()
-                      : null,
-                  icon: Icon(
-                    Icons.fast_rewind,
-                    size: 30,
-                    color: controlsEnabled
-                        ? AppColors.kSecondaryColor
-                        : Colors.grey,
-                  ),
-                ),
-                // Next lesson button.
-                IconButton(
-                  onPressed: controlsEnabled
-                      ? () => playNextLesson(audioHandler)
-                      : null,
-                  icon: Icon(
-                    Icons.skip_previous,
-                    size: 30,
-                    color: controlsEnabled
-                        ? AppColors.kSecondaryColor
-                        : Colors.grey,
-                  ),
-                ),
-              ],
-            );
-          },
+    return StreamBuilder<PlaybackState>(
+      stream: globalAudioHandler.playbackState,
+      builder: (context, snapshot) {
+        final playbackState = snapshot.data;
+        final isCurrentItem =
+            globalAudioHandler.mediaItem.value?.extras?['index'] ==
+                widget.index;
+
+        final bool playing = playbackState?.playing ?? false;
+        final bool isLoading = playbackState?.processingState ==
+                AudioProcessingState.loading ||
+            playbackState?.processingState == AudioProcessingState.buffering;
+
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            // Previous button
+            IconButton(
+              onPressed: isCurrentItem && playing
+                  ? () => playPreviousLesson(globalAudioHandler)
+                  : null,
+              icon: Icon(
+                Icons.skip_next,
+                size: 30,
+                color: isCurrentItem && playing ? Colors.black : Colors.grey,
+              ),
+            ),
+
+            // Speed decrease
+            IconButton(
+              onPressed: isCurrentItem && playing
+                  ? () => globalAudioHandler.decreaseSpeed()
+                  : null,
+              icon: Icon(
+                Icons.fast_forward,
+                size: 30,
+                color: isCurrentItem && playing ? Colors.black : Colors.grey,
+              ),
+            ),
+
+            // Play/Pause button
+            IconButton(
+              onPressed: () {
+                _handleAudioAction(() {
+                  globalAudioHandler.togglePlayPause(
+                    isPlaying: isCurrentItem && playing,
+                    audioUrl: widget.audioUrl,
+                    albumName: widget.description ?? '',
+                    title: widget.title,
+                    index: widget.index,
+                    playlistIndex: widget.index,
+                    setIsPlaying: (playing) {
+                      if (mounted) {
+                        setState(() {
+                          isPlaying = playing;
+                        });
+                      }
+                    },
+                  );
+                });
+              },
+              icon: isLoading ||
+                      (isCurrentItem &&
+                          playbackState?.processingState !=
+                              AudioProcessingState.ready)
+                  ? SizedBox(
+                      height: 45,
+                      width: 45,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.5,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            AppColors.kSecondaryColor),
+                      ),
+                    )
+                  : Icon(
+                      isCurrentItem && playing
+                          ? Icons.pause_circle
+                          : Icons.play_circle,
+                      color: Colors.black,
+                      size: 45,
+                    ),
+            ),
+
+            // Speed increase
+            IconButton(
+              onPressed: isCurrentItem && playing
+                  ? () => globalAudioHandler.increaseSpeed()
+                  : null,
+              icon: Icon(
+                Icons.fast_rewind,
+                size: 30,
+                color: isCurrentItem && playing ? Colors.black : Colors.grey,
+              ),
+            ),
+
+            // Next button
+            IconButton(
+              onPressed: isCurrentItem && playing
+                  ? () => playNextLesson(globalAudioHandler)
+                  : null,
+              icon: Icon(
+                Icons.skip_previous,
+                size: 30,
+                color: isCurrentItem && playing ? Colors.black : Colors.grey,
+              ),
+            ),
+          ],
         );
       },
     );
