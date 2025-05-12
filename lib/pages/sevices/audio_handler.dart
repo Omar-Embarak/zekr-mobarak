@@ -45,14 +45,13 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     _player.currentIndexStream.listen((index) {
       if (index != null && index >= 0 && index < currentPlaylist.length) {
         currentIndex = index;
-                _updateMediaItem();
+        _updateMediaItem();
 
-              _updatePlaybackState(); // Immediate update
-
+        _updatePlaybackState(); // Immediate update
       }
     });
   }
- void _updateMediaItem() {
+  void _updateMediaItem() {
     if (currentIndex >= 0 && currentIndex < currentPlaylist.length) {
       final audioModel = currentPlaylist[currentIndex];
       mediaItem.add(MediaItem(
@@ -60,10 +59,11 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
         album: audioModel.album,
         title: audioModel.title,
         artUri: Uri.parse('assets/images/ic_notification.png'),
-        extras: {'index': currentIndex},
-      ));
+        extras: {'index': currentIndex,'URL':audioModel.audioURL})
+);
     }
   }
+
   // Map Just Audio's ProcessingState to AudioService's AudioProcessingState.
   AudioProcessingState _mapProcessingState(ProcessingState state) {
     switch (state) {
@@ -140,7 +140,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     void Function()? onAudioTap,
   }) async {
     if (!await isUrlAccessible(audioUrl)) {
-      // showMessage('الملف الصوتي غير متاح.');
+      showMessage('الملف الصوتي غير متاح.');
       return;
     }
 
@@ -179,6 +179,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
         setIsPlaying(true);
       }
     }
+    _updatePlaybackState(); // Immediate update
   }
 
   // Increase playback speed.
@@ -227,7 +228,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
         album: album,
         title: title,
         artUri: artUri ?? Uri.parse('assets/images/ic_launcher.png'),
-        extras: {'index': currentIndex});
+        extras: {'index': currentIndex,'URL':playlist[index].audioURL});
     mediaItem.add(newMediaItem);
 
     // Ensure player is paused initially

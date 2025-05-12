@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../constants.dart';
 import '../../../database_helper.dart';
+import '../../../main.dart';
+import '../../../model/audio_model.dart';
 import '../../../model/quran_models/fav_model.dart';
 import '../../../utils/app_style.dart';
 import '../../../widgets/surah_listening_item_widget.dart';
@@ -16,54 +18,90 @@ class FavoritePage extends StatefulWidget {
 }
 
 class _FavoritePageState extends State<FavoritePage> {
-  late List<FavModel> _favorites;
+  List<FavModel> _favorites = [];
   late DatabaseHelper _databaseHelper;
-  final TextEditingController _searchController = TextEditingController();
-  List<FavModel> filteredFavs = [];
-  final bool _isSearching = false;
+  // final TextEditingController _searchController = TextEditingController();
+  // List<FavModel> filteredFavs = [];
+  // final bool _isSearching = false;
 
   @override
   void initState() {
     super.initState();
     _databaseHelper = DatabaseHelper();
     _loadFavorites();
+    _initPlayList();
+  }
+
+  Future<void> _initPlayList() async {
+    // Build the playlist from favorites
+    List<AudioModel> playlist = _favorites.map((fav) {
+      return AudioModel(
+        audioURL: fav.url,
+        title: quran.getSurahNameArabic(fav.surahIndex + 1),
+        album: fav.reciter.name,
+      );
+    }).toList();
+
+    if (playlist.isNotEmpty) {
+      // Set up the audio source asynchronously without auto-playing
+      await globalAudioHandler.setAudioSourceWithPlaylist(
+        playlist: playlist,
+        index: 0, // Default to first item but won't play automatically
+        album: _favorites[0].reciter.name,
+        title: quran.getSurahNameArabic(_favorites[0].surahIndex + 1),
+        artUri: null,
+      );
+    }
   }
 
   @override
   void dispose() {
-    _searchController.dispose();
+    // _searchController.dispose();
     super.dispose();
   }
-
-  void _loadFavorites() async {
+void _loadFavorites() async {
+  try {
     List<FavModel> favorites = await _databaseHelper.getFavorites();
-    setState(() {
-      _favorites = favorites;
-      filteredFavs = favorites;
-    });
+    if (mounted) {
+      setState(() {
+        _favorites = favorites;
+        // filteredFavs = favorites;
+      });
+      _initPlayList(); // Re-init playlist when favorites change
+    }
+  } catch (e) {
+    debugPrint('Error loading favorites: $e');
   }
+}
+// void _removeFavorite(FavModel favModel) async {
+//   await _databaseHelper.deleteFavorite(
+//     favModel.surahIndex, 
+//     favModel.reciter.name
+//   );
+//   _loadFavorites(); // Refresh list
+// }
 
-  void _filterFavs(String query) {
-    setState(() {
-      if (query.trim().isEmpty) {
-        filteredFavs = _favorites;
-        return;
-      }
-      final normalizedQuery = query.trim();
-      if (normalizedQuery == 'سورة' ||
-          normalizedQuery == 'س' ||
-          normalizedQuery == 'سو' ||
-          normalizedQuery == 'سور') {
-        filteredFavs = _favorites;
-        return;
-      }
+  // void _filterFavs(String query) {
+  //   setState(() {
+  //     if (query.trim().isEmpty) {
+  //       // filteredFavs = _favorites;
+  //       return;
+  //     }
+  //     final normalizedQuery = query.trim();
+  //     if (normalizedQuery == 'سورة' ||
+  //         normalizedQuery == 'س' ||
+  //         normalizedQuery == 'سو' ||
+  //         normalizedQuery == 'سور') {
+  //       // filteredFavs = _favorites;
+  //       return;
+  //     }
 
-      filteredFavs = _favorites.where((fav) {
-        final surahName = quran.getSurahNameArabic(fav.surahIndex + 1).trim();
-        return surahName.contains(normalizedQuery);
-      }).toList();
-    });
-  }
+  //     filteredFavs = _favorites.where((fav) {
+  //       final surahName = quran.getSurahNameArabic(fav.surahIndex + 1).trim();
+  //       return surahName.contains(normalizedQuery);
+  //     }).toList();
+  //   });
+  // }
 
   // void _toggleSearch() {
   //   setState(() {
@@ -83,21 +121,23 @@ class _FavoritePageState extends State<FavoritePage> {
           iconTheme: IconThemeData(
               color: AppStyles.styleCairoMedium15white(context).color),
           backgroundColor: AppColors.kSecondaryColor,
-          title: _isSearching
-              ? TextField(
-                  style: AppStyles.styleCairoMedium15white(
-                    context,
-                  ),
-                  controller: _searchController,
-                  onChanged: _filterFavs,
-                  decoration: InputDecoration(
-                      hintText: 'سورة ...',
-                      hintStyle: AppStyles.styleCairoMedium15white(context),
-                      border: InputBorder.none,
-                      fillColor: Colors.white),
-                  autofocus: true,
-                )
-              : Text(
+          title:
+          //  _isSearching
+          //     ? TextField(
+          //         style: AppStyles.styleCairoMedium15white(
+          //           context,
+          //         ),
+          //         controller: _searchController,
+          //         onChanged: _filterFavs,
+          //         decoration: InputDecoration(
+          //             hintText: 'سورة ...',
+          //             hintStyle: AppStyles.styleCairoMedium15white(context),
+          //             border: InputBorder.none,
+          //             fillColor: Colors.white),
+          //         autofocus: true,
+          //       )
+          //     : 
+              Text(
                   'المفضلة',
                   style: AppStyles.styleDiodrumArabicbold20(context),
                 ),
@@ -110,11 +150,11 @@ class _FavoritePageState extends State<FavoritePage> {
             //   ),
             // )
           ]),
-      body: filteredFavs.isNotEmpty
+      body: _favorites.isNotEmpty
           ? ListView.builder(
-              itemCount: filteredFavs.length,
+              itemCount: _favorites.length,
               itemBuilder: (context, index) {
-                final favModel = filteredFavs[index];
+                final favModel = _favorites[index];
                 return Padding(
                   padding: const EdgeInsets.symmetric(
                       vertical: 8.0, horizontal: 16.0),

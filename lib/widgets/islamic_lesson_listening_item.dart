@@ -55,9 +55,9 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
     // Subscribe to the media item stream
     _mediaItemSubscription = globalAudioHandler.mediaItem.listen((mediaItem) {
       if (mediaItem != null && mediaItem.extras != null) {
-        final playingIndex = mediaItem.extras!['index'] as int?;
         // If this widget's index is the current playing one, expand it.
-        if (playingIndex != null && playingIndex == widget.index) {
+        if (globalAudioHandler.mediaItem.value?.extras?['URL'] ==
+            widget.audioUrl) {
           if (!isExpanded) {
             setState(() {
               isExpanded = true;
@@ -109,8 +109,8 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
 
         // Check if current media matches this item's index
         if (currentMedia?.extras != null) {
-          final playingIndex = currentMedia!.extras!['index'] as int?;
-          if (playingIndex != null && playingIndex == widget.index) {
+          if (globalAudioHandler.mediaItem.value?.extras?['URL'] ==
+              widget.audioUrl) {
             if (!isExpanded) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 setState(() {
@@ -305,8 +305,8 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
     return StreamBuilder<MediaItem?>(
       stream: globalAudioHandler.mediaItem,
       builder: (context, mediaSnapshot) {
-        if (globalAudioHandler.mediaItem.value?.extras?['index'] ==
-            widget.index) {
+        if (globalAudioHandler.mediaItem.value?.extras?['URL'] ==
+            widget.audioUrl) {
           return StreamBuilder<Duration>(
             stream: globalAudioHandler.positionStream,
             builder: (context, posSnapshot) {
@@ -355,8 +355,8 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
     return StreamBuilder<MediaItem?>(
       stream: globalAudioHandler.mediaItem,
       builder: (context, snapshot) {
-        if (globalAudioHandler.mediaItem.value?.extras?['index'] ==
-            widget.index) {
+        if (globalAudioHandler.mediaItem.value?.extras?['URL'] ==
+            widget.audioUrl) {
           return StreamBuilder<Duration>(
             stream: globalAudioHandler.positionStream,
             builder: (context, posSnapshot) {
@@ -413,8 +413,8 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
       builder: (context, snapshot) {
         final playbackState = snapshot.data;
         final isCurrentItem =
-            globalAudioHandler.mediaItem.value?.extras?['index'] ==
-                widget.index;
+            globalAudioHandler.mediaItem.value?.extras?['URL'] ==
+                widget.audioUrl;
 
         final bool playing = playbackState?.playing ?? false;
         final bool isLoading = playbackState?.processingState ==
