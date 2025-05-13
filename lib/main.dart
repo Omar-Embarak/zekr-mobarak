@@ -72,6 +72,7 @@ Future<void> main() async {
     androidNotificationChannelId: 'com.omar.zekr_mobarak.channel.audio',
     androidNotificationChannelName: 'تشغيل القرآن',
       androidNotificationOngoing: true,
+      androidStopForegroundOnPause: true,
       androidNotificationIcon: 'drawable/ic_notification',
           notificationColor:  Color(0xff6a564f), 
       

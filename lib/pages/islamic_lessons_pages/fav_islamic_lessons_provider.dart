@@ -4,15 +4,18 @@ import 'package:azkar_app/model/fav_dars_model.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import '../../database_helper.dart';
+import '../../model/audio_model.dart';
 
 class FavDarsProvider with ChangeNotifier {
   List<FavDarsModel> _favsDars = [];
   final DatabaseHelper _dbHelper = DatabaseHelper();
 
   List<FavDarsModel> get favsDars => _favsDars;
-
+  List<AudioModel> playlist = [];
   FavDarsProvider() {
     loadFavsDars();
+
+    // _initPlayList();
   }
 
   Future<void> loadFavsDars() async {

@@ -295,5 +295,3 @@ String normalizeArabic(String text) {
 void showOfflineMessage() {
   showMessage('لا يتوفر اتصال بالانترنت.');
 }
-
-

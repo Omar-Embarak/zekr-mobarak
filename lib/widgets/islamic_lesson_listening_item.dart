@@ -20,7 +20,7 @@ class LessonListeningItem extends StatefulWidget {
   final String audioUrl;
   final String title;
   final String? description;
-  final String Function(int index) getAudioUrl;
+  // final String Function(int index) getAudioUrl;
   final List<AudioModel> playlist;
   const LessonListeningItem({
     super.key,
@@ -29,7 +29,7 @@ class LessonListeningItem extends StatefulWidget {
     required this.audioUrl,
     required this.title,
     this.description,
-    required this.getAudioUrl,
+    // required this.getAudioUrl,
     required this.playlist,
   });
 
@@ -153,18 +153,19 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
     );
   }
 
-  // Helper: Play previous lesson.
+// Helper: Play previous lesson.
   void playPreviousLesson(AudioPlayerHandler audioHandler) {
-    currentIndex -= 1;
-    showMessage("جاري تشغيل الدرس السابق");
-
-    if (currentIndex < 0) {
+    if (currentIndex <= 0) {
       showMessage("لا يوجد درس سابق");
       return;
     }
+
+    currentIndex -= 1;
+    // showMessage("جاري تشغيل الدرس السابق");
+
     audioHandler.togglePlayPause(
       isPlaying: false,
-      audioUrl: widget.getAudioUrl(currentIndex),
+      audioUrl: widget.playlist[currentIndex].audioURL,
       albumName: widget.description ?? '',
       title: widget.playlist[currentIndex].title,
       index: currentIndex,
@@ -173,18 +174,19 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
     );
   }
 
-  // Helper: Play next lesson.
+// Helper: Play next lesson.
   void playNextLesson(AudioPlayerHandler audioHandler) {
-    currentIndex += 1;
-    showMessage("جاري تشغيل الدرس التالي");
-
-    if (currentIndex >= widget.totalLessons) {
+    if (currentIndex >= widget.totalLessons - 1) {
       showMessage("لا يوجد درس تالي");
       return;
     }
+
+    currentIndex += 1;
+    // showMessage("جاري تشغيل الدرس التالي");
+
     audioHandler.togglePlayPause(
       isPlaying: false,
-      audioUrl: widget.getAudioUrl(currentIndex),
+      audioUrl: widget.playlist[currentIndex].audioURL,
       albumName: widget.description ?? '',
       title: widget.playlist[currentIndex].title,
       index: currentIndex,
@@ -469,10 +471,7 @@ class _LessonListeningItemState extends State<LessonListeningItem> {
                   );
                 });
               },
-              icon: isLoading ||
-                      (isCurrentItem &&
-                          playbackState?.processingState !=
-                              AudioProcessingState.ready)
+              icon: isLoading
                   ? SizedBox(
                       height: 45,
                       width: 45,

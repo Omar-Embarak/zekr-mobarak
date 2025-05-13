@@ -114,12 +114,12 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
 
   void playPreviousSurah(AudioPlayerHandler audioHandler) {
     currentIndex -= 1;
-    showMessage("جاري تشغيل السورة السابقة");
+    // showMessage("جاري تشغيل السورة السابقة");
 
-    if (currentIndex < 0) {
-      showMessage("لا يوجد سورة سابقة");
-      return;
-    }
+    // if (currentIndex < 0) {
+    //   showMessage("لا يوجد سورة سابقة");
+    //   return;
+    // }
 
     audioHandler.togglePlayPause(
       isPlaying: false,
@@ -139,12 +139,12 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
 
   void playNextSurah(AudioPlayerHandler audioHandler) {
     currentIndex += 1;
-    showMessage("جاري تشغيل السورة التالية");
+    // showMessage("جاري تشغيل السورة التالية");
 
-    if (currentIndex >= 114) {
-      showMessage("لا يوجد سورة تالية");
-      return;
-    }
+    // if (currentIndex >= 114) {
+    //   showMessage("لا يوجد سورة تالية");
+    //   return;
+    // }
 
     audioHandler.togglePlayPause(
       isPlaying: false,
@@ -262,7 +262,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
         const SizedBox(width: 10),
         GestureDetector(
           onTap: () => _handleAudioAction(() {
-            showMessage("جاري التحميل...");
+            // showMessage("جاري التحميل...");
             downloadAudio(widget.audioUrl,
                 quran.getSurahNameArabic(widget.index + 1), context);
           }),

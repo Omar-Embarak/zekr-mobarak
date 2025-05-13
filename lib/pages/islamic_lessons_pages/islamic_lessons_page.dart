@@ -183,8 +183,7 @@ class _ListeningIslamicLessonsPageState
 
       artUri: null,
     );
-    setState(() {
-    });
+
   }
 
   @override
@@ -214,10 +213,9 @@ class _ListeningIslamicLessonsPageState
                   title: audio['description'] ?? 'بدون عنوان',
                   description: widget.description,
                   // Callback to return audio URL for a given index.
-                  getAudioUrl: (int idx) {
-                    final audioItem = widget.audios[idx];
-                    return audioItem['url'];
-                  }, playlist: _playList,
+                  // getAudioUrl: 
+                  //    widget.audios[idx]['url'];
+                   playlist: _playList,
                 );
               },
             ),

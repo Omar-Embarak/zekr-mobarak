@@ -55,16 +55,15 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     if (currentIndex >= 0 && currentIndex < currentPlaylist.length) {
       final audioModel = currentPlaylist[currentIndex];
       mediaItem.add(MediaItem(
-        id: audioModel.audioURL,
-        album: audioModel.album,
-        title: audioModel.title,
-        artUri: Uri.parse('assets/images/ic_notification.png'),
-        extras: {'index': currentIndex,'URL':audioModel.audioURL})
-);
+          id: audioModel.audioURL,
+          album: audioModel.album,
+          title: audioModel.title,
+          artUri:null, 
+          // Uri.parse('assets/images/ic_notification.png'),
+          extras: {'index': currentIndex, 'URL': audioModel.audioURL}));
     }
   }
 
-  // Map Just Audio's ProcessingState to AudioService's AudioProcessingState.
   AudioProcessingState _mapProcessingState(ProcessingState state) {
     switch (state) {
       case ProcessingState.idle:
@@ -152,7 +151,8 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
         id: audioUrl,
         album: albumName,
         title: title,
-        artUri: Uri.parse('asset:///assets/images/ic_notification.png.png'),
+       artUri:null, 
+          // Uri.parse('asset:///assets/images/ic_notification.png.png'),
         extras: {'index': currentIndex},
       );
 
@@ -170,11 +170,11 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
       if (onAudioTap != null) onAudioTap();
     } else {
       if (isPlaying) {
-        showMessage("تم ايقاف التشغيل");
+        // showMessage("تم ايقاف التشغيل");
         await pause();
         setIsPlaying(false);
       } else {
-        showMessage("جاري التشغيل..");
+        // showMessage("جاري التشغيل..");
         await play();
         setIsPlaying(true);
       }
@@ -227,8 +227,9 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
         id: playlist[index].audioURL,
         album: album,
         title: title,
-        artUri: artUri ?? Uri.parse('assets/images/ic_launcher.png'),
-        extras: {'index': currentIndex,'URL':playlist[index].audioURL});
+         artUri:null, 
+          // artUri ?? Uri.parse('assets/images/ic_launcher.png'),
+        extras: {'index': currentIndex, 'URL': playlist[index].audioURL});
     mediaItem.add(newMediaItem);
 
     // Ensure player is paused initially

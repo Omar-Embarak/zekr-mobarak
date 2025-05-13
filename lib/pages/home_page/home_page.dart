@@ -48,29 +48,22 @@ class _HomePagesState extends State<HomePages> {
             context), // Two action buttons: notifications toggle & info dialog
         actions: [
           IconButton(
-            onPressed: () {
-              setState(() {
-                // _notificationsEnabled = !_notificationsEnabled;
-              });
-            },
-            icon: IconButton(
-              icon: Icon(
-                NotificationService.isNotificationsEnabled()
-                    ? Icons.notifications
-                    : Icons.notifications_off,
-              ),
-              onPressed: () async {
-                if (NotificationService.isNotificationsEnabled()) {
-                  await NotificationService.disableNotifications();
-                  showMessage("تم ايقاف تشغيل الاشعارات");
-                } else {
-                  await NotificationService.enableNotifications();
-                  showMessage("الاشعارات مفعلة");
-                }
-                setState(() {}); // Refresh UI after toggling
-              },
-              color: AppStyles.styleCairoMedium15white(context).color,
+            icon: Icon(
+              NotificationService.isNotificationsEnabled()
+                  ? Icons.notifications
+                  : Icons.notifications_off,
             ),
+            onPressed: () async {
+              if (NotificationService.isNotificationsEnabled()) {
+                await NotificationService.disableNotifications();
+                showMessage("تم ايقاف تشغيل الاشعارات");
+              } else {
+                await NotificationService.enableNotifications();
+                showMessage("الاشعارات مفعلة");
+              }
+              setState(() {}); // Refresh UI after toggling
+            },
+            color: AppStyles.styleCairoMedium15white(context).color,
           ),
           const DedicationButton(),
         ],
