@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import '../../database_helper.dart';
 import '../../model/praying_model/praying_model/timings.dart';
 import 'package:intl/intl.dart';
 import '../pray_page/pray_page.dart';
@@ -45,17 +46,21 @@ class NotificationService {
     );
   }
 
-  /// Enables notifications by setting the flag to true.
-  /// Optionally, you can re-schedule notifications if needed.
   static Future<void> enableNotifications() async {
     _notificationsEnabled = true;
-    // Optionally, re-schedule notifications here if necessary.
+    await DatabaseHelper().setNotificationsEnabled(true);
+    final timingsMap = await DatabaseHelper().getTimings();
+if (timingsMap != null) {
+  final timings = Timings.fromMap(timingsMap); // محتاج تعمل الميثود دي
+  await schedulePrayerNotifications(timings);
+}
+
   }
 
-  /// Disables notifications by setting the flag to false
-  /// and cancelling all scheduled notifications.
   static Future<void> disableNotifications() async {
     _notificationsEnabled = false;
+    await DatabaseHelper().setNotificationsEnabled(false);
+
     await _notificationsPlugin.cancelAll();
   }
 
@@ -201,7 +206,6 @@ class NotificationService {
       matchDateTimeComponents: DateTimeComponents.time,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       payload: payload,
-      
     );
   }
 
@@ -226,5 +230,5 @@ class NotificationService {
 }
 
 mixin globalNavigatorKey {
-  static const currentContext=null;
+  static const currentContext = null;
 }

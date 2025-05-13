@@ -34,7 +34,7 @@ class DatabaseHelper {
     // Create a new database
     return await openDatabase(
       path,
-      version: 3, // Ensure this matches your new schema version
+      version: 4, // Ensure this matches your new schema version
       onCreate: (db, version) async {
         await db.execute('''
         CREATE TABLE favorites(
@@ -88,7 +88,9 @@ class DatabaseHelper {
               storedAt TEXT
 
             )
-          ''');
+          ''');   return db.execute(
+          'CREATE TABLE settings (id INTEGER PRIMARY KEY, notificationsEnabled INTEGER)',
+        );
       },
     );
   }
@@ -324,5 +326,20 @@ Future<double> getFontSize() async {
       };
     }
     return null;
+  }
+  
+  Future<void> setNotificationsEnabled(bool enabled) async {
+    final db = await database;
+    await db.insert(
+      'settings',
+      {'id': 1, 'notificationsEnabled': enabled ? 1 : 0},
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<bool> getNotificationsEnabled() async {
+    final db = await database;
+    final result = await db.query('settings', where: 'id = ?', whereArgs: [1]);
+    return result.isNotEmpty && result.first['notificationsEnabled'] == 1;
   }
 }

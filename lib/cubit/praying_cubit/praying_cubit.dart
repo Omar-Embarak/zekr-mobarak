@@ -51,7 +51,6 @@ class PrayingCubit extends Cubit<PrayingState> {
             asr: convertTo12HourFormat(timings.asr!),
             maghrib: convertTo12HourFormat(timings.maghrib!),
             isha: convertTo12HourFormat(timings.isha!),
-            // قم بتحويل الأوقات الأخرى بنفس الطريقة إذا لزم الأمر
           );
         }
 
