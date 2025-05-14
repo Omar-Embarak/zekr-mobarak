@@ -4,32 +4,32 @@ import '../../database_helper.dart';
 import '../../methods.dart';
 import '../../model/quran_models/fav_model.dart';
 
-part 'add_fav_surah_item_state.dart';
+part 'fav_surah_item_state.dart';
 
-class AddFavSurahItemCubit extends Cubit<AddFavSurahItemState> {
-  AddFavSurahItemCubit() : super(AddFavSurahItemInitial());
+class FavSurahItemCubit extends Cubit<FavSurahItemState> {
+  FavSurahItemCubit() : super(FavSurahItemInitial());
   final DatabaseHelper _databaseHelper = DatabaseHelper();
 
   Future<void> addFavSurahItem(FavModel favSurahItem) async {
     try {
-      emit(AddFavSurahItemLoading());
+      emit(FavSurahItemLoading());
       _databaseHelper.insertFavorite(favSurahItem);
-      emit(AddFavSurahItemSuccess());
+      emit(FavSurahItemSuccess());
       showMessage('تمت اضافة السورة الي المفضلة');
     } catch (e) {
-      emit(AddFavSurahItemFailure(e.toString()));
+      emit(FavSurahItemFailure(e.toString()));
       showMessage('حدث خطأ ما اثناء اضافة السورة الي المفضلة: ${e.toString()}');
     }
   }
 
   Future<void> deleteFavSurah(int surahIndex, String reciterName) async {
     try {
-      emit(AddFavSurahItemLoading());
+      emit(FavSurahItemLoading());
       _databaseHelper.deleteFavorite(surahIndex, reciterName);
-      emit(AddFavSurahItemSuccess());
+      emit(FavSurahItemSuccess());
       showMessage('تمت ازالة السورة من المفضلة');
     } catch (e) {
-      emit(AddFavSurahItemFailure(e.toString()));
+      emit(FavSurahItemFailure(e.toString()));
       showMessage('حدث خطأ مااثناء ازالة السورة من المفضلة: ${e.toString()}');
     }
   }

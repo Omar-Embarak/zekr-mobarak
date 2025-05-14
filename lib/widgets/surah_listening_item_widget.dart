@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:quran/quran.dart' as quran;
-import '../cubit/add_fav_surahcubit/add_fav_surah_item_cubit.dart';
+import '../cubit/fav_surah_cubit/fav_surah_item_cubit.dart';
 import '../database_helper.dart';
 import '../main.dart';
 import '../model/quran_models/fav_model.dart';
@@ -102,10 +102,10 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
             reciter: widget.reciter,
             surahIndex: widget.index,
           );
-          BlocProvider.of<AddFavSurahItemCubit>(context)
+          BlocProvider.of<FavSurahItemCubit>(context)
               .addFavSurahItem(favSurahModel);
         } else {
-          BlocProvider.of<AddFavSurahItemCubit>(context)
+          BlocProvider.of<FavSurahItemCubit>(context)
               .deleteFavSurah(widget.index, widget.reciter.name);
         }
       });

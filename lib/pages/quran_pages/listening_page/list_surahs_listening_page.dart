@@ -1,4 +1,4 @@
-import 'package:azkar_app/cubit/add_fav_surahcubit/add_fav_surah_item_cubit.dart';
+import 'package:azkar_app/cubit/fav_surah_cubit/fav_surah_item_cubit.dart';
 import 'package:azkar_app/model/quran_models/reciters_model.dart';
 import 'package:flutter/material.dart';
 import 'package:azkar_app/utils/app_style.dart';
@@ -131,11 +131,11 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
       ),
       body: !_isLoaded
           ? const Center(child: CircularProgressIndicator())
-          : BlocConsumer<AddFavSurahItemCubit, AddFavSurahItemState>(
+          : BlocConsumer<FavSurahItemCubit, FavSurahItemState>(
               listener: (context, state) {},
               builder: (context, state) {
                 return ModalProgressHUD(
-                  inAsyncCall: state is AddFavSurahItemLoading,
+                  inAsyncCall: state is FavSurahItemLoading,
                   child: Column(
                     children: [
                       Padding(

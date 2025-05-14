@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
-import 'package:azkar_app/cubit/add_fav_surahcubit/add_fav_surah_item_cubit.dart';
+import 'package:azkar_app/cubit/fav_surah_cubit/fav_surah_item_cubit.dart';
 import 'package:azkar_app/cubit/ruqiya_cubit/ruqiya_cubit.dart';
 import 'package:azkar_app/pages/islamic_lessons_pages/fav_islamic_lessons_provider.dart';
 import 'package:azkar_app/simple_bloc_observer.dart';
@@ -48,6 +48,7 @@ class ErrorScreen extends StatelessWidget {
     );
   }
 }
+
 late AudioPlayerHandler globalAudioHandler;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -57,7 +58,6 @@ Future<void> main() async {
   if (!Platform.isAndroid && !Platform.isIOS) {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
-
   }
 
   // Initialize notification service
@@ -69,13 +69,12 @@ Future<void> main() async {
   globalAudioHandler = await AudioService.init(
     builder: () => AudioPlayerHandler(),
     config: const AudioServiceConfig(
-    androidNotificationChannelId: 'com.omar.zekr_mobarak.channel.audio',
-    androidNotificationChannelName: 'تشغيل القرآن',
+      androidNotificationChannelId: 'com.omar.zekr_mobarak.channel.audio',
+      androidNotificationChannelName: 'تشغيل القرآن',
       androidNotificationOngoing: true,
       androidStopForegroundOnPause: true,
       androidNotificationIcon: 'drawable/ic_notification',
-          notificationColor:  Color(0xff6a564f), 
-      
+      notificationColor: Color(0xff6a564f),
     ),
   );
 
@@ -111,7 +110,7 @@ class MyApp extends StatelessWidget {
           create: (_) => ThemeCubit()..loadInitialTheme(),
         ),
         BlocProvider(
-          create: (context) => AddFavSurahItemCubit(),
+          create: (context) => FavSurahItemCubit(),
         ),
         BlocProvider(
           create: (context) => AzkarCubit(preloadedAzkar),
