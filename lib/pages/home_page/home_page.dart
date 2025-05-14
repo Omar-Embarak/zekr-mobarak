@@ -29,7 +29,6 @@ class _HomePagesState extends State<HomePages> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: AppColors.kPrimaryColor,
@@ -69,105 +68,104 @@ class _HomePagesState extends State<HomePages> {
         ],
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            Center(
-              child: Text(
-                "${jHijri.day} ${jHijri.monthName} ${jHijri.year}",
-                style: AppStyles.styleRajdhaniMedium20(context),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Center(
+                child: Text(
+                  "${jHijri.day} ${jHijri.monthName} ${jHijri.year}",
+                  style: AppStyles.styleRajdhaniMedium20(context),
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
+              const SizedBox(height: 20),
+
+              // أول 4 مربعات
+              Row(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Expanded(
-                        child: InkWell(
-                          onTap: () async {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const AzkarPage()));
-                          },
-                          child: MainCategoryWidget(
-                            categoryImg: "assets/images/azkar.png",
-                            categoryTitle: "الأذكار",
-                            width: screenWidth / 2 - 20 > 0
-                                ? screenWidth / 2 - 20
-                                : 0,
-                          ),
+                  Expanded(
+                    child: AspectRatio(
+                      aspectRatio: 1,
+                      child: InkWell(
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => const AzkarPage()),
+                        ),
+                        child: MainCategoryWidget(
+                          categoryImg: "assets/images/azkar.png",
+                          categoryTitle: "الأذكار",
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const RuqiyaPage()));
-                          },
-                          child: MainCategoryWidget(
-                            categoryImg: "assets/images/ruqiya.png",
-                            categoryTitle: "الرقية الشرعية",
-                            width: screenWidth / 2 - 20 > 0
-                                ? screenWidth / 2 - 20
-                                : 0,
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Expanded(
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const PrayPage()));
-                          },
-                          child: MainCategoryWidget(
-                            categoryImg: "assets/images/muslim_prayer.png",
-                            categoryTitle: "الصلاة",
-                            width: screenWidth / 2 - 20,
-                          ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: AspectRatio(
+                      aspectRatio: 1,
+                      child: InkWell(
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => const RuqiyaPage()),
+                        ),
+                        child: MainCategoryWidget(
+                          categoryImg: "assets/images/ruqiya.png",
+                          categoryTitle: "الرقية الشرعية",
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: InkWell(
-                          onTap: () {
-                            modalBottomSheet(context);
-                          },
-                          child: MainCategoryWidget(
-                            categoryImg: "assets/images/quran.png",
-                            categoryTitle: "القرآن الكريم",
-                            width: screenWidth / 2 - 20,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  InkWell(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) =>
-                              const MainIslamicLessonsPage()));
-                    },
-                    child: MainCategoryWidget(
-                      width: screenWidth,
-                      categoryImg: "assets/images/chio5.jpg",
-                      categoryTitle: "دروس دينية",
                     ),
                   ),
                 ],
               ),
-            ),
-          ],
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: AspectRatio(
+                      aspectRatio: 1,
+                      child: InkWell(
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => const PrayPage()),
+                        ),
+                        child: MainCategoryWidget(
+                          categoryImg: "assets/images/muslim_prayer.png",
+                          categoryTitle: "الصلاة",
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: AspectRatio(
+                      aspectRatio: 1,
+                      child: InkWell(
+                        onTap: () => modalBottomSheet(context),
+                        child: MainCategoryWidget(
+                          categoryImg: "assets/images/quran.png",
+                          categoryTitle: "القرآن الكريم",
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 20),
+
+              // "دروس دينية" بأكمل عرض الشاشة ونفس ارتفاع المربعات
+              AspectRatio(
+                aspectRatio: 2, // لأن الارتفاع = عرض/2
+                child: InkWell(
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (_) => const MainIslamicLessonsPage()),
+                  ),
+                  child: MainCategoryWidget(
+                    categoryImg: "assets/images/chio5.jpg",
+                    categoryTitle: "دروس دينية",
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
