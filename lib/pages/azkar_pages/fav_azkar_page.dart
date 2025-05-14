@@ -1,21 +1,21 @@
-import 'package:azkar_app/database_helper.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:azkar_app/widgets/reciturs_item.dart';
-import 'package:flutter/material.dart';
-
 import '../../constants.dart';
-import 'zekr_page.dart'; // Import the ZekrPage file
+import '../../cubit/fav_zekr_cubit/fav_zekr_cubit.dart';
+import 'zekr_page.dart';
 
 class FavAzkarPage extends StatelessWidget {
-  FavAzkarPage({super.key});
-  final DatabaseHelper _databaseHelper = DatabaseHelper();
+  const FavAzkarPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
-            color: AppStyles.styleDiodrumArabicbold20(context).color),
+          color: AppStyles.styleDiodrumArabicbold20(context).color,
+        ),
         title: Text(
           'أذكاري المفضلة',
           style: AppStyles.styleDiodrumArabicbold20(context),
@@ -24,18 +24,21 @@ class FavAzkarPage extends StatelessWidget {
         backgroundColor: AppColors.kSecondaryColor,
       ),
       backgroundColor: AppColors.kPrimaryColor,
-      body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: _databaseHelper.getFavsAzkar(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+      body: BlocBuilder<FavZekrCubit, FavZekrState>(
+        builder: (context, state) {
+          if (state is FavZekrLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(
-              child: Text('لم يتم اضافة اذكار مفضلة بعد.',
-                  style: AppStyles.styleDiodrumArabicbold20(context)),
-            );
-          } else {
-            final favorites = snapshot.data!;
+          } 
+          else if (state is FavZekrLoaded) {
+            final favorites = state.favorites;
+            if (favorites.isEmpty) {
+              return Center(
+                child: Text(
+                  'لم يتم اضافة اذكار مفضلة بعد.',
+                  style: AppStyles.styleDiodrumArabicbold20(context),
+                ),
+              );
+            }
             return ListView.builder(
               itemCount: favorites.length,
               itemBuilder: (context, index) {
@@ -48,8 +51,7 @@ class FavAzkarPage extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (context) => ZekrPage(
                           zekerCategory: favorites[index]['category'],
-                          zekerList: favorites[index]
-                              ['zekerList'], // Pass decoded list
+                          zekerList: favorites[index]['zekerList'],
                         ),
                       ),
                     );
@@ -57,6 +59,15 @@ class FavAzkarPage extends StatelessWidget {
                 );
               },
             );
+          } else if (state is FavZekrError) {
+            return Center(
+              child: Text(
+                state.message,
+                style: AppStyles.styleDiodrumArabicbold20(context),
+              ),
+            );
+          } else {
+            return Container();
           }
         },
       ),

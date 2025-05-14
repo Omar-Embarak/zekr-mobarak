@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:azkar_app/cubit/fav_surah_cubit/fav_surah_item_cubit.dart';
+import 'package:azkar_app/cubit/fav_zekr_cubit/fav_zekr_cubit.dart';
 import 'package:azkar_app/cubit/ruqiya_cubit/ruqiya_cubit.dart';
 import 'package:azkar_app/pages/islamic_lessons_pages/fav_islamic_lessons_provider.dart';
 import 'package:azkar_app/simple_bloc_observer.dart';
@@ -109,6 +110,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (_) => ThemeCubit()..loadInitialTheme(),
         ),
+        BlocProvider(create: (context) => FavZekrCubit()..fetchFavorites()),
         BlocProvider(
           create: (context) => FavSurahItemCubit(),
         ),
