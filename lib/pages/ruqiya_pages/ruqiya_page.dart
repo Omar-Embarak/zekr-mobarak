@@ -49,62 +49,9 @@ class _RuqiyaPageState extends State<RuqiyaPage> {
                 child: ListView.builder(
                   itemCount: state.ruqiya.length,
                   itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black,
-                              spreadRadius: .1,
-                            )
-                          ],
-                          borderRadius: BorderRadius.circular(12),
-                          color: AppColors.kSecondaryColor,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(state.ruqiya[index].text!,
-                                  textAlign: TextAlign.justify,
-                                  style: AppStyles.styleDiodrumArabicbold20(
-                                      context)),
-                              Divider(
-                                color: AppColors.kPrimaryColor,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    state.ruqiya[index].info!,
-                                    textAlign: TextAlign.justify,
-                                    style: AppStyles.styleDiodrumArabicbold20(
-                                        context),
-                                  ),
-                                  IconButton(
-                                    onPressed: () {
-                                      Clipboard.setData(ClipboardData(
-                                          text: state.ruqiya[index].text!));
-                                      Fluttertoast.showToast(
-                                          msg: "تم النسخ بنجاح للحافظة");
-                                    },
-                                    icon: Icon(
-                                      Icons.copy,
-                                      color: AppStyles.styleDiodrumArabicbold20(
-                                              context)
-                                          .color,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                    return RuqiyaItem(
+                      text: state.ruqiya[index].text!,
+                      info: state.ruqiya[index].info!,
                     );
                   },
                 ),
@@ -120,6 +67,65 @@ class _RuqiyaPageState extends State<RuqiyaPage> {
               return Container();
             }
           }),
+        ),
+      ),
+    );
+  }
+}
+
+class RuqiyaItem extends StatelessWidget {
+  const RuqiyaItem({super.key, re, required this.text, required this.info});
+  final String text;
+  final String info;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.grey,
+              spreadRadius: .3,
+            )
+          ],
+          borderRadius: BorderRadius.circular(12),
+          color: AppColors.kSecondaryColor,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(text,
+                  textAlign: TextAlign.justify,
+                  style: AppStyles.styleDiodrumArabicbold20(context)),
+              Divider(
+                color: AppColors.kPrimaryColor,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    info,
+                    textAlign: TextAlign.justify,
+                    style: AppStyles.styleDiodrumArabicbold20(context),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      Clipboard.setData(ClipboardData(text: text));
+                      Fluttertoast.showToast(msg: "تم النسخ بنجاح للحافظة");
+                    },
+                    icon: Icon(
+                      Icons.copy,
+                      color: AppStyles.styleDiodrumArabicbold20(context).color,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
