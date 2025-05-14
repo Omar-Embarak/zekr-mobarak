@@ -30,7 +30,10 @@ class FavAzkarPage extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('لم يتم اضافة عناصر مفضلة بعد.'));
+            return Center(
+              child: Text('لم يتم اضافة اذكار مفضلة بعد.',
+                  style: AppStyles.styleDiodrumArabicbold20(context)),
+            );
           } else {
             final favorites = snapshot.data!;
             return ListView.builder(

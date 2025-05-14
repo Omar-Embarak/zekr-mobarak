@@ -25,6 +25,12 @@ class ListeningButtons extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(7),
           color: AppColors.kSecondaryColor,
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.grey,
+              spreadRadius: .3,
+            )
+          ],
         ),
         child: Center(
           child: Text(
