@@ -163,7 +163,6 @@ class _SurahPageState extends State<SurahPage> {
       return PopScope(
           canPop: false,
           onPopInvokedWithResult: (bool didPop, Object? result) async {
-              
             // Navigate to QuranReadingMainPage
             Navigator.pushAndRemoveUntil(
               context,
@@ -182,34 +181,36 @@ class _SurahPageState extends State<SurahPage> {
                     _containersVisability();
                   },
                   child: SafeArea(
-                      child: PageView.builder(
-                    physics: const NoScrollBeyondPhysics(maxPage: 604),
-                    controller: _pageController,
-                    onPageChanged: (newPageIndex) {
-                      if (newPageIndex < 604) {
-                        setState(() {
-                          pageNumber = newPageIndex + 1;
-                          highlightedVerse = null;
-                          _loadPageContent(pageNumber);
-                        });
-                      } else {
-                        _pageController.jumpToPage(
-                            603); // Ensure it stays on the last page
-                      }
-                    },
-                    itemBuilder: (context, index) {
-                      // Check if the index is within the valid range
-                      if (index >= 0 && index < 604) {
-                        return _buildPageContent();
-                      } else {
-                        // Return an empty widget for out-of-bounds pages
-                        return Container(
-                          color: AppColors
-                              .kPrimaryColor, // Match the background color
-                        );
-                      }
-                    },
-                  )),
+                    child: PageView.builder(
+                      physics: const NoScrollBeyondPhysics(maxPage: 604),
+                      controller: _pageController,
+                      pageSnapping: true,
+                      onPageChanged: (newPageIndex) {
+                        if (newPageIndex < 604) {
+                          setState(() {
+                            pageNumber = newPageIndex + 1;
+                            highlightedVerse = null;
+                            _loadPageContent(pageNumber);
+                          });
+                        } else {
+                          _pageController.jumpToPage(
+                              603); // Ensure it stays on the last page
+                        }
+                      },
+                      itemBuilder: (context, index) {
+                        // Check if the index is within the valid range
+                        if (index >= 0 && index < 604) {
+                          return _buildPageContent();
+                        } else {
+                          // Return an empty widget for out-of-bounds pages
+                          return Container(
+                            color: AppColors
+                                .kPrimaryColor, // Match the background color
+                          );
+                        }
+                      },
+                    ),
+                  ),
                 ),
                 if (highlightedVerse != null && buttonPosition != null)
                   _buildActionButtons(),
@@ -254,10 +255,11 @@ class _SurahPageState extends State<SurahPage> {
                           text: '$word ',
                           style: TextStyle(
                             fontSize: adjustedFontSize,
-                                fontFamily: word.contains('\u06ED') ? 'Amiri' : null,
-
+                            fontFamily:
+                                word.contains('\u06ED') ? 'Amiri' : null,
                             backgroundColor: isHighlighted
-    ? Colors.yellow.withAlpha((0.4 * 255).round()) // 102 ≈ 0.4 * 255
+                                ? Colors.yellow.withAlpha(
+                                    (0.4 * 255).round()) // 102 ≈ 0.4 * 255
                                 : Colors.transparent,
                             color: isHighlighted ? Colors.red : null,
                           ),
