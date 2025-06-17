@@ -1,0 +1,5 @@
+package com.omar.azkar_app
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity : FlutterActivity()

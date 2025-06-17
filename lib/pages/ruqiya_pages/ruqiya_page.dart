@@ -1,9 +1,9 @@
 import 'package:azkar_app/cubit/ruqiya_cubit/ruqiya_cubit.dart';
+import 'package:azkar_app/methods.dart';
 import 'package:azkar_app/utils/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../constants.dart';
 
@@ -115,7 +115,7 @@ class RuqiyaItem extends StatelessWidget {
                   IconButton(
                     onPressed: () {
                       Clipboard.setData(ClipboardData(text: text));
-                      Fluttertoast.showToast(msg: "تم النسخ بنجاح للحافظة");
+                      showMessage("تم النسخ بنجاح للحافظة");
                     },
                     icon: Icon(
                       Icons.copy,

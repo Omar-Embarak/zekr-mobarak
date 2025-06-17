@@ -19,6 +19,6 @@ class PrayingLoaded extends PrayingState {
 
 class PrayingError extends PrayingState {
   final String error;
-
   PrayingError(this.error);
+  
 }

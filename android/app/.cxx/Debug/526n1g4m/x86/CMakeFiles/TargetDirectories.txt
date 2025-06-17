@@ -1,0 +1,2 @@
+C:/zekr-mobarak/android/app/.cxx/Debug/526n1g4m/x86/CMakeFiles/edit_cache.dir
+C:/zekr-mobarak/android/app/.cxx/Debug/526n1g4m/x86/CMakeFiles/rebuild_cache.dir

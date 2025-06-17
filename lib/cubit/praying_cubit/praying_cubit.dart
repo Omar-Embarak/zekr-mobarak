@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -31,7 +32,9 @@ class PrayingCubit extends Cubit<PrayingState> {
     emit(PrayingLoading());
     try {
       final response = await http.get(Uri.parse(
-          'http://api.aladhan.com/v1/calendar/$year/$month?latitude=$latitude&longitude=$longitude&method=5'));
+          'https://api.aladhan.com/v1/calendar/$year/$month?latitude=$latitude&longitude=$longitude&method=5'));
+      log('Response status: ${response.statusCode}');
+      log('Response body: ${response.body}'); // للتأكد من أن الاستجابة هي JSON
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
         final prayerTimesData = PrayingModel.fromJson(jsonResponse);
@@ -68,6 +71,7 @@ class PrayingCubit extends Cubit<PrayingState> {
       }
     } catch (e) {
       emit(PrayingError(e.toString()));
+      log(e.toString());
     }
   }
 

@@ -68,7 +68,8 @@ class _MainIslamicLessonsPageState extends State<MainIslamicLessonsPage> {
           audioList = data;
         });
       } else {
-        showMessage('فشل في تحميل البيانات');
+        showMessage(
+            'فشل في تحميل البيانات من جهتنا. نأسف لهذا الخطا ونأمل ان يتم حل المشكلة قريبا');
       }
     } catch (e) {
       showMessage('حدث خطأ أثناء جلب البيانات');
@@ -90,10 +91,14 @@ class _MainIslamicLessonsPageState extends State<MainIslamicLessonsPage> {
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : audioList.isEmpty
-              ? const Center(
-                  child: Text(
-                    'لا توجد بيانات متاحة',
-                    style: TextStyle(color: Colors.white, fontSize: 18),
+              ? Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'فشل في تحميل البيانات من جهتنا. نأسف لهذا الخطا ونأمل ان يتم حل المشكلة قريبا',
+                      style: AppStyles.styleDiodrumArabicbold20(context),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 )
               : ListView.builder(
@@ -157,7 +162,7 @@ class ListeningIslamicLessonsPage extends StatefulWidget {
 
 class _ListeningIslamicLessonsPageState
     extends State<ListeningIslamicLessonsPage> {
-    final List<AudioModel> _playList = [];
+  final List<AudioModel> _playList = [];
 
   @override
   void initState() {
@@ -166,7 +171,6 @@ class _ListeningIslamicLessonsPageState
   }
 
   Future<void> _initPlaylist() async {
-
     for (int i = 0; i < widget.audios.length; i++) {
       _playList.add(AudioModel(
           audioURL: widget.audios[i]['url'],
@@ -183,7 +187,6 @@ class _ListeningIslamicLessonsPageState
 
       artUri: null,
     );
-
   }
 
   @override
@@ -213,9 +216,9 @@ class _ListeningIslamicLessonsPageState
                   title: audio['description'] ?? 'بدون عنوان',
                   description: widget.description,
                   // Callback to return audio URL for a given index.
-                  // getAudioUrl: 
+                  // getAudioUrl:
                   //    widget.audios[idx]['url'];
-                   playlist: _playList,
+                  playlist: _playList,
                 );
               },
             ),

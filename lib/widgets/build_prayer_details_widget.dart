@@ -111,7 +111,6 @@ Widget buildPrayerDetails(BuildContext context, Timings timings,
         ),
       ),
       SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-      // Horizontal prayer times scrollable row
       Scrollbar(
         controller: scrollController,
         thumbVisibility: true,
